@@ -12,10 +12,9 @@ group = 'io.meshcloud.openapi-spec-for-spring.platform'
 javaPlatform.allowDependencies()
 
 dependencies {
-  api(platform('org.springframework.boot:spring-boot-dependencies:3.0.4'))
+  api(platform('org.springframework.boot:spring-boot-dependencies:3.5.16'))
 
   constraints {
-    // Spring Boot 3.0 manages 1.18.26, which cannot compile on JDK 21.
     api('org.projectlombok:lombok:1.18.48')
 
     api('com.google.code.findbugs:jsr305:3.0.2')
