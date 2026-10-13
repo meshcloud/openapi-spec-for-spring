@@ -61,6 +61,7 @@ public class PathsBuilder {
         handlerMethodsProvider.getHandlerMethods().stream()
                 .flatMap(handlerMethodWithInfo -> handlerMethodWithInfo.getPathPatterns().stream()
                         .map(pathPattern -> StringUtils.isBlank(pathPattern) ? "/" : pathPattern)
+                        .distinct()
                         .map(pathPattern -> Pair.of(pathPattern, handlerMethodWithInfo)))
                 .filter(item -> isAcceptedByAllHandlerMethodFilters(item.getRight()))
                 .sorted(Comparator.comparing(Pair::getLeft))
