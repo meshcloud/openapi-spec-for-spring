@@ -36,9 +36,12 @@ import io.meshcloud.openapispecforspring.model.response.ApiResponses;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.MergedAnnotation;
@@ -59,22 +62,60 @@ public class DefaultOperationApiResponsesFromMethodCustomizer implements Operati
     @Override
     public void customize(ApiResponses apiResponses, OperationBuilderContext operationBuilderContext) {
         HandlerMethod handlerMethod = operationBuilderContext.getOperationInfo().getHandlerMethod();
+        ReferencedSchemaConsumer referencedSchemaConsumer =
+                operationBuilderContext.getReferencedItemConsumer(ReferencedSchemaConsumer.class);
+        Map<String, ApiResponse> annotatedSuccessResponsesWithoutContent = apiResponses.entrySet().stream()
+                .filter(entry ->
+                        isSuccessWithBody(entry.getKey()) && entry.getValue().getContent() == null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, LinkedHashMap::new));
         firstNonNull(handlerMethodResponseMappers, mapper -> mapper.map(handlerMethod))
                 .ifPresent(handlerMethodResponses -> handlerMethodResponses.forEach(handlerMethodResponse -> {
                     ApiResponse defaultApiResponse =
                             getAndReplaceDefaultApiResponse(apiResponses, handlerMethodResponse.getResponseCode());
-                    Content content =
-                            Optional.ofNullable(defaultApiResponse.getContent()).orElseGet(Content::new);
-                    addMediaTypesToApiResponseContent(
-                            content,
-                            handlerMethod,
-                            handlerMethodResponse,
-                            operationBuilderContext.getReferencedItemConsumer(ReferencedSchemaConsumer.class));
-                    if (!content.isEmpty()) {
-                        defaultApiResponse.setContent(content);
-                    }
+                    addMethodResponseContent(
+                            defaultApiResponse, handlerMethod, handlerMethodResponse, referencedSchemaConsumer);
                     handlerMethodResponse.customize(defaultApiResponse);
+                    annotatedSuccessResponsesWithoutContent.forEach((responseCode, apiResponse) -> {
+                        if (!responseCode.equals(handlerMethodResponse.getResponseCode())) {
+                            shareMethodResponseContent(defaultApiResponse, apiResponse, handlerMethodResponse);
+                        }
+                    });
                 }));
+    }
+
+    private static boolean isSuccessWithBody(String responseCode) {
+        return responseCode.length() == 3 && responseCode.startsWith("2") && !"204".equals(responseCode);
+    }
+
+    private void addMethodResponseContent(
+            ApiResponse apiResponse,
+            HandlerMethod handlerMethod,
+            HandlerMethod.Response handlerMethodResponse,
+            ReferencedSchemaConsumer referencedSchemaConsumer) {
+        Content content = Optional.ofNullable(apiResponse.getContent()).orElseGet(Content::new);
+        addMediaTypesToApiResponseContent(content, handlerMethod, handlerMethodResponse, referencedSchemaConsumer);
+        if (!content.isEmpty()) {
+            apiResponse.setContent(content);
+        }
+    }
+
+    // Shared, so each response schema is resolved once and not again per status code.
+    private static void shareMethodResponseContent(
+            ApiResponse methodApiResponse, ApiResponse apiResponse, HandlerMethod.Response handlerMethodResponse) {
+        Content methodContent = methodApiResponse.getContent();
+        if (methodContent == null) {
+            return;
+        }
+        Content content = Optional.ofNullable(apiResponse.getContent()).orElseGet(Content::new);
+        handlerMethodResponse.getProducesContentTypes().forEach(contentType -> {
+            MediaType mediaType = methodContent.get(contentType);
+            if (mediaType != null) {
+                content.putIfAbsent(contentType, mediaType);
+            }
+        });
+        if (!content.isEmpty()) {
+            apiResponse.setContent(content);
+        }
     }
 
     private void addMediaTypesToApiResponseContent(
