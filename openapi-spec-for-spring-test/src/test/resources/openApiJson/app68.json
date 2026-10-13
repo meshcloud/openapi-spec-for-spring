@@ -1,0 +1,26 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App68",
+    "version": "unknown"
+  },
+  "paths": {
+    "/raw": {
+      "get": {
+        "operationId": "getWithRawResponseEntity",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
