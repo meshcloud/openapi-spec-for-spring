@@ -21,9 +21,9 @@
 
 package io.meshcloud.openapispecforspring.common.paths.method.merger;
 
-import static io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodContentTypesMapper.SINGLE_ALL_VALUE;
 import static io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils.groupingByPairKeyAndCollectingValuesToList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
@@ -58,12 +58,7 @@ public class SpringWebHandlerMethodRequestBodyMerger {
                         requestBodyParameterMapper.findRequestBodyParameter(handlerMethod)))
                 .collect(groupingByPairKeyAndCollectingValuesToList());
 
-        List<Optional<RequestBodyParameter>> allValueRequestBodyParameters =
-                groupedRequestBodyParameters.get(SINGLE_ALL_VALUE);
-        if (groupedRequestBodyParameters.size() == 1
-                && allValueRequestBodyParameters != null
-                && allValueRequestBodyParameters.stream().noneMatch(Optional::isPresent)) {
-            // we can omit the request bodies entirely if there's only empty request bodies matching for ALL_VALUE
+        if (groupedRequestBodyParameters.keySet().equals(Set.of(emptySet()))) {
             return emptyList();
         }
 

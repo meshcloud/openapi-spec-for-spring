@@ -50,7 +50,14 @@
         "operationId": "getMappingWithOptionalString",
         "responses": {
           "200": {
-            "$ref": "#/components/responses/200_0"
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -89,7 +96,7 @@
           "200": {
             "description": "Default response",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/array_App5Controller.SimpleDto"
                 }
@@ -106,7 +113,7 @@
           "200": {
             "description": "Default response",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/App5Controller.DtoInOptional"
                 }
@@ -132,7 +139,12 @@
       "200_0": {
         "description": "Default response",
         "content": {
-          "*/*": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "application/json": {
             "schema": {
               "type": "string"
             }
@@ -142,7 +154,7 @@
       "200_1": {
         "description": "Default response",
         "content": {
-          "*/*": {
+          "application/json": {
             "schema": {
               "$ref": "#/components/schemas/App5Controller.ComplexDto_2"
             }
@@ -152,7 +164,7 @@
       "200_2": {
         "description": "Default response",
         "content": {
-          "*/*": {
+          "application/json": {
             "schema": {
               "$ref": "#/components/schemas/App5Controller.SimpleDto"
             }

@@ -27,6 +27,9 @@ import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMet
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodResponseCodeMapper;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodReturnTypeMapper;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHttpMessageConvertersSupplier;
+import java.util.List;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -83,7 +86,11 @@ public class OpenApiSpecWebMethodAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SpringWebHandlerMethodContentTypesMapper springWebHandlerMethodContentTypesMapper() {
-        return new SpringWebHandlerMethodContentTypesMapper();
+    public SpringWebHandlerMethodContentTypesMapper springWebHandlerMethodContentTypesMapper(
+            ObjectProvider<SpringWebHttpMessageConvertersSupplier> httpMessageConvertersSupplier,
+            SpringWebHandlerMethodRequestBodyParameterMapper springWebHandlerMethodRequestBodyParameterMapper) {
+        return new SpringWebHandlerMethodContentTypesMapper(
+                httpMessageConvertersSupplier.getIfAvailable(() -> List::of),
+                springWebHandlerMethodRequestBodyParameterMapper);
     }
 }

@@ -39,7 +39,6 @@
         "requestBody": {
           "description": "request body description",
           "content": {
-            "*/*": {},
             "text/html": {
               "schema": {
                 "type": "string"

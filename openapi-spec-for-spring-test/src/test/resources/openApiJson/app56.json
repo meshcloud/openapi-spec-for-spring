@@ -1,0 +1,97 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App56",
+    "version": "unknown"
+  },
+  "paths": {
+    "/csv": {
+      "get": {
+        "operationId": "getCsv",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dto": {
+      "get": {
+        "operationId": "getDto",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App56Controller.SomeDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "postDto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App56Controller.SomeDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/raw": {
+      "post": {
+        "operationId": "postRaw",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/App56Controller.SomeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    },
+    "schemas": {
+      "App56Controller.SomeDto": {
+        "type": "object",
+        "properties": {
+          "someProperty": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

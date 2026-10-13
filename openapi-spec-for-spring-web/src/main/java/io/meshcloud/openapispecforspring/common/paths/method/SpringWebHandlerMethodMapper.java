@@ -21,6 +21,8 @@
 
 package io.meshcloud.openapispecforspring.common.paths.method;
 
+import static org.springframework.http.MediaType.ALL_VALUE;
+
 import io.meshcloud.openapispecforspring.common.mapper.MapperContext;
 import io.meshcloud.openapispecforspring.common.mapper.MediaTypesProvider;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
@@ -30,6 +32,7 @@ import io.meshcloud.openapispecforspring.model.response.ApiResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +51,9 @@ public class SpringWebHandlerMethodMapper {
             if (context instanceof SpringWebHandlerMethod springWebHandlerMethod) {
                 MediaTypesProvider mediaTypesProvider = owningType -> {
                     if (RequestBody.class.equals(owningType)) {
-                        return contentTypesMapper.findConsumesContentTypes(springWebHandlerMethod);
+                        Set<String> consumesContentTypes =
+                                contentTypesMapper.findConsumesContentTypes(springWebHandlerMethod);
+                        return consumesContentTypes.isEmpty() ? Set.of(ALL_VALUE) : consumesContentTypes;
                     } else if (ApiResponse.class.equals(owningType)) {
                         return contentTypesMapper.findProducesContentTypes(springWebHandlerMethod);
                     }

@@ -73,7 +73,6 @@
         "operationId": "mapping3_post_textHtml",
         "requestBody": {
           "content": {
-            "*/*": {},
             "text/html": {
               "schema": {
                 "type": "string"

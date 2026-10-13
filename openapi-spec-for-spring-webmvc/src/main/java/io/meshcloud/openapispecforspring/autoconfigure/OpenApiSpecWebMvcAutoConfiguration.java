@@ -27,6 +27,7 @@ import io.meshcloud.openapispecforspring.common.OpenApiConfigurationProperties;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethodsProvider;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebHandlerMethodBuilder;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebRequestMethodEnumMapper;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHttpMessageConvertersSupplier;
 import io.meshcloud.openapispecforspring.common.web.OpenApiResource;
 import io.meshcloud.openapispecforspring.webmvc.HandlerMethodPathPatternsProviderForWebMvc;
 import io.meshcloud.openapispecforspring.webmvc.HandlerMethodsProviderForWebMvc;
@@ -39,6 +40,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
@@ -83,5 +85,12 @@ public class OpenApiSpecWebMvcAutoConfiguration {
     public OpenApiRequestAwareSupplierForWebMvc openApiRequestAwareProviderForWebMvc(
             WebRequest webRequest, HttpServletRequest httpServletRequest) {
         return new OpenApiRequestAwareSupplierForWebMvc(webRequest, httpServletRequest);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SpringWebHttpMessageConvertersSupplier httpMessageConvertersSupplierForWebMvc(
+            RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
+        return requestMappingHandlerAdapter::getMessageConverters;
     }
 }

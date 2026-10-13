@@ -151,9 +151,7 @@
                     "summary": "summary example3",
                     "externalValue": "http://some-url2"
                   }
-                }
-              },
-              "*/*": {
+                },
                 "schema": {
                   "type": "string"
                 }
@@ -242,9 +240,12 @@
                     "explode": true,
                     "allowReserved": true
                   }
+                },
+                "schema": {
+                  "type": "string"
                 }
               },
-              "*/*": {
+              "text/plain": {
                 "schema": {
                   "type": "string"
                 }
