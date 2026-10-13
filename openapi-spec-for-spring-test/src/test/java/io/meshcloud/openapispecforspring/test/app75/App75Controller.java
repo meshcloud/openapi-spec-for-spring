@@ -1,5 +1,6 @@
 package io.meshcloud.openapispecforspring.test.app75;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 class App75Controller {
     @GetMapping("/zoo")
     Zoo getZoo() {
-        return new Zoo(Map.of(), Map.of(), Map.of(), Map.of());
+        return new Zoo(Map.of(), Map.of(), Map.of(), Map.of(), Map.of());
     }
 
     record Zoo(
@@ -19,6 +20,7 @@ class App75Controller {
             @Schema(description = "Animals by their enclosure")
             Map<String, Animal> animalsByEnclosure,
 
+            Map<Enclosure, Animal> animalsPerEnclosure,
             Map<String, List<Animal>> animalsBySpecies,
 
             @Schema(description = "Keepers by shift", additionalPropertiesSchema = Keeper.class)
@@ -28,4 +30,10 @@ class App75Controller {
     record Animal(String name) {}
 
     record Keeper(String name) {}
+
+    enum Enclosure {
+        SAVANNA,
+        @JsonProperty("rain-forest")
+        RAIN_FOREST
+    }
 }

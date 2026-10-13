@@ -40,6 +40,18 @@
           "$ref": "#/components/schemas/App75Controller.Animal"
         }
       },
+      "MapOfApp75Controller.AnimalByApp75Controller.Enclosure": {
+        "type": "object",
+        "properties": {
+          "SAVANNA": {
+            "$ref": "#/components/schemas/App75Controller.Animal"
+          },
+          "rain-forest": {
+            "$ref": "#/components/schemas/App75Controller.Animal"
+          }
+        },
+        "additionalProperties": false
+      },
       "MapOfList": {
         "type": "object",
         "additionalProperties": {
@@ -81,6 +93,9 @@
                 "$ref": "#/components/schemas/MapOfApp75Controller.Animal"
               }
             ]
+          },
+          "animalsPerEnclosure": {
+            "$ref": "#/components/schemas/MapOfApp75Controller.AnimalByApp75Controller.Enclosure"
           },
           "animalsBySpecies": {
             "$ref": "#/components/schemas/MapOfList"
