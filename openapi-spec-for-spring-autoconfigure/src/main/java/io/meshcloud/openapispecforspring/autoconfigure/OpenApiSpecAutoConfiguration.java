@@ -52,7 +52,6 @@ import org.springframework.context.annotation.Import;
     OpenApiSpecReferenceAutoConfiguration.class,
     OpenApiSpecSchemaAutoConfiguration.class,
     OpenApiSpecSupplierAutoConfiguration.class,
-    OpenApiSpecUtilAutoConfiguration.class,
 })
 @EnableConfigurationProperties(OpenApiConfigurationProperties.class)
 public class OpenApiSpecAutoConfiguration {
