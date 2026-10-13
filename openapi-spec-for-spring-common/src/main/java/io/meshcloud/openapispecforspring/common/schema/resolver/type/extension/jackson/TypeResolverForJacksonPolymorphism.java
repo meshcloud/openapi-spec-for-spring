@@ -30,6 +30,7 @@ import static io.meshcloud.openapispecforspring.common.util.OpenApiProxyUtils.cr
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,7 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolve
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilder;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialType;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
+import io.meshcloud.openapispecforspring.common.util.OpenApiSealedClassUtils;
 import io.meshcloud.openapispecforspring.model.media.Discriminator;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.lang.annotation.Annotation;
@@ -62,6 +64,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jspecify.annotations.Nullable;
+import org.springframework.core.annotation.AnnotationUtils;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -138,10 +141,7 @@ public class TypeResolverForJacksonPolymorphism
 
         setMapIfNotEmpty(
                 buildStringMapFromStream(
-                        initialType
-                                .getAnnotationsSupplier()
-                                .findAnnotations(JsonSubTypes.class)
-                                .flatMap(jsonSubTypes -> Arrays.stream(jsonSubTypes.value())),
+                        findSubTypes(initialType, classOwningJsonTypeInfo, jsonTypeInfo),
                         typeNameMapper,
                         JsonSubTypes.Type::value),
                 jsonSubTypes -> {
@@ -291,6 +291,39 @@ public class TypeResolverForJacksonPolymorphism
             JsonTypeInfo jsonTypeInfo) {
         JavaType javaTypeOwningJsonTypeInfo = objectMapper.constructType(classOwningJsonTypeInfo);
         return typeSchemaNameBuilder.build(caller, javaTypeOwningJsonTypeInfo, jsonTypeInfo);
+    }
+
+    private static Stream<JsonSubTypes.Type> findSubTypes(
+            InitialType initialType, Class<?> classOwningJsonTypeInfo, JsonTypeInfo jsonTypeInfo) {
+        List<JsonSubTypes.Type> declaredSubTypes = initialType
+                .getAnnotationsSupplier()
+                .findAnnotations(JsonSubTypes.class)
+                .flatMap(jsonSubTypes -> Arrays.stream(jsonSubTypes.value()))
+                .toList();
+        if (!declaredSubTypes.isEmpty()) {
+            return declaredSubTypes.stream();
+        }
+        return OpenApiSealedClassUtils.concretePermittedSubclasses(classOwningJsonTypeInfo).stream()
+                .map(subclass -> subTypeOf(subclass, jsonTypeInfo));
+    }
+
+    private static JsonSubTypes.Type subTypeOf(Class<?> subclass, JsonTypeInfo jsonTypeInfo) {
+        return AnnotationUtils.synthesizeAnnotation(
+                Map.of("value", subclass, "name", subTypeName(subclass, jsonTypeInfo)), JsonSubTypes.Type.class, null);
+    }
+
+    private static String subTypeName(Class<?> subclass, JsonTypeInfo jsonTypeInfo) {
+        JsonTypeName jsonTypeName = subclass.getAnnotation(JsonTypeName.class);
+        if (jsonTypeName != null) {
+            return jsonTypeName.value();
+        }
+        return jsonTypeInfo.use() == JsonTypeInfo.Id.NAME ? jacksonDefaultTypeName(subclass) : "";
+    }
+
+    // Follows com.fasterxml.jackson.databind.jsontype.impl.TypeNameIdResolver._defaultTypeId.
+    private static String jacksonDefaultTypeName(Class<?> subclass) {
+        String className = subclass.getName();
+        return className.substring(className.lastIndexOf('.') + 1);
     }
 
     private String findTypeName(JsonSubTypes.Type type) {

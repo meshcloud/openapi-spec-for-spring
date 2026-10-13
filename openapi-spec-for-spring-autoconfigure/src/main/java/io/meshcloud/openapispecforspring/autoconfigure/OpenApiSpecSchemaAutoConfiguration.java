@@ -47,6 +47,7 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolve
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForCollectionLikeTypeSupport;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForMapLikeType;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForObject;
+import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForSealedClass;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilder;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForEnum;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForPrimitiveTypes;
@@ -102,6 +103,16 @@ public class OpenApiSpecSchemaAutoConfiguration {
     @ConditionalOnMissingBean
     public TypeResolverForMapLikeType defaultTypeResolverForMapLikeType(SchemaNameBuilder schemaNameBuilder) {
         return new TypeResolverForMapLikeType(schemaNameBuilder);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TypeResolverForSealedClass defaultTypeResolverForSealedClass(
+            SchemaNameBuilder schemaNameBuilder,
+            AnnotationsSupplierFactory annotationsSupplierFactory,
+            OpenApiObjectMapperSupplier openApiObjectMapperSupplier) {
+        return new TypeResolverForSealedClass(
+                schemaNameBuilder, annotationsSupplierFactory, openApiObjectMapperSupplier);
     }
 
     @Bean

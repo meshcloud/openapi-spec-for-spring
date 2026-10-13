@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App67",
+    "version": "unknown"
+  },
+  "paths": {
+    "/animals/default": {
+      "get": {
+        "operationId": "animal",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App67Controller.Animal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/vehicles/default": {
+      "get": {
+        "operationId": "vehicle",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/App67Controller.Vehicle"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App67Controller.AnimalType": {
+        "type": "string",
+        "enum": [
+          "cat",
+          "App67Controller$Dog"
+        ]
+      },
+      "App67Controller.Cat": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App67Controller.AnimalType"
+          },
+          "indoor": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App67Controller.Dog": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App67Controller.AnimalType"
+          },
+          "breed": {
+            "type": "string"
+          }
+        }
+      },
+      "App67Controller.Animal": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "cat": "#/components/schemas/App67Controller.Cat",
+            "App67Controller$Dog": "#/components/schemas/App67Controller.Dog"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App67Controller.Cat"
+          },
+          {
+            "$ref": "#/components/schemas/App67Controller.Dog"
+          }
+        ]
+      },
+      "App67Controller.Car": {
+        "type": "object",
+        "properties": {
+          "doors": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "App67Controller.Bike": {
+        "type": "object",
+        "properties": {
+          "electric": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App67Controller.Vehicle": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/App67Controller.Car"
+          },
+          {
+            "$ref": "#/components/schemas/App67Controller.Bike"
+          }
+        ]
+      }
+    }
+  }
+}
