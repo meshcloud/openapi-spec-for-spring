@@ -1,2 +1,5 @@
 # chore: rename to openapi-spec-for-spring
 452e2e9b9b160e8f8d9a94f43c110f1a362324a4
+
+# style: format the Java code with palantir-java-format 2.100.0
+a6c637ad4cb14c11770fb6b6d05bc9c9f748c7eb
