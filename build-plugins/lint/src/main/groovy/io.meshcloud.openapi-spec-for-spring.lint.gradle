@@ -17,14 +17,13 @@ spotless {
   }
 }
 
-def licenseHeaderFor = { String module ->
+def licenseHeaderFor = { String module, String copyrights ->
   """\
 /*-
  * #%L
  * ${module}
  * %%
- * Copyright (C) 2020-2023 QAware GmbH
- * Copyright (C) 2026 meshcloud GmbH
+${copyrights}
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +57,19 @@ pluginManager.withPlugin('maven-publish') {
     spotless {
       format('licenseHeader') {
         target('src/main/java/**/*.java')
-        licenseHeader(licenseHeaderFor(project.description), 'package ')
+        String qawareLine = ' * Copyright (C) 2020-2023 QAware GmbH'
+        String meshcloudLine = ' * Copyright (C) 2026 meshcloud GmbH'
+        String meshcloudHeader = licenseHeaderFor(project.description, meshcloudLine)
+        String forkedHeader = licenseHeaderFor(project.description, "${qawareLine}\n${meshcloudLine}")
+        custom('licenseHeader', { String content ->
+          if (content.startsWith(forkedHeader) || content.startsWith(meshcloudHeader)) {
+            return content
+          }
+          if (content.startsWith('package ')) {
+            return meshcloudHeader + content
+          }
+          throw new IllegalStateException('Unexpected license header')
+        }.dehydrate())
       }
     }
   }
