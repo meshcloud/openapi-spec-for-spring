@@ -35,6 +35,10 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFa
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
+import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
+import org.springframework.core.annotation.AnnotationUtils;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -58,6 +63,45 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
 
     @Override
     public Map<String, SchemaProperty> findProperties(
+            SchemaResolver.Caller caller, JavaType javaType, AnnotationsSupplier annotationsSupplier) {
+        SchemaResolver.Mode otherMode = caller.getMode() == SchemaResolver.Mode.FOR_SERIALIZATION
+                ? SchemaResolver.Mode.FOR_DESERIALIZATION
+                : SchemaResolver.Mode.FOR_SERIALIZATION;
+        Map<String, SchemaProperty> properties = findPropertiesForMode(caller, javaType, annotationsSupplier);
+        Map<String, SchemaProperty> otherModeProperties =
+                findPropertiesForMode(SchemaResolver.Caller.of(otherMode), javaType, annotationsSupplier);
+        Map<String, SchemaProperty> allProperties = new LinkedHashMap<>();
+        properties.forEach((name, property) -> allProperties.put(
+                name, otherModeProperties.containsKey(name) ? property : withOnlyMode(property, caller.getMode())));
+        otherModeProperties.forEach((name, property) -> {
+            if (!properties.containsKey(name)) {
+                allProperties.put(name, withOnlyMode(property, otherMode));
+            }
+        });
+        return allProperties;
+    }
+
+    // Both directions share one schema per type, so a property Jackson only writes or only reads is marked as such.
+    private static SchemaProperty withOnlyMode(SchemaProperty property, SchemaResolver.Mode onlyMode) {
+        AccessMode accessMode =
+                onlyMode == SchemaResolver.Mode.FOR_SERIALIZATION ? AccessMode.READ_ONLY : AccessMode.WRITE_ONLY;
+        Schema accessModeAnnotation =
+                AnnotationUtils.synthesizeAnnotation(Map.of("accessMode", accessMode), Schema.class, null);
+        AnnotationsSupplier accessModeSupplier = new AnnotationsSupplier() {
+            @Override
+            public <A extends Annotation> Stream<A> findAnnotations(Class<A> annotationType) {
+                return Stream.of(accessModeAnnotation)
+                        .filter(annotationType::isInstance)
+                        .map(annotationType::cast);
+            }
+        };
+        return SchemaPropertyImpl.of(
+                property.getType(),
+                accessModeSupplier.andThen(property.getAnnotationsSupplier()),
+                property.isRequired());
+    }
+
+    private Map<String, SchemaProperty> findPropertiesForMode(
             SchemaResolver.Caller caller, JavaType javaType, AnnotationsSupplier annotationsSupplier) {
         ObjectMapper objectMapper = objectMapperSupplier.get(SCHEMA_BUILDING);
         BeanDescription beanDescriptionForType = introspectJavaType(objectMapper, caller.getMode(), javaType);

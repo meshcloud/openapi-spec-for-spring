@@ -138,7 +138,8 @@
             "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
           },
           "property1": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           }
         }
       },
@@ -166,10 +167,12 @@
             "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
           },
           "property1": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           },
           "property2": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           }
         }
       },
@@ -189,6 +192,10 @@
           },
           "property3": {
             "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
           }
         },
         "description": "Another body with property3"
@@ -199,6 +206,14 @@
         "properties": {
           "@class": {
             "$ref": "#/components/schemas/App43Controller.BodyInterface@class"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "readOnlyProperty": {
+            "type": "string",
+            "readOnly": true
           }
         }
       },

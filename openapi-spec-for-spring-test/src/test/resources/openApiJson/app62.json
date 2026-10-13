@@ -39,7 +39,12 @@
             "format": "double"
           },
           "type": {
-            "$ref": "#/components/schemas/App62Controller.ShapeType"
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App62Controller.ShapeType"
+              }
+            ]
           }
         }
       },

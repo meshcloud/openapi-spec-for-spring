@@ -285,7 +285,8 @@
         "type": "object",
         "properties": {
           "property1": {
-            "type": "string"
+            "type": "string",
+            "readOnly": true
           }
         },
         "description": "Dto in optional"
