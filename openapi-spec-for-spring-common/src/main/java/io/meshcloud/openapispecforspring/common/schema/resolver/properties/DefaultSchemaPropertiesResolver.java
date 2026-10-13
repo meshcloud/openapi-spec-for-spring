@@ -82,7 +82,8 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
                     AnnotationsSupplier propertyAnnotationsSupplier = annotationsSupplier.andThen(
                             annotationsSupplierFactory.createFromAnnotatedElement(propertyType.getRawClass()));
                     return Pair.<String, SchemaProperty>of(
-                            property.getName(), SchemaPropertyImpl.of(propertyType, propertyAnnotationsSupplier));
+                            property.getName(),
+                            SchemaPropertyImpl.of(propertyType, propertyAnnotationsSupplier, property.isRequired()));
                 })
                 .orElseGet(() -> {
                     LOGGER.debug("Ignoring property without any annotated members for mode {}: {}", mode, property);
@@ -95,6 +96,7 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
     private static class SchemaPropertyImpl implements SchemaProperty {
         private final JavaType type;
         private final AnnotationsSupplier annotationsSupplier;
+        private final boolean required;
     }
 
     private Optional<AnnotationsSupplier> buildAnnotationsSupplierFromAnnotatedMembers(

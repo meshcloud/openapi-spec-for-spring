@@ -116,7 +116,9 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
         if (required == null) {
             required = new ArrayList<>();
         }
-        required.add(requiredProperty);
+        if (!required.contains(requiredProperty)) {
+            required.add(requiredProperty);
+        }
     }
 
     @Override
