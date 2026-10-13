@@ -60,6 +60,7 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
     private final OpenApiObjectMapperSupplier objectMapperSupplier;
     private final List<SchemaPropertyFilter> propertyFilters;
     private final AnnotationsSupplierFactory annotationsSupplierFactory;
+    private final KotlinNullability kotlinNullability = new KotlinNullability();
 
     @Override
     public Map<String, SchemaProperty> findProperties(
@@ -80,6 +81,15 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
         });
         return allProperties;
     }
+
+    private static final AnnotationsSupplier KOTLIN_NULLABLE = new AnnotationsSupplier() {
+        private final Nullable nullable = AnnotationUtils.synthesizeAnnotation(Nullable.class);
+
+        @Override
+        public <A extends Annotation> Stream<A> findAnnotations(Class<A> annotationType) {
+            return Stream.of(nullable).filter(annotationType::isInstance).map(annotationType::cast);
+        }
+    };
 
     // Both directions share one schema per type, so a property Jackson only writes or only reads is marked as such.
     private static SchemaProperty withOnlyMode(SchemaProperty property, SchemaResolver.Mode onlyMode) {
@@ -119,7 +129,13 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
     @Nullable
     private Pair<String, SchemaProperty> buildSchemaPropertyPair(
             BeanPropertyDefinition property, SchemaResolver.Mode mode) {
-        return buildAnnotationsSupplierFromAnnotatedMembers(property, mode)
+        List<AnnotatedMember> annotatedMembers = findAnnotatedMembers(property, mode);
+        return annotatedMembers.stream()
+                .map(annotationsSupplierFactory::createFromMember)
+                .reduce(AnnotationsSupplier::andThen)
+                .map(annotationsSupplier -> annotatedMembers.stream().anyMatch(kotlinNullability::isNullable)
+                        ? KOTLIN_NULLABLE.andThen(annotationsSupplier)
+                        : annotationsSupplier)
                 .map(annotationsSupplier -> {
                     JavaType propertyType = property.getPrimaryType();
                     // include more annotations from the actual type of the property
@@ -143,7 +159,7 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
         private final boolean required;
     }
 
-    private Optional<AnnotationsSupplier> buildAnnotationsSupplierFromAnnotatedMembers(
+    private static List<AnnotatedMember> findAnnotatedMembers(
             BeanPropertyDefinition property, SchemaResolver.Mode mode) {
         // follows the algorithm of com.fasterxml.jackson.databind.introspect.POJOPropertyBuilder.getPrimaryType
         // but enables finding annotations from any place (and not just finding a type)
@@ -168,9 +184,7 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
         } else {
             throw new IllegalStateException("Unknown schema resolver mode " + mode);
         }
-        return stream.flatMap(Optional::stream)
-                .map(annotationsSupplierFactory::createFromMember)
-                .reduce(AnnotationsSupplier::andThen);
+        return stream.flatMap(Optional::stream).toList();
     }
 
     private static MapperConfig<?> getMapperConfig(ObjectMapper objectMapper, SchemaResolver.Mode mode) {
