@@ -23,6 +23,7 @@ include 'openapi-spec-for-spring-autoconfigure'
 include 'openapi-spec-for-spring-web'
 include 'openapi-spec-for-spring-webmvc'
 include 'openapi-spec-for-spring-hateoas'
+include 'openapi-spec-for-spring-data'
 include 'openapi-spec-for-spring-starter'
 include 'openapi-spec-for-spring-test'
 

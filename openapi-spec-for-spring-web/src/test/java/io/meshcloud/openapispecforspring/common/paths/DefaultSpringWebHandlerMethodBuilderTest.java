@@ -7,6 +7,7 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFa
 import io.meshcloud.openapispecforspring.common.operation.parameter.OpenApiSpringWebParameterNameDiscoverer;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethod;
 import java.util.Arrays;
+import java.util.List;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class DefaultSpringWebHandlerMethodBuilderTest {
 
     @BeforeEach
     void setUp() {
-        sut = new DefaultSpringWebHandlerMethodBuilder(annotationsSupplierFactory, parameterNameDiscoverer);
+        sut = new DefaultSpringWebHandlerMethodBuilder(annotationsSupplierFactory, parameterNameDiscoverer, List.of());
     }
 
     @Test

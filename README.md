@@ -85,6 +85,7 @@ All properties have the prefix `openapi-spec-for-spring`:
 * [OpenApiConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/OpenApiConfigurationProperties.java)
 * [OpenApiInfoConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/info/OpenApiInfoConfigurationProperties.java)
 * [OpenApiHateoasConfigurationProperties](openapi-spec-for-spring-hateoas/src/main/java/io/meshcloud/openapispecforspring/hateoas/OpenApiHateoasConfigurationProperties.java)
+* [OpenApiDataConfigurationProperties](openapi-spec-for-spring-data/src/main/java/io/meshcloud/openapispecforspring/data/OpenApiDataConfigurationProperties.java)
 * [Java8TimeTypeResolverConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/schema/resolver/type/extension/java8/Java8TimeTypeResolverConfigurationProperties.java)
 
 ## Build
