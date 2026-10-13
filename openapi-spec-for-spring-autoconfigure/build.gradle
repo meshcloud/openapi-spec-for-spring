@@ -1,0 +1,15 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Spec for Spring :: Autoconfigure'
+
+dependencies {
+  api(project(':openapi-spec-for-spring-common'))
+  api('org.springframework.boot:spring-boot-autoconfigure')
+
+  compileOnly('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+  compileOnly('jakarta.validation:jakarta.validation-api')
+
+  annotationProcessor('org.springframework.boot:spring-boot-autoconfigure-processor')
+}

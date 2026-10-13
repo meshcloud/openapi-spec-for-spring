@@ -14,9 +14,9 @@ tasks.named('javadoc', Javadoc) {
   options.quiet()
 }
 
-// Inserted after the artifactId base name, e.g. '-boot3' yields openapi-generator-for-spring-boot3-starter.
-def springBootArtifactIdSuffix = ''
-def artifactIdBaseName = 'openapi-generator-for-spring'
+// Publishes openapi-spec-for-spring-starter as openapi-spec-for-spring-boot3-starter.
+def springBootArtifactIdSuffix = '-boot3'
+def artifactIdBaseName = 'openapi-spec-for-spring'
 
 publishing {
   publications {

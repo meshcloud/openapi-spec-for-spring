@@ -1,0 +1,16 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Spec for Spring :: Web'
+
+dependencies {
+  api(project(':openapi-spec-for-spring-autoconfigure'))
+
+  compileOnly('org.springframework:spring-web')
+  compileOnly('jakarta.servlet:jakarta.servlet-api')
+  testImplementation('org.springframework:spring-web')
+  testImplementation('jakarta.servlet:jakarta.servlet-api')
+
+  annotationProcessor('org.springframework.boot:spring-boot-autoconfigure-processor')
+}

@@ -1,6 +1,3 @@
-import java.util.regex.Pattern
-import org.gradle.api.GradleException
-
 plugins {
   id('com.diffplug.spotless')
 }
@@ -18,13 +15,14 @@ spotless {
   }
 }
 
-// Check only: the step never rewrites a file. <ANY> matches the module line and the years, which vary between files.
-def licenseHeader = ~(Pattern.quote("""\
+def licenseHeaderFor = { String module ->
+  """\
 /*-
  * #%L
- * <ANY>
+ * ${module}
  * %%
- * Copyright (C) <ANY> QAware GmbH
+ * Copyright (C) 2020-2023 QAware GmbH
+ * Copyright (C) 2026 meshcloud GmbH
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,29 +37,26 @@ def licenseHeader = ~(Pattern.quote("""\
  * limitations under the License.
  * #L%
  */
-""").replace('<ANY>', '\\E.+\\Q'))
 
-if (providers.gradleProperty('lint.palantirJavaFormat').getOrElse('false').toBoolean()) {
-  pluginManager.withPlugin('java') {
-    spotless {
-      java {
-        target('src/*/java/**/*.java')
-        palantirJavaFormat()
-      }
+"""
+}
+
+pluginManager.withPlugin('java') {
+  spotless {
+    java {
+      target('src/*/java/**/*.java')
+      palantirJavaFormat()
     }
   }
 }
 
-// The published sources carry the license header.
+// The published sources carry the license header, whose module line is the project description.
 pluginManager.withPlugin('maven-publish') {
-  spotless {
-    format('licenseHeader') {
-      target('src/main/java/**/*.java')
-      custom('licenseHeader') { String content ->
-        if (!licenseHeader.matcher(content).lookingAt()) {
-          throw new GradleException('License header is missing or differs from the one in the lint convention plugin')
-        }
-        content
+  afterEvaluate {
+    spotless {
+      format('licenseHeader') {
+        target('src/main/java/**/*.java')
+        licenseHeader(licenseHeaderFor(project.description), 'package ')
       }
     }
   }

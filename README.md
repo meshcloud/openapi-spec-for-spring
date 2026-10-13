@@ -1,7 +1,7 @@
 # OpenAPI v3 generator for Spring Boot
 
 [![Build Status](https://github.com/qaware/openapi-generator-for-spring/workflows/build/badge.svg?branch=master)](https://github.com/qaware/openapi-generator-for-spring/actions?query=workflow%3A%22build%22)
-[![Maven Central](https://img.shields.io/maven-central/v/de.qaware.tools.openapi-generator-for-spring/openapi-generator-for-spring-starter)](https://mvnrepository.com/artifact/de.qaware.tools.openapi-generator-for-spring/openapi-generator-for-spring-starter)
+[![Maven Central](https://img.shields.io/maven-central/v/io.meshcloud.openapispecforspring/openapi-spec-for-spring-starter)](https://mvnrepository.com/artifact/io.meshcloud.openapispecforspring/openapi-spec-for-spring-starter)
 
 This library automagically generates a [OpenApi v3 specification](https://github.com/OAI/OpenAPI-Specification) at
 runtime for [Spring Boot](https://spring.io/projects/spring-boot) applications.
@@ -32,8 +32,8 @@ Inside your Spring Boot application, add the following (maven) dependency:
 
 ```xml
 <dependency>
-    <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
-    <artifactId>openapi-generator-for-spring-starter</artifactId>
+    <groupId>io.meshcloud.openapispecforspring</groupId>
+    <artifactId>openapi-spec-for-spring-starter</artifactId>
     <version>6.0.0</version>
 </dependency>
 ```
@@ -42,22 +42,22 @@ After starting your application, the OpenApi v3 specification of your applicatio
 This specification can be viewed by visiting `/swagger-ui` inside your browser (relative to context path).
 
 Have a look at the
-[Demo for WebMVC](demo/openapi-generator-for-spring-demo-webmvc)
+[Demo for WebMVC](demo/openapi-spec-for-spring-demo-webmvc)
 and
-[Demo for WebFlux](demo/openapi-generator-for-spring-demo-webflux)
+[Demo for WebFlux](demo/openapi-spec-for-spring-demo-webflux)
 for a first impression.
 
 ## Configuration Properties
 
-The following configuration properties are available with the prefix `openapi-generator-for-spring.`:
+The following configuration properties are available with the prefix `openapi-spec-for-spring.`:
 
-* [Open API Properties](openapi-generator-for-spring-common/src/main/java/de/qaware/openapigeneratorforspring/common/OpenApiConfigurationProperties.java)
-* [Open API Info Properties](openapi-generator-for-spring-common/src/main/java/de/qaware/openapigeneratorforspring/common/info/OpenApiInfoConfigurationProperties.java)
-* [Open API Swagger UI Properties](openapi-generator-for-spring-ui/src/main/java/de/qaware/openapigeneratorforspring/ui/OpenApiSwaggerUiConfigurationProperties.java)
+* [Open API Properties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/OpenApiConfigurationProperties.java)
+* [Open API Info Properties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/info/OpenApiInfoConfigurationProperties.java)
+* [Open API Swagger UI Properties](openapi-spec-for-spring-ui/src/main/java/io/meshcloud/openapispecforspring/ui/OpenApiSwaggerUiConfigurationProperties.java)
 
 The following extension properties are currently part of this library:
 
-* [Java8 Time](openapi-generator-for-spring-common/src/main/java/de/qaware/openapigeneratorforspring/common/schema/resolver/type/extension/java8/Java8TimeTypeResolverConfigurationProperties.java)
+* [Java8 Time](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/schema/resolver/type/extension/java8/Java8TimeTypeResolverConfigurationProperties.java)
 
 ## How To
 
@@ -65,17 +65,17 @@ The following extension properties are currently part of this library:
 
 The library supports filtering at the following stages during OpenApi specification building, in this order:
 
-1. [HandlerMethodFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/handlermethod/HandlerMethodFilter.java)
+1. [HandlerMethodFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/handlermethod/HandlerMethodFilter.java)
    filters before passing on the found handler methods to the path building.
-1. [OperationPreFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/operation/OperationPreFilter.java)
+1. [OperationPreFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/operation/OperationPreFilter.java)
    filters before the `Operation` model object is built.
-1. [OperationParameterPreFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/operation/parameter/OperationParameterPreFilter.java)
+1. [OperationParameterPreFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/operation/parameter/OperationParameterPreFilter.java)
    filters before a `Parameter` model object of an operation is built.
-1. [OperationParameterPostFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/operation/parameter/OperationParameterPostFilter.java)
+1. [OperationParameterPostFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/operation/parameter/OperationParameterPostFilter.java)
    filters after a `Parameter` has been built.
-1. [OperationPostFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/operation/OperationPostFilter.java)
+1. [OperationPostFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/operation/OperationPostFilter.java)
    filters after a `Operation` has been built. All information has been set except referenced components.
-1. [PathItemFilter](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/filter/pathitem/PathItemFilter.java)
+1. [PathItemFilter](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/filter/pathitem/PathItemFilter.java)
    filters after a `PathItem` is fully constructed. All information has been set except referenced components.
 
 Insert a bean extending one or more of the above interfaces, which will be picked up by the library.
@@ -95,9 +95,9 @@ Swagger UI can also be customized to display more than one specification by prov
 `OpenApiSwaggerUiApiDocsUrisSupplier`.
 
 See the `*Configuration` class of this
-[integration test](openapi-generator-for-spring-test/src/test/java/de/qaware/openapigeneratorforspring/test/app10)
+[integration test](openapi-spec-for-spring-test/src/test/java/io/meshcloud/openapispecforspring/test/app10)
 or this
-[integration test](openapi-generator-for-spring-test/src/test/java/de/qaware/openapigeneratorforspring/test/app18)
+[integration test](openapi-spec-for-spring-test/src/test/java/io/meshcloud/openapispecforspring/test/app18)
 for a fully working WebMVC or WebFlux example, respectively. Note that the test cases invoke the endpoint with different
 header or query parameters.
 
@@ -108,25 +108,25 @@ mind.
 
 The following shows some examples for customizers:
 
-* [SchemaCustomizer](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/schema/customizer/SchemaCustomizer.java)
+* [SchemaCustomizer](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/schema/customizer/SchemaCustomizer.java)
   customizes a constructed
-  [Schema](openapi-generator-for-spring-model/src/main/java/de/qaware/openapigeneratorforspring/model/media/Schema.java)
+  [Schema](openapi-spec-for-spring-model/src/main/java/io/meshcloud/openapispecforspring/model/media/Schema.java)
   . An example is the
-  [SchemaCustomizerForNullable](openapi-generator-for-spring-common/src/main/java/de/qaware/openapigeneratorforspring/common/schema/customizer/SchemaCustomizerForNullable.java)
+  [SchemaCustomizerForNullable](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/schema/customizer/SchemaCustomizerForNullable.java)
   .
-* [OperationCustomizer](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common/operation/customizer/OperationCustomizer.java)
+* [OperationCustomizer](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common/operation/customizer/OperationCustomizer.java)
   customizes a constructed
-  [Operation](openapi-generator-for-spring-model/src/main/java/de/qaware/openapigeneratorforspring/model/operation/Operation.java)
+  [Operation](openapi-spec-for-spring-model/src/main/java/io/meshcloud/openapispecforspring/model/operation/Operation.java)
   . An example is
-  the [DefaultOperationIdCustomizer](openapi-generator-for-spring-common/src/main/java/de/qaware/openapigeneratorforspring/common/operation/customizer/DefaultOperationIdCustomizer.java)
+  the [DefaultOperationIdCustomizer](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/operation/customizer/DefaultOperationIdCustomizer.java)
   which sets the Operation ID from an
   [OperationIdProvider]() bean.
 * This
-  [integration test](openapi-generator-for-spring-test/src/test/java/de/qaware/openapigeneratorforspring/test/app9/App9Configuration.java)
+  [integration test](openapi-spec-for-spring-test/src/test/java/io/meshcloud/openapispecforspring/test/app9/App9Configuration.java)
   shows an example how to override the default identifier when referencing request bodies.
 
 Feel free to investigate the
-[api module](openapi-generator-for-spring-api/src/main/java/de/qaware/openapigeneratorforspring/common)
+[api module](openapi-spec-for-spring-api/src/main/java/io/meshcloud/openapispecforspring/common)
 for more details. The relevant interfaces all have the suffix `Customizer` and extend the `Ordered` interface.
 
 #### Examples
@@ -171,18 +171,18 @@ public OperationIdProvider operationIdProvider() {
 ### How to customize the included Swagger UI?
 
 The Swagger UI `index.html` is generated from a
-[Mustache template](openapi-generator-for-spring-ui/src/main/resources/swagger-ui/index.html.mustache)
+[Mustache template](openapi-spec-for-spring-ui/src/main/resources/swagger-ui/index.html.mustache)
 and uses the
 [Swagger UI Webjar](https://github.com/webjars/swagger-ui)
 distribution.
 
 The default implementation of
-[OpenApiSwaggerUiApiDocsUrisSupplier](openapi-generator-for-spring-ui/src/main/java/de/qaware/openapigeneratorforspring/ui/OpenApiSwaggerUiApiDocsUrisSupplier.java)
+[OpenApiSwaggerUiApiDocsUrisSupplier](openapi-spec-for-spring-ui/src/main/java/io/meshcloud/openapispecforspring/ui/OpenApiSwaggerUiApiDocsUrisSupplier.java)
 uses the given URI to the API Docs endpoint and names the entry `Default`. This name is ignored as there is only one
 entry in the Swagger UI.
 
 See this
-[integration test](openapi-generator-for-spring-test/src/test/java/de/qaware/openapigeneratorforspring/test/app10/App10Configuration.java)
+[integration test](openapi-spec-for-spring-test/src/test/java/io/meshcloud/openapispecforspring/test/app10/App10Configuration.java)
 for an example how to customize the offered API Docs within the Swagger UI.
 
 ### How to substitute a type for Schema resolution?
@@ -215,7 +215,7 @@ the error response and also scan for `@ReponseStatus` to determine the error cod
 It is also possible to throw an error when there is an exception declared but no appropriate `@ExceptionHandler` method
 is found.
 
-See [this configuration of the integration test](openapi-generator-for-spring-test/src/test/java/de/qaware/openapigeneratorforspring/test/app32/App32Configuration.java)
+See [this configuration of the integration test](openapi-spec-for-spring-test/src/test/java/io/meshcloud/openapispecforspring/test/app32/App32Configuration.java)
 for a fully worked out example.
 
 ## Why not another library?
@@ -234,36 +234,36 @@ interfaces.
 
 ## Module structure
 
-All the following module names are prefixed with `openapi-generator-for-spring-`.
+All the following module names are prefixed with `openapi-spec-for-spring-`.
 
-**[model](openapi-generator-for-spring-model)** contains Jackson-serializable POJOs to represent
+**[model](openapi-spec-for-spring-model)** contains Jackson-serializable POJOs to represent
 the [OpenApi v3 model](https://github.com/OAI/OpenAPI-Specification/blob/3.0.1/versions/3.0.1.md).
 
-**[api](openapi-generator-for-spring-api)** contains the public API to extend and adapt the functionality of this
+**[api](openapi-spec-for-spring-api)** contains the public API to extend and adapt the functionality of this
 library.
 
-**[common](openapi-generator-for-spring-common)** contains the main algorithm parsing the swagger-annotated handler
-methods. It provides default implementations for most of the interfaces in `openapi-generator-for-spring-api` module.
+**[common](openapi-spec-for-spring-common)** contains the main algorithm parsing the swagger-annotated handler
+methods. It provides default implementations for most of the interfaces in `openapi-spec-for-spring-api` module.
 
-**[autoconfigure](openapi-generator-for-spring-autoconfigure)** contains the Spring Boot auto-configuration of common
+**[autoconfigure](openapi-spec-for-spring-autoconfigure)** contains the Spring Boot auto-configuration of common
 beans.
 
-**[web](openapi-generator-for-spring-web)** shared support code for Spring WebMVC and WebFlux including shared
+**[web](openapi-spec-for-spring-web)** shared support code for Spring WebMVC and WebFlux including shared
 auto-configuration.
 
-**[webmvc](openapi-generator-for-spring-webmvc)** supports Spring WebMVC via Spring Boot auto-configuration.
+**[webmvc](openapi-spec-for-spring-webmvc)** supports Spring WebMVC via Spring Boot auto-configuration.
 
-**[webflux](openapi-generator-for-spring-webflux)** supports Spring WebFlux via Spring Boot auto-configuration.
+**[webflux](openapi-spec-for-spring-webflux)** supports Spring WebFlux via Spring Boot auto-configuration.
 
-**[ui](openapi-generator-for-spring-ui)** Provides Swagger UI below `/swagger-ui`. Offers UI Resource transformation for
+**[ui](openapi-spec-for-spring-ui)** Provides Swagger UI below `/swagger-ui`. Offers UI Resource transformation for
 WebMVC and WebFlux and sets up correct redirect routes.
 
-**[starter](openapi-generator-for-spring-starter)** Opinionated choice of dependencies. Enables Swagger UI and support
+**[starter](openapi-spec-for-spring-starter)** Opinionated choice of dependencies. Enables Swagger UI and support
 for WebMVC and WebFlux if present.
 
-**[test](openapi-generator-for-spring-test)** contains all integration tests for WebMVC and WebFlux.
+**[test](openapi-spec-for-spring-test)** contains all integration tests for WebMVC and WebFlux.
 
-**[shaded](openapi-generator-for-spring-shaded)** contains shaded dependencies to avoid interference with Spring Boot
+**[shaded](openapi-spec-for-spring-shaded)** contains shaded dependencies to avoid interference with Spring Boot
 autoconfiguration. This library does not want to trigger Mustache or WebJar exposure for users of this library. Shading
 is the only mechanism which still allows to use such code but hide it from Spring Boot.
 
@@ -281,4 +281,4 @@ Each module aims to have minimal dependencies. General library dependencies are:
 Please open an issue before posting a pull request unless you have a very obvious fix or improvement to contribute.
 
 Build and test with `./gradlew build`. The aggregated coverage report lands in
-`openapi-generator-for-spring-test/build/reports/jacoco/testCodeCoverageReport/`.
+`openapi-spec-for-spring-test/build/reports/jacoco/testCodeCoverageReport/`.

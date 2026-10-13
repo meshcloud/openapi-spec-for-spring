@@ -1,0 +1,86 @@
+/*-
+ * #%L
+ * OpenAPI Spec for Spring :: Common
+ * %%
+ * Copyright (C) 2020-2023 QAware GmbH
+ * Copyright (C) 2026 meshcloud GmbH
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+package io.meshcloud.openapispecforspring.common.paths;
+
+import io.meshcloud.openapispecforspring.common.reference.ReferencedItemConsumerSupplier;
+import io.meshcloud.openapispecforspring.common.reference.component.parameter.ReferencedParametersConsumer;
+import io.meshcloud.openapispecforspring.model.operation.Operation;
+import io.meshcloud.openapispecforspring.model.parameter.Parameter;
+import io.meshcloud.openapispecforspring.model.path.PathItem;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Shared parameters are collected from operations as part of the given path item.
+ */
+public class DefaultPathItemSharedParametersCustomizer implements PathItemCustomizer {
+    public static final int ORDER = DEFAULT_ORDER;
+
+    @Override
+    public void customize(
+            PathItem pathItem, String pathPattern, ReferencedItemConsumerSupplier referencedItemConsumerSupplier) {
+        if (pathItem.getOperations().size() < 2) {
+            return;
+        }
+        var operations = pathItem.getOperations().values();
+        var sharedParameters = findSharedParametersAmongOperations(operations);
+        if (!sharedParameters.isEmpty()) {
+            var referencedParametersConsumer = referencedItemConsumerSupplier.get(ReferencedParametersConsumer.class);
+            operations.forEach(operation -> {
+                operation.getParameters().removeAll(sharedParameters);
+                // owner update must be called even if operation parameters are empty
+                // to move ownership properly from operation to path item
+                referencedParametersConsumer
+                        .withOwner(operation)
+                        .maybeAsReference(operation.getParameters(), operation::setParameters);
+                if (operation.getParameters().isEmpty()) {
+                    // make the parameters of single operation disappear completely if empty
+                    operation.setParameters(null);
+                }
+            });
+            // eventually move ownership from operation to path item
+            referencedParametersConsumer
+                    .withOwner(pathItem)
+                    .maybeAsReference(sharedParameters, pathItem::setParameters);
+        }
+    }
+
+    private static List<Parameter> findSharedParametersAmongOperations(Collection<Operation> operations) {
+        return operations.stream()
+                .map(operation -> Optional.ofNullable(operation.getParameters())
+                        .<List<Parameter>>map(ArrayList::new) // make a modifiable copy for retainAll
+                        .orElseGet(Collections::emptyList))
+                .reduce((a, b) -> {
+                    a.retainAll(b);
+                    return a;
+                })
+                .orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public int getOrder() {
+        return ORDER;
+    }
+}

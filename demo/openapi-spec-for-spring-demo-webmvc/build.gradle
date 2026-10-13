@@ -1,0 +1,20 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.java-library')
+  id('application')
+}
+
+description = 'WebMvc Demo for OpenAPI Spec for Spring'
+
+application {
+  mainClass = 'io.meshcloud.openapispecforspring.demo.webmvc.DemoWebMvcApplication'
+}
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web') {
+    exclude(group: 'org.yaml', module: 'snakeyaml')
+  }
+  implementation(project(':openapi-spec-for-spring-starter')) {
+    // The library works without YAML.
+    exclude(group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-yaml')
+  }
+}

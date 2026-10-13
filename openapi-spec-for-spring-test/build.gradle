@@ -1,0 +1,27 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.java-library')
+  id('jacoco-report-aggregation')
+}
+
+description = 'OpenAPI Spec for Spring :: Test'
+
+dependencies {
+  // The aggregated coverage report covers the projects on this list.
+  implementation(project(':openapi-spec-for-spring-model'))
+  implementation(project(':openapi-spec-for-spring-api'))
+  implementation(project(':openapi-spec-for-spring-common'))
+  implementation(project(':openapi-spec-for-spring-autoconfigure'))
+  implementation(project(':openapi-spec-for-spring-web'))
+  implementation(project(':openapi-spec-for-spring-webmvc'))
+
+  testImplementation('org.springframework.boot:spring-boot-starter-web')
+  testImplementation('org.springframework.boot:spring-boot-starter-security')
+  testImplementation('commons-io:commons-io')
+  testImplementation('jakarta.servlet:jakarta.servlet-api')
+  testImplementation('jakarta.validation:jakarta.validation-api')
+  testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+}
+
+tasks.named('check') {
+  dependsOn(tasks.named('testCodeCoverageReport'))
+}

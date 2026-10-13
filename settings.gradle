@@ -12,17 +12,17 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = 'openapi-generator-for-spring'
+rootProject.name = 'openapi-spec-for-spring'
 
 includeBuild('platforms')
 
-include 'openapi-generator-for-spring-model'
-include 'openapi-generator-for-spring-api'
-include 'openapi-generator-for-spring-common'
-include 'openapi-generator-for-spring-autoconfigure'
-include 'openapi-generator-for-spring-web'
-include 'openapi-generator-for-spring-webmvc'
-include 'openapi-generator-for-spring-starter'
-include 'openapi-generator-for-spring-test'
+include 'openapi-spec-for-spring-model'
+include 'openapi-spec-for-spring-api'
+include 'openapi-spec-for-spring-common'
+include 'openapi-spec-for-spring-autoconfigure'
+include 'openapi-spec-for-spring-web'
+include 'openapi-spec-for-spring-webmvc'
+include 'openapi-spec-for-spring-starter'
+include 'openapi-spec-for-spring-test'
 
-include 'demo:openapi-generator-for-spring-demo-webmvc'
+include 'demo:openapi-spec-for-spring-demo-webmvc'

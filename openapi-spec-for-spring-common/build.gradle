@@ -1,0 +1,20 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Spec for Spring :: Common'
+
+dependencies {
+  api(project(':openapi-spec-for-spring-api'))
+  api('org.springframework.boot:spring-boot-autoconfigure')
+  api('org.apache.commons:commons-lang3')
+  api('org.slf4j:slf4j-api')
+  api('com.fasterxml.jackson.module:jackson-module-parameter-names')
+  api('com.fasterxml.jackson.datatype:jackson-datatype-jdk8')
+  api('com.fasterxml.jackson.datatype:jackson-datatype-jsr310')
+
+  compileOnly('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+  compileOnly('jakarta.validation:jakarta.validation-api')
+  testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+  testImplementation('jakarta.validation:jakarta.validation-api')
+}

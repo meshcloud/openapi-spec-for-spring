@@ -1,0 +1,9 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Spec for Spring :: Model'
+
+dependencies {
+  api('com.fasterxml.jackson.core:jackson-annotations')
+}

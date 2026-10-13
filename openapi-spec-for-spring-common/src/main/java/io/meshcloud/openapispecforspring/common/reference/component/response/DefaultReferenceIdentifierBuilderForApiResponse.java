@@ -1,0 +1,53 @@
+/*-
+ * #%L
+ * OpenAPI Spec for Spring :: Common
+ * %%
+ * Copyright (C) 2020-2023 QAware GmbH
+ * Copyright (C) 2026 meshcloud GmbH
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+package io.meshcloud.openapispecforspring.common.reference.component.response;
+
+import io.meshcloud.openapispecforspring.model.response.ApiResponse;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
+
+public class DefaultReferenceIdentifierBuilderForApiResponse implements ReferenceIdentifierBuilderForApiResponse {
+
+    @Override
+    @Nullable
+    public String buildIdentifier(ApiResponse item, @Nullable String suggestedIdentifier, int numberOfSetters) {
+        throw new IllegalStateException("Not implemented");
+    }
+
+    @Override
+    public void buildIdentifiers(ApiResponse item, List<IdentifierSetter> identifierSetters) {
+        String mergedIdentifier = identifierSetters.stream()
+                .map(IdentifierSetter::getSuggestedValue)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted()
+                .distinct()
+                .collect(Collectors.joining("_"));
+        if (StringUtils.isBlank(mergedIdentifier)) {
+            throw new IllegalStateException("Merged identifier is blank for " + item);
+        }
+        identifierSetters.forEach(identifierSetter -> identifierSetter.setValue(mergedIdentifier));
+    }
+}
