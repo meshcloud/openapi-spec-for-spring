@@ -23,8 +23,9 @@ class App21Test extends AbstractOpenApiSpecWebIntTest {
 
     @Test
     void testWithCustomApiDocsPath() throws Exception {
-        assertMatchesOpenApiJson("app21.json", () -> getResponseBody(PATH_TO_API_DOCS)
-                .replace(buildHost(), "http://localhost/my-context-path"));
+        assertMatchesOpenApiJson(
+                "app21.json",
+                () -> getResponseBody(PATH_TO_API_DOCS).replace(buildHost(), "http://localhost/my-context-path"));
     }
 
     @Test

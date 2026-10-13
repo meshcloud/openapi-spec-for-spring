@@ -62,9 +62,11 @@ public class DefaultOperationTagsCustomizer implements OperationCustomizer {
                 .findAnnotations(io.swagger.v3.oas.annotations.tags.Tag.class)
                 .map(tagAnnotationMapper::map)
                 .toList();
-        setCollectionIfNotEmpty(tags, nonEmptyTags -> operationBuilderContext
-                .getReferencedItemConsumer(ReferencedTagsConsumer.class)
-                .accept(nonEmptyTags));
+        setCollectionIfNotEmpty(
+                tags,
+                nonEmptyTags -> operationBuilderContext
+                        .getReferencedItemConsumer(ReferencedTagsConsumer.class)
+                        .accept(nonEmptyTags));
         return tags.stream().map(Tag::getName);
     }
 

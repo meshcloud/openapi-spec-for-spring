@@ -52,9 +52,10 @@ public class MergedSpringWebHandlerMethod extends AbstractSpringWebHandlerMethod
 
             @Override
             public <R> Stream<R> map(BiFunction<? super A, Context, ? extends R> mapper) {
-                return handlerMethods.stream().flatMap(handlerMethod -> handlerMethod
-                        .findAnnotations(annotationType)
-                        .map(annotation -> mapper.apply(annotation, handlerMethod)));
+                return handlerMethods.stream()
+                        .flatMap(handlerMethod -> handlerMethod
+                                .findAnnotations(annotationType)
+                                .map(annotation -> mapper.apply(annotation, handlerMethod)));
             }
 
             @Override

@@ -52,16 +52,21 @@ public class DefaultApiResponseAnnotationMapper implements ApiResponseAnnotation
             io.swagger.v3.oas.annotations.responses.ApiResponse annotation,
             MapperContext mapperContext) {
         setStringIfNotBlank(annotation.description(), apiResponse::setDescription);
-        setMapIfNotEmpty(headerAnnotationMapper.mapArray(annotation.headers(), mapperContext), headers -> mapperContext
-                .getReferencedItemConsumer(ReferencedHeadersConsumer.class)
-                .maybeAsReference(
-                        headers,
-                        headersMap ->
-                                mergeWithExistingMap(apiResponse::getHeaders, apiResponse::setHeaders, headersMap)));
-        setMapIfNotEmpty(linkAnnotationMapper.mapArray(annotation.links()), links -> mapperContext
-                .getReferencedItemConsumer(ReferencedLinksConsumer.class)
-                .maybeAsReference(
-                        links, linksMap -> mergeWithExistingMap(apiResponse::getLinks, apiResponse::setLinks, links)));
+        setMapIfNotEmpty(
+                headerAnnotationMapper.mapArray(annotation.headers(), mapperContext),
+                headers -> mapperContext
+                        .getReferencedItemConsumer(ReferencedHeadersConsumer.class)
+                        .maybeAsReference(
+                                headers,
+                                headersMap -> mergeWithExistingMap(
+                                        apiResponse::getHeaders, apiResponse::setHeaders, headersMap)));
+        setMapIfNotEmpty(
+                linkAnnotationMapper.mapArray(annotation.links()),
+                links -> mapperContext
+                        .getReferencedItemConsumer(ReferencedLinksConsumer.class)
+                        .maybeAsReference(
+                                links,
+                                linksMap -> mergeWithExistingMap(apiResponse::getLinks, apiResponse::setLinks, links)));
         mergeWithExistingMap(
                 apiResponse::getContent,
                 apiResponse::setContent,

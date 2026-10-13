@@ -45,7 +45,7 @@ pluginManager.withPlugin('java') {
   spotless {
     java {
       target('src/*/java/**/*.java')
-      palantirJavaFormat()
+      palantirJavaFormat('2.100.0')
     }
   }
 }

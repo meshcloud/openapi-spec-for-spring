@@ -61,7 +61,8 @@ public class DefaultEncodingAnnotationMapper implements EncodingAnnotationMapper
         }
 
         setMapIfNotEmpty(
-                headerAnnotationMapper.mapArray(encodingAnnotation.headers(), mapperContext), headers -> mapperContext
+                headerAnnotationMapper.mapArray(encodingAnnotation.headers(), mapperContext),
+                headers -> mapperContext
                         .getReferencedItemConsumer(ReferencedHeadersConsumer.class)
                         .maybeAsReference(headers, encoding::setHeaders));
         setMapIfNotEmpty(extensionAnnotationMapper.mapArray(encodingAnnotation.extensions()), encoding::setExtensions);

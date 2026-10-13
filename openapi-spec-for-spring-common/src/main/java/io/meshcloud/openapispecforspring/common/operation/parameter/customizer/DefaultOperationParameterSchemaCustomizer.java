@@ -35,20 +35,21 @@ public class DefaultOperationParameterSchemaCustomizer implements OperationParam
 
     @Override
     public void customize(Parameter parameter, OperationParameterCustomizerContext context) {
-        context.getHandlerMethodParameter().ifPresent(handlerMethodParameter -> handlerMethodParameter
-                .getType()
-                .ifPresent(parameterType -> {
-                    ReferencedSchemaConsumer referencedSchemaConsumer =
-                            context.getReferencedItemConsumer(ReferencedSchemaConsumer.class);
-                    AnnotationsSupplier annotationsSupplier = handlerMethodParameter
-                            .getAnnotationsSupplier()
-                            .andThen(parameterType.getAnnotationsSupplier());
-                    schemaResolver.resolveFromType(
-                            PARAMETER,
-                            parameterType.getType(),
-                            annotationsSupplier,
-                            referencedSchemaConsumer,
-                            parameter::setSchema);
-                }));
+        context.getHandlerMethodParameter()
+                .ifPresent(handlerMethodParameter -> handlerMethodParameter
+                        .getType()
+                        .ifPresent(parameterType -> {
+                            ReferencedSchemaConsumer referencedSchemaConsumer =
+                                    context.getReferencedItemConsumer(ReferencedSchemaConsumer.class);
+                            AnnotationsSupplier annotationsSupplier = handlerMethodParameter
+                                    .getAnnotationsSupplier()
+                                    .andThen(parameterType.getAnnotationsSupplier());
+                            schemaResolver.resolveFromType(
+                                    PARAMETER,
+                                    parameterType.getType(),
+                                    annotationsSupplier,
+                                    referencedSchemaConsumer,
+                                    parameter::setSchema);
+                        }));
     }
 }
