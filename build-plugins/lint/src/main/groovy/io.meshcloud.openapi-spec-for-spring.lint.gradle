@@ -3,6 +3,8 @@ plugins {
 }
 
 spotless {
+  // The default reads .gitattributes and walks the project directory, while parallel tasks write into it.
+  lineEndings = com.diffplug.spotless.LineEnding.UNIX
   groovyGradle {
     target('*.gradle')
     greclipse().configProperties('''\
