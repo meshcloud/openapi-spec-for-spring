@@ -50,6 +50,9 @@
         ]
       },
       "App67Controller.Cat": {
+        "required": [
+          "kind"
+        ],
         "type": "object",
         "properties": {
           "kind": {
@@ -61,6 +64,9 @@
         }
       },
       "App67Controller.Dog": {
+        "required": [
+          "kind"
+        ],
         "type": "object",
         "properties": {
           "kind": {

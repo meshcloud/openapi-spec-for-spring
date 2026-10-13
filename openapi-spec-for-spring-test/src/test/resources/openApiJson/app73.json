@@ -33,6 +33,9 @@
         ]
       },
       "App73Controller.Car": {
+        "required": [
+          "kind"
+        ],
         "type": "object",
         "properties": {
           "kind": {
@@ -45,6 +48,9 @@
         }
       },
       "App73Controller.Bike": {
+        "required": [
+          "kind"
+        ],
         "type": "object",
         "properties": {
           "kind": {

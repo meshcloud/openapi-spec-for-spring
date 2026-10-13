@@ -33,6 +33,9 @@
         ]
       },
       "App54Controller.Dog": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
@@ -41,6 +44,9 @@
         }
       },
       "App54Controller.Cat": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {

@@ -240,6 +240,7 @@ public class TypeResolverForJacksonPolymorphism
         if (schemaPropertyCallback == null) {
             return;
         }
+        schema.addRequired(propertyName.get());
         schemaPropertyCallback.customize((propertySchema, propertyJavaType, propertyAnnotationsSupplier) -> {
             propertySchema.setName(propertySchemaName.get());
             propertySchema.setEnumValues(propertyEnumValues.get());

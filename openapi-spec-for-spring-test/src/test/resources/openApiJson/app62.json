@@ -32,6 +32,9 @@
         ]
       },
       "App62Controller.Circle": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "radius": {
