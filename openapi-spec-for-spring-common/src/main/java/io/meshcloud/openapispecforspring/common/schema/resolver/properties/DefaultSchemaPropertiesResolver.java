@@ -23,8 +23,10 @@ package io.meshcloud.openapispecforspring.common.schema.resolver.properties;
 
 import static io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier.Purpose.SCHEMA_BUILDING;
 
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
@@ -38,11 +40,14 @@ import io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -117,13 +122,44 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
         BeanDescription beanDescriptionForType = introspectJavaType(objectMapper, caller.getMode(), javaType);
         MapperConfig<?> mapperConfig = getMapperConfig(objectMapper, caller.getMode());
         return OpenApiMapUtils.buildStringMapFromStream(
-                beanDescriptionForType.findProperties().stream()
+                inStableOrder(beanDescriptionForType, mapperConfig).stream()
                         .filter(property -> isAcceptedByAllPropertyFilters(
                                 caller, property, beanDescriptionForType, annotationsSupplier, mapperConfig))
                         .map(property -> buildSchemaPropertyPair(property, caller.getMode()))
                         .filter(Objects::nonNull),
                 Pair::getKey,
                 Pair::getValue);
+    }
+
+    // The JVM returns a class's methods in no fixed order, so Jackson's order of properties that have neither a field
+    // nor a constructor parameter changes between runs.
+    private static List<BeanPropertyDefinition> inStableOrder(
+            BeanDescription beanDescription, MapperConfig<?> mapperConfig) {
+        List<BeanPropertyDefinition> properties = new ArrayList<>(beanDescription.findProperties());
+        if (hasExplicitPropertyOrder(beanDescription, mapperConfig)) {
+            return properties;
+        }
+        List<Integer> methodOnlySlots = IntStream.range(0, properties.size())
+                .filter(i -> !properties.get(i).hasField() && !properties.get(i).hasConstructorParameter())
+                .boxed()
+                .toList();
+        List<BeanPropertyDefinition> methodOnlyByName = methodOnlySlots.stream()
+                .map(properties::get)
+                .sorted(Comparator.comparing(BeanPropertyDefinition::getName))
+                .toList();
+        for (int i = 0; i < methodOnlySlots.size(); i++) {
+            properties.set(methodOnlySlots.get(i), methodOnlyByName.get(i));
+        }
+        return properties;
+    }
+
+    private static boolean hasExplicitPropertyOrder(BeanDescription beanDescription, MapperConfig<?> mapperConfig) {
+        AnnotationIntrospector annotationIntrospector = mapperConfig.getAnnotationIntrospector();
+        String[] declaredOrder = annotationIntrospector.findSerializationPropertyOrder(beanDescription.getClassInfo());
+        return (declaredOrder != null && declaredOrder.length > 0)
+                || Boolean.TRUE.equals(
+                        annotationIntrospector.findSerializationSortAlphabetically(beanDescription.getClassInfo()))
+                || mapperConfig.isEnabled(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY);
     }
 
     @Nullable
