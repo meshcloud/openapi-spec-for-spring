@@ -35,7 +35,7 @@ public class OperationBuilderContextImpl implements OperationBuilderContext {
     @Getter
     private final OperationInfo operationInfo;
 
-    private final Function<HandlerMethod.Context, MapperContext> mapperContextSupplier;
+    private final Function<HandlerMethod.@Nullable Context, MapperContext> mapperContextSupplier;
     private final ReferencedItemConsumerSupplier referencedItemConsumerSupplier;
 
     @Override

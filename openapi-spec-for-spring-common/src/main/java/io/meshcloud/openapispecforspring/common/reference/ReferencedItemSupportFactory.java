@@ -113,7 +113,11 @@ public class ReferencedItemSupportFactory {
         }
 
         private Stream<ReferenceType> buildTransitiveDependencies(ReferenceType referenceType) {
-            List<ReferenceType> dependencies = handlersMap.get(referenceType).getDirectDependencies();
+            HandlerWithDependencies handler = handlersMap.get(referenceType);
+            if (handler == null) {
+                throw new IllegalStateException("No handler found for reference type " + referenceType);
+            }
+            List<ReferenceType> dependencies = handler.getDirectDependencies();
             return Stream.of(
                             dependencies.stream(), // direct dependencies
                             dependencies.stream() // together with recursively defined transitive ones
@@ -126,11 +130,11 @@ public class ReferencedItemSupportFactory {
                 Map<ReferenceType, Set<ReferenceType>> transitiveDependencies) {
             return (o1, o2) -> {
                 // o1 depends on o2
-                if (transitiveDependencies.get(o1.getType()).contains(o2.getType())) {
+                if (transitiveDependencies.getOrDefault(o1.getType(), Set.of()).contains(o2.getType())) {
                     return 1;
                 }
                 // o2 depends on o1
-                if (transitiveDependencies.get(o2.getType()).contains(o1.getType())) {
+                if (transitiveDependencies.getOrDefault(o2.getType(), Set.of()).contains(o1.getType())) {
                     return -1;
                 }
                 return Comparator.<ReferenceType>naturalOrder().compare(o1.getType(), o2.getType());

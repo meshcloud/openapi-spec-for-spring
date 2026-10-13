@@ -226,11 +226,12 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         return IntStream.range(0, identifierSetters.size()).boxed().flatMap(i -> {
             ReferenceSetter<T> referenceSetter = referenceSetters.get(i).getReferenceSetter();
             String identifier = identifierSetters.get(i).getValue();
-            if (StringUtils.isBlank(identifier) && referenceSetter.isReferenceRequired()) {
+            if (identifier != null && StringUtils.isNotBlank(identifier)) {
+                return Stream.of(Pair.of(identifier, Pair.of(entry.getItem(), referenceSetter)));
+            }
+            if (referenceSetter.isReferenceRequired()) {
                 throw new IllegalStateException("Cannot skip referencing " + entry.getItem()
                         + " with null identifier as reference is required");
-            } else if (StringUtils.isNotBlank(identifier)) {
-                return Stream.of(Pair.of(identifier, Pair.of(entry.getItem(), referenceSetter)));
             }
             return Stream.empty();
         });
@@ -252,7 +253,7 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         private final boolean referenceRequired;
 
         @Setter
-        private String value = null;
+        private @Nullable String value;
     }
 
     @RequiredArgsConstructor

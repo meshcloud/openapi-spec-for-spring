@@ -35,7 +35,6 @@ import io.swagger.v3.oas.annotations.enums.Explode;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class DefaultParameterAnnotationMapper implements ParameterAnnotationMapper {
@@ -45,7 +44,6 @@ public class DefaultParameterAnnotationMapper implements ParameterAnnotationMapp
     private final ExampleObjectAnnotationMapper exampleObjectAnnotationMapper;
     private final ExtensionAnnotationMapper extensionAnnotationMapper;
 
-    @Nullable
     @Override
     public Parameter buildFromAnnotation(
             io.swagger.v3.oas.annotations.Parameter parameterAnnotation, MapperContext mapperContext) {

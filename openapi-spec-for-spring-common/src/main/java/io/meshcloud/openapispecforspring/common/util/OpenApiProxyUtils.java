@@ -89,7 +89,7 @@ public class OpenApiProxyUtils {
     }
 
     private static <T, M> T proxy(
-            T delegate, Function<Method, M> methodMapper, InvocationHandler<M> invocationHandler) {
+            T delegate, Function<Method, @Nullable M> methodMapper, InvocationHandler<M> invocationHandler) {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(delegate.getClass());
         enhancer.setCallback((MethodInterceptor) (obj, method, args, methodProxy) -> {
@@ -115,7 +115,8 @@ public class OpenApiProxyUtils {
     @FunctionalInterface
     private interface InvocationHandler<M> {
         @Nullable
-        Object handle(M mappedMethod, Object firstArg) throws InvocationTargetException, IllegalAccessException;
+        Object handle(M mappedMethod, @Nullable Object firstArg)
+                throws InvocationTargetException, IllegalAccessException;
     }
 
     private static Map<String, Method> buildGettersBySetterName(Class<?> clazz, Set<String> setterNames) {

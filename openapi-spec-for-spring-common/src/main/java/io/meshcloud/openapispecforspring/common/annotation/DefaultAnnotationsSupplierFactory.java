@@ -74,8 +74,9 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
                     // if, for example, annotationType is @ApiResponse.class,
                     // then the repeatableAnnotationContainer is of type @ApiResponses.class here,
                     // so the @Repeatable annotation tells us the type of repeatableAnnotationContainer
-                    .flatMap(repeatableAnnotationContainer -> Stream.of(
-                                    repeatableAnnotationContainer.getClass().getMethods())
+                    .flatMap(repeatableAnnotationContainer -> Stream.of(repeatableAnnotationContainer
+                                    .annotationType()
+                                    .getMethods())
                             // find "value" method getter(s) and invoke them on the repeatableAnnotationContainer
                             // to obtain the contained annotations
                             .filter(method -> MergedAnnotation.VALUE.equals(method.getName()))

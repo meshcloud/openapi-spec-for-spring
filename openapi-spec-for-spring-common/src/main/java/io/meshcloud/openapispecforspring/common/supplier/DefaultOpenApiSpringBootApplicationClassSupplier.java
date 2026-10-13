@@ -41,7 +41,7 @@ public class DefaultOpenApiSpringBootApplicationClassSupplier
     @Override
     public Optional<Class<?>> findSpringBootApplicationClass() {
         return Optional.ofNullable(applicationContext)
-                .map(context -> applicationContext.getBeansWithAnnotation(SpringBootApplication.class))
+                .map(context -> context.getBeansWithAnnotation(SpringBootApplication.class))
                 .map(Map::values)
                 .map(Collection::stream)
                 .orElseGet(Stream::empty)

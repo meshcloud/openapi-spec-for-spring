@@ -26,7 +26,6 @@ import static io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMap
 import static io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils.buildStringMapFromStream;
 import static io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils.setMapIfNotEmpty;
 import static io.meshcloud.openapispecforspring.common.util.OpenApiProxyUtils.createAnnotationProxyWithValueFactory;
-import static io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils.zip;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -55,15 +54,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
@@ -152,19 +148,20 @@ public class TypeResolverForJacksonPolymorphism
                     List<Schema> oneOfSchemas = new java.util.ArrayList<>(jsonSubTypes.keySet().stream()
                             .map(ignored -> new Schema())
                             .toList());
-                    Map<String, Integer> oneOfSchemasIndexMap = zip(
-                                    jsonSubTypes.keySet().stream(),
-                                    IntStream.range(0, jsonSubTypes.size()).boxed())
-                            .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
-
-                    jsonSubTypes.forEach((typeName, type) -> schemaBuilderFromType.buildSchemaReferenceFromType(
-                            objectMapper.constructType(type),
-                            createAnnotationsSupplier(
-                                    type, propertyName, jsonSubTypes.keySet(), propertySchemaName, includeAs),
-                            schemaReference -> {
-                                schemaReferenceMapping.put(typeName, schemaReference.getRef());
-                                oneOfSchemas.set(oneOfSchemasIndexMap.get(typeName), schemaReference);
-                            }));
+                    int oneOfSchemaIndex = 0;
+                    for (Map.Entry<String, Class<?>> jsonSubType : jsonSubTypes.entrySet()) {
+                        String typeName = jsonSubType.getKey();
+                        Class<?> type = jsonSubType.getValue();
+                        int schemaIndex = oneOfSchemaIndex++;
+                        schemaBuilderFromType.buildSchemaReferenceFromType(
+                                objectMapper.constructType(type),
+                                createAnnotationsSupplier(
+                                        type, propertyName, jsonSubTypes.keySet(), propertySchemaName, includeAs),
+                                schemaReference -> {
+                                    schemaReferenceMapping.put(typeName, schemaReference.getRef());
+                                    oneOfSchemas.set(schemaIndex, schemaReference);
+                                });
+                    }
 
                     schema.setOneOf(oneOfSchemas);
                     schema.setDiscriminator(Discriminator.builder()
@@ -228,6 +225,9 @@ public class TypeResolverForJacksonPolymorphism
             return;
         }
         SchemaPropertyCallback schemaPropertyCallback = properties.get(propertyName.get());
+        if (schemaPropertyCallback == null) {
+            return;
+        }
         schemaPropertyCallback.customize((propertySchema, propertyJavaType, propertyAnnotationsSupplier) -> {
             propertySchema.setName(propertySchemaName.get());
             propertySchema.setEnumValues(propertyEnumValues.get());

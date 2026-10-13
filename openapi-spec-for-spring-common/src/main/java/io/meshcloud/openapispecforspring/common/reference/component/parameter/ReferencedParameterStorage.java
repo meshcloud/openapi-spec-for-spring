@@ -36,6 +36,7 @@ import io.meshcloud.openapispecforspring.model.path.PathItem;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
+import org.jspecify.annotations.Nullable;
 
 public class ReferencedParameterStorage extends AbstractReferencedItemStorage<Parameter> {
 
@@ -52,10 +53,10 @@ public class ReferencedParameterStorage extends AbstractReferencedItemStorage<Pa
                 Arrays.asList(SCHEMA, EXAMPLE, HEADER));
     }
 
-    void maybeReferenceParameters(List<Parameter> parameters, Object owner) {
+    void maybeReferenceParameters(List<Parameter> parameters, @Nullable Object possibleOwner) {
         // we use the fact that we can modify each parameter via index if it's supposed to be changed to a reference
         // we still need to remove previously set parameters to the same owner then
-        checkOwner(owner);
+        Object owner = checkOwner(possibleOwner);
         removeEntriesOwnedBy(owner);
         // using an IntStream here makes i effectively final and thus can be captured in nested lambda
         IntStream.range(0, parameters.size())
@@ -68,12 +69,9 @@ public class ReferencedParameterStorage extends AbstractReferencedItemStorage<Pa
                                 .build()));
     }
 
-    private void checkOwner(Object owner) {
-        if (owner instanceof Operation) {
-            return;
-        }
-        if (owner instanceof PathItem) {
-            return;
+    private static Object checkOwner(@Nullable Object owner) {
+        if (owner instanceof Operation || owner instanceof PathItem) {
+            return owner;
         }
         throw new IllegalStateException("Owner of parameter list is invalid: " + owner);
     }

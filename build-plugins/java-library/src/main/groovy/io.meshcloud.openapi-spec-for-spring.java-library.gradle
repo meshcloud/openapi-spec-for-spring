@@ -2,6 +2,7 @@ plugins {
   id('java-library')
   id('jacoco')
   id('io.meshcloud.openapi-spec-for-spring.lint')
+  id('net.ltgt.errorprone')
 }
 
 java {
@@ -15,6 +16,15 @@ tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'
   // Spring and Jackson read parameter names from the bytecode.
   options.compilerArgs.add('-parameters')
+  options.errorprone {
+    error('NullAway')
+    option('NullAway:OnlyNullMarked', 'true')
+    option('NullAway:JSpecifyMode', 'true')
+  }
+}
+
+tasks.named('compileTestJava', JavaCompile) {
+  options.errorprone.disable('NullAway')
 }
 
 // The platform only goes into resolvable configurations, so the published metadata does not import the unpublished
@@ -36,6 +46,9 @@ dependencies {
   testAnnotationProcessor('org.projectlombok:lombok')
 
   annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+
+  errorprone('com.google.errorprone:error_prone_core')
+  errorprone('com.uber.nullaway:nullaway')
 
   api('org.jspecify:jspecify')
 

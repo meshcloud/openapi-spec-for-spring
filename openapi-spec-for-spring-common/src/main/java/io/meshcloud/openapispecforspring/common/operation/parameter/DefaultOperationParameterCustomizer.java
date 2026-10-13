@@ -40,10 +40,10 @@ import io.meshcloud.openapispecforspring.model.operation.Operation;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -120,9 +120,8 @@ public class DefaultOperationParameterCustomizer implements OperationCustomizer 
     }
 
     private static List<Parameter> preferRequiredParameters(List<Parameter> parameters) {
-        Map<Boolean, List<Parameter>> partitionedParameters =
-                parameters.stream().collect(Collectors.partitioningBy(p -> Boolean.TRUE.equals(p.getRequired())));
-        return Stream.concat(partitionedParameters.get(true).stream(), partitionedParameters.get(false).stream())
+        return parameters.stream()
+                .sorted(Comparator.comparing(parameter -> !Boolean.TRUE.equals(parameter.getRequired())))
                 .toList();
     }
 
@@ -150,7 +149,7 @@ public class DefaultOperationParameterCustomizer implements OperationCustomizer 
 
         @Override
         public ParameterAnnotation setValue(ParameterAnnotation value) {
-            return null;
+            throw new UnsupportedOperationException();
         }
     }
 

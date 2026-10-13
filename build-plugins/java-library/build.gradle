@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
+  implementation(platform('io.meshcloud.openapi-spec-for-spring.platform:plugins-platform'))
   implementation(project(':lint'))
+  implementation('net.ltgt.gradle:gradle-errorprone-plugin')
 }

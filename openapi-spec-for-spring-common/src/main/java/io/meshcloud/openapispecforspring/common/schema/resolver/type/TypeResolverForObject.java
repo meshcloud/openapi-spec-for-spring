@@ -42,6 +42,7 @@ import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -87,7 +88,7 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
                     buildPropertyCustomizers(schema, initialType, properties.keySet());
 
             properties.forEach((propertyName, property) -> {
-                PropertyCustomizer propertyCustomizer = propertyCustomizers.get(propertyName);
+                PropertyCustomizer propertyCustomizer = Objects.requireNonNull(propertyCustomizers.get(propertyName));
                 schemaBuilderFromType.buildSchemaFromType(
                         property.getType(),
                         property.getAnnotationsSupplier(),

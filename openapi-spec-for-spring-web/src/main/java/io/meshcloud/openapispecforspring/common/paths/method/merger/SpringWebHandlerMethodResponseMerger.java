@@ -61,7 +61,7 @@ public class SpringWebHandlerMethodResponseMerger {
                                 responseCode, producesContentTypes, mergeReturnTypes(methods)) {
                             @Override
                             public boolean shouldClearContent(Content content) {
-                                return groupedHandlerMethods.get(responseCode).size() == 1;
+                                return typesGroupedByProduces.size() == 1;
                             }
                         })));
         return mergedResponses;

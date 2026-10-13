@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -36,8 +35,14 @@ import org.jspecify.annotations.Nullable;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenApiCollectionUtils {
 
-    public static <T, U> Optional<U> firstNonNull(List<T> items, Function<T, U> mapper) {
-        return items.stream().map(mapper).filter(Objects::nonNull).findFirst();
+    public static <T, U> Optional<U> firstNonNull(List<T> items, Function<T, @Nullable U> mapper) {
+        for (T item : items) {
+            U mapped = mapper.apply(item);
+            if (mapped != null) {
+                return Optional.of(mapped);
+            }
+        }
+        return Optional.empty();
     }
 
     public static <C extends Collection<T>, T> void setCollectionIfNotEmpty(C collection, Consumer<? super C> setter) {
