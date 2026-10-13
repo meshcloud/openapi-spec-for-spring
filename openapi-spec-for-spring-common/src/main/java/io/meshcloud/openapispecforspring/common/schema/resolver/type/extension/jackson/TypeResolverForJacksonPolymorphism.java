@@ -30,6 +30,7 @@ import static io.meshcloud.openapispecforspring.common.util.OpenApiProxyUtils.cr
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
@@ -181,8 +182,10 @@ public class TypeResolverForJacksonPolymorphism
                 .filter(a -> a.value() == JsonTypeInfo.As.PROPERTY)
                 .flatMap(ignored -> annotationsSupplier.findAnnotations(PropertyNameAnnotation.class))
                 .findFirst()
-                .map(propertyNameAnnotation -> Collections.<String, SchemaProperty>singletonMap(
-                        propertyNameAnnotation.value(), new SchemaProperty() {
+                .map(PropertyNameAnnotation::value)
+                .filter(propertyName -> !hasJacksonProperty(caller.getMode(), javaType, propertyName))
+                .map(propertyName ->
+                        Collections.<String, SchemaProperty>singletonMap(propertyName, new SchemaProperty() {
                             @Override
                             public JavaType getType() {
                                 return objectMapperSupplier.get(SCHEMA_BUILDING).constructType(String.class);
@@ -194,6 +197,15 @@ public class TypeResolverForJacksonPolymorphism
                             }
                         }))
                 .orElseGet(Collections::emptyMap);
+    }
+
+    private boolean hasJacksonProperty(SchemaResolver.Mode mode, JavaType javaType, String propertyName) {
+        ObjectMapper objectMapper = objectMapperSupplier.get(SCHEMA_BUILDING);
+        BeanDescription beanDescription = mode == SchemaResolver.Mode.FOR_DESERIALIZATION
+                ? objectMapper.getDeserializationConfig().introspect(javaType)
+                : objectMapper.getSerializationConfig().introspect(javaType);
+        return beanDescription.findProperties().stream()
+                .anyMatch(property -> property.getName().equals(propertyName));
     }
 
     @Override

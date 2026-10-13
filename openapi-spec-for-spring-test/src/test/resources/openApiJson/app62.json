@@ -1,0 +1,61 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App62",
+    "version": "unknown"
+  },
+  "paths": {
+    "/shapes/default": {
+      "get": {
+        "operationId": "shape",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App62Controller.Shape"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App62Controller.ShapeType": {
+        "type": "string",
+        "enum": [
+          "circle"
+        ]
+      },
+      "App62Controller.Circle": {
+        "type": "object",
+        "properties": {
+          "radius": {
+            "type": "number",
+            "format": "double"
+          },
+          "type": {
+            "$ref": "#/components/schemas/App62Controller.ShapeType"
+          }
+        }
+      },
+      "App62Controller.Shape": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App62Controller.Circle"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App62Controller.Circle"
+          }
+        ]
+      }
+    }
+  }
+}
