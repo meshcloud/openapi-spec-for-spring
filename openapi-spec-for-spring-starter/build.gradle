@@ -6,6 +6,4 @@ description = 'OpenAPI Spec for Spring :: Starter'
 
 dependencies {
   api(project(':openapi-spec-for-spring-webmvc'))
-  // Library users can exclude YAML support.
-  api('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
 }

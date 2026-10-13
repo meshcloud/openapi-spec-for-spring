@@ -33,6 +33,7 @@ import io.meshcloud.openapispecforspring.model.OpenApi;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,10 +64,12 @@ public class OpenApiResource {
                 requestMappingInfoBuilder.build(properties.getApiDocsPath(), APPLICATION_JSON_VALUE),
                 handler,
                 findMethod(handler.getClass(), "getOpenApiAsJson"));
-        requestMappingRegistrar.register(
-                requestMappingInfoBuilder.build(properties.getApiDocsPath(), YAML_MEDIA_TYPES),
-                handler,
-                findMethod(handler.getClass(), "getOpenApiAsYaml"));
+        if (openApiYamlMapper != null) {
+            requestMappingRegistrar.register(
+                    requestMappingInfoBuilder.build(properties.getApiDocsPath(), YAML_MEDIA_TYPES),
+                    handler,
+                    findMethod(handler.getClass(), "getOpenApiAsYaml"));
+        }
     }
 
     private static Method findMethod(Class<?> clazz, String methodName) {
@@ -85,15 +88,10 @@ public class OpenApiResource {
         return objectMapperSupplier.get(OPEN_API_JSON).writeValueAsString(openApi);
     }
 
-    public String getOpenApiAsYaml() throws OpenApiYamlNotSupportedException, JsonProcessingException {
-        if (openApiYamlMapper == null) {
-            throw new OpenApiYamlNotSupportedException();
-        }
+    public String getOpenApiAsYaml() throws JsonProcessingException {
         OpenApi openApi = openApiSpecBuilder.buildOpenApi();
-        return openApiYamlMapper.map(openApi);
+        return Objects.requireNonNull(openApiYamlMapper).map(openApi);
     }
-
-    public static class OpenApiYamlNotSupportedException extends Exception {}
 
     public interface RequestMappingInfoBuilder<T> {
         T build(String path, String... produces);

@@ -20,9 +20,35 @@ dependencies {
   testImplementation('com.google.code.findbugs:jsr305')
   testImplementation('jakarta.servlet:jakarta.servlet-api')
   testImplementation('jakarta.validation:jakarta.validation-api')
-  testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+}
+
+// YAML on the classpath changes what Spring MVC serves, so the YAML tests run with their own classpath.
+testing {
+  suites {
+    yamlTest(JvmTestSuite) {
+      dependencies {
+        implementation(sourceSets.test.output)
+        implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+      }
+    }
+  }
+}
+
+configurations {
+  yamlTestImplementation.extendsFrom(testImplementation)
+  yamlTestRuntimeOnly.extendsFrom(testRuntimeOnly)
+  yamlTestCompileOnly.extendsFrom(testCompileOnly)
+  yamlTestAnnotationProcessor.extendsFrom(testAnnotationProcessor)
+}
+
+reporting {
+  reports {
+    yamlTestCodeCoverageReport(JacocoCoverageReport) {
+      testSuiteName = 'yamlTest'
+    }
+  }
 }
 
 tasks.named('check') {
-  dependsOn(tasks.named('testCodeCoverageReport'))
+  dependsOn(tasks.named('yamlTest'), tasks.named('testCodeCoverageReport'), tasks.named('yamlTestCodeCoverageReport'))
 }

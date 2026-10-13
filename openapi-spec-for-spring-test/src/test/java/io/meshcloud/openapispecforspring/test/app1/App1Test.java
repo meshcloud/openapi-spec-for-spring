@@ -1,5 +1,14 @@
 package io.meshcloud.openapispecforspring.test.app1;
 
-import io.meshcloud.openapispecforspring.test.AbstractOpenApiSpecWebMvcIntTest;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class App1Test extends AbstractOpenApiSpecWebMvcIntTest {}
+import io.meshcloud.openapispecforspring.test.AbstractOpenApiSpecWebMvcIntTest;
+import org.junit.jupiter.api.Test;
+
+class App1Test extends AbstractOpenApiSpecWebMvcIntTest {
+
+    @Test
+    void getOpenApiAsYaml_withoutYamlOnClasspath_isNotAcceptable() throws Exception {
+        performApiDocsRequest(x -> x.accept("application/yaml")).andExpect(status().isNotAcceptable());
+    }
+}

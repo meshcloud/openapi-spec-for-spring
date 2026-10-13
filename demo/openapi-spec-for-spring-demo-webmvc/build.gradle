@@ -13,8 +13,5 @@ dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web') {
     exclude(group: 'org.yaml', module: 'snakeyaml')
   }
-  implementation(project(':openapi-spec-for-spring-starter')) {
-    // The library works without YAML.
-    exclude(group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-yaml')
-  }
+  implementation(project(':openapi-spec-for-spring-starter'))
 }

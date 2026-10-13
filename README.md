@@ -42,7 +42,8 @@ dependencies {
 
 Put `gpr.user` and `gpr.token` in `~/.gradle/gradle.properties`.
 
-When the application runs, it serves the spec at `/v3/api-docs` as JSON, or as YAML when the request accepts YAML. See
+When the application runs, it serves the spec at `/v3/api-docs` as JSON. It also serves YAML to requests that accept
+YAML when the application has `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml` on its classpath. See
 the [WebMVC demo](demo/openapi-spec-for-spring-demo-webmvc).
 
 ## Branches and versions
