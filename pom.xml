@@ -83,21 +83,17 @@
 
         <jsr305.version>3.0.2</jsr305.version>
         <swagger-annotations.version>2.2.8</swagger-annotations.version>
-        <webjars.swaggerui.version>4.17.1</webjars.swaggerui.version>
         <classgraph.version>4.8.154</classgraph.version>
         <commons.io.version>2.16.1</commons.io.version>
     </properties>
 
     <modules>
         <module>openapi-generator-for-spring-common</module>
-        <module>openapi-generator-for-spring-shaded</module>
         <module>openapi-generator-for-spring-web</module>
         <module>openapi-generator-for-spring-webmvc</module>
-        <module>openapi-generator-for-spring-webflux</module>
         <module>openapi-generator-for-spring-autoconfigure</module>
         <module>openapi-generator-for-spring-model</module>
         <module>openapi-generator-for-spring-api</module>
-        <module>openapi-generator-for-spring-ui</module>
         <module>openapi-generator-for-spring-starter</module>
     </modules>
 
@@ -123,12 +119,6 @@
 
             <dependency>
                 <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
-                <artifactId>openapi-generator-for-spring-shaded</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
                 <artifactId>openapi-generator-for-spring-web</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -147,18 +137,6 @@
 
             <dependency>
                 <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
-                <artifactId>openapi-generator-for-spring-webflux</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
-                <artifactId>openapi-generator-for-spring-ui</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
                 <artifactId>openapi-generator-for-spring-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -167,11 +145,6 @@
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>swagger-ui</artifactId>
-                <version>${webjars.swaggerui.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.classgraph</groupId>

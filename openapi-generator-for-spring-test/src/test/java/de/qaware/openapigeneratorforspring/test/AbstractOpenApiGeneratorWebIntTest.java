@@ -19,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public abstract class AbstractOpenApiGeneratorWebIntTest {
 
-    protected static final String CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
-
     @Autowired
     private ServerProperties serverProperties;
     @Autowired

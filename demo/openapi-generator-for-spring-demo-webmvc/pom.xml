@@ -31,12 +31,6 @@
             </exclusions>
         </dependency>
 
-        <!-- Show CSRF support in Swagger UI -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>de.qaware.tools.openapi-generator-for-spring</groupId>
             <artifactId>openapi-generator-for-spring-starter</artifactId>
