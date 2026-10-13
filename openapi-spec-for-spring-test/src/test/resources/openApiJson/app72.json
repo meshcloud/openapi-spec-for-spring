@@ -1,0 +1,89 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App72",
+    "version": "unknown"
+  },
+  "paths": {
+    "/owners/{id}": {
+      "get": {
+        "operationId": "owner",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/pets/{id}": {
+      "get": {
+        "operationId": "pet",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "pattern": "[0-9a-f]{8}",
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Default response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/App72Controller.Pet"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "App72Controller.Pet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "pattern": "[a-z]+",
+            "type": "string"
+          },
+          "nickname": {
+            "pattern": "[a-z]+",
+            "type": "string"
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "weight": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}
