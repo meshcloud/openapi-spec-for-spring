@@ -26,7 +26,7 @@ import static io.meshcloud.openapispecforspring.common.util.OpenApiOrderedUtils.
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class DefaultParameterMethodConverterFromParameterAnnotation implements ParameterMethodConverter {
 

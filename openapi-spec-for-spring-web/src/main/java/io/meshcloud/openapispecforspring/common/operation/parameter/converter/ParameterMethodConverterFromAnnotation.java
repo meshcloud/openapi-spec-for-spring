@@ -26,10 +26,10 @@ import static io.meshcloud.openapispecforspring.common.util.OpenApiStringUtils.s
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.lang.annotation.Annotation;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.jspecify.annotations.Nullable;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)

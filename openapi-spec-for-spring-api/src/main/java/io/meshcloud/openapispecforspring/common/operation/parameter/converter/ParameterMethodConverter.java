@@ -24,7 +24,7 @@ package io.meshcloud.openapispecforspring.common.operation.parameter.converter;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.util.OpenApiOrderedUtils;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Converter for {@link  HandlerMethod.Parameter handler method

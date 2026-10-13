@@ -29,11 +29,11 @@ import io.meshcloud.openapispecforspring.model.trait.HasIsEmpty;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractSpringWebHandlerMethod implements HandlerMethod {

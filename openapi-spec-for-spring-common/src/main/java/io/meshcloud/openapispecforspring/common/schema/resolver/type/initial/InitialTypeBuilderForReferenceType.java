@@ -25,8 +25,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class InitialTypeBuilderForReferenceType implements InitialTypeBuilder {

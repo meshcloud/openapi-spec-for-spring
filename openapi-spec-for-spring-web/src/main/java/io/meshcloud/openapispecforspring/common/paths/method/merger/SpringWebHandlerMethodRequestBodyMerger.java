@@ -37,10 +37,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class SpringWebHandlerMethodRequestBodyMerger {
@@ -91,9 +91,8 @@ public class SpringWebHandlerMethodRequestBodyMerger {
                                         consumesContentTypes,
                                         Optional.of(parameterType),
                                         noEmptyEntries ? required : null) {
-                                    @Nullable
                                     @Override
-                                    public HandlerMethod.Context getContext() {
+                                    public HandlerMethod.@Nullable Context getContext() {
                                         return MergedSpringWebHandlerMethodContext.of(consumesContentTypes);
                                     }
                                 };

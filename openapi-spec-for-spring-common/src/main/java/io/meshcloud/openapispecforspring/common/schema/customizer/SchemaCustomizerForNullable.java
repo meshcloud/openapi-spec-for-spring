@@ -24,15 +24,30 @@ package io.meshcloud.openapispecforspring.common.schema.customizer;
 import com.fasterxml.jackson.databind.JavaType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
+import org.springframework.util.ClassUtils;
 
 public class SchemaCustomizerForNullable implements SchemaCustomizer {
+    private static final String JSR305_NULLABLE_CLASS_NAME = "javax.annotation.Nullable";
+
     @Override
     public void customize(
             Schema schema,
             JavaType javaType,
             AnnotationsSupplier annotationsSupplier,
             RecursiveResolver recursiveResolver) {
-        annotationsSupplier.findAnnotations(Nullable.class).findFirst().ifPresent(ignored -> schema.setNullable(true));
+        findJsr305Nullable()
+                .flatMap(nullable ->
+                        annotationsSupplier.findAnnotations(nullable).findFirst())
+                .ifPresent(ignored -> schema.setNullable(true));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Optional<Class<? extends Annotation>> findJsr305Nullable() {
+        if (!ClassUtils.isPresent(JSR305_NULLABLE_CLASS_NAME, null)) {
+            return Optional.empty();
+        }
+        return Optional.of((Class<? extends Annotation>) ClassUtils.resolveClassName(JSR305_NULLABLE_CLASS_NAME, null));
     }
 }

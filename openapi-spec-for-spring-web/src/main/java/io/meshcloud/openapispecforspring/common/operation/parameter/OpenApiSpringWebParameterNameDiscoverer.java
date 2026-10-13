@@ -23,7 +23,7 @@ package io.meshcloud.openapispecforspring.common.operation.parameter;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Integration of Spring's {@link

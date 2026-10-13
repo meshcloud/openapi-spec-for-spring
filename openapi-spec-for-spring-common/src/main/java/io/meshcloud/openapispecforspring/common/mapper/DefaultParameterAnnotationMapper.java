@@ -33,9 +33,9 @@ import io.meshcloud.openapispecforspring.common.schema.mapper.SchemaAnnotationMa
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class DefaultParameterAnnotationMapper implements ParameterAnnotationMapper {

@@ -21,24 +21,37 @@
 
 package io.meshcloud.openapispecforspring.common.operation.parameter.customizer;
 
-import javax.annotation.Nullable;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ClassUtils;
 
 @Slf4j
 public class DefaultOperationParameterNullableCustomizer implements OperationParameterCustomizer {
+    private static final String JSR305_NULLABLE_CLASS_NAME = "javax.annotation.Nullable";
+
     @Override
     public void customize(
             io.meshcloud.openapispecforspring.model.parameter.Parameter parameter,
             OperationParameterCustomizerContext context) {
-        context.getHandlerMethodParameter()
-                .flatMap(handlerMethodParameter -> handlerMethodParameter
-                        .getAnnotationsSupplier()
-                        .findAnnotations(Nullable.class)
-                        .findFirst())
+        findJsr305Nullable()
+                .flatMap(nullable -> context.getHandlerMethodParameter()
+                        .flatMap(handlerMethodParameter -> handlerMethodParameter
+                                .getAnnotationsSupplier()
+                                .findAnnotations(nullable)
+                                .findFirst()))
                 .ifPresent(ignored ->
                         // always set the parameter as "not required",
                         // as Spring is smart enough that if the parameter is marked as @Nullable,
                         // the parameter can be omitted
                         parameter.setRequired(false));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Optional<Class<? extends Annotation>> findJsr305Nullable() {
+        if (!ClassUtils.isPresent(JSR305_NULLABLE_CLASS_NAME, null)) {
+            return Optional.empty();
+        }
+        return Optional.of((Class<? extends Annotation>) ClassUtils.resolveClassName(JSR305_NULLABLE_CLASS_NAME, null));
     }
 }

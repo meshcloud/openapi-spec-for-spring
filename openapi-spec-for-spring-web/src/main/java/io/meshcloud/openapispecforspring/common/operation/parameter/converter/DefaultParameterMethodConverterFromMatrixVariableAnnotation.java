@@ -24,7 +24,7 @@ package io.meshcloud.openapispecforspring.common.operation.parameter.converter;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.enums.ParameterStyle;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.web.bind.annotation.MatrixVariable;
 
 public class DefaultParameterMethodConverterFromMatrixVariableAnnotation

@@ -26,10 +26,10 @@ import io.meshcloud.openapispecforspring.common.reference.ReferencedItemConsumer
 import io.meshcloud.openapispecforspring.model.trait.HasContent;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapperContextImpl implements MapperContext {

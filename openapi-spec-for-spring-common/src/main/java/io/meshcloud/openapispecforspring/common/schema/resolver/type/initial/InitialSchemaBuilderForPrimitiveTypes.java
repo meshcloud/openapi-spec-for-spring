@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.InputStreamResource;
 
 public class InitialSchemaBuilderForPrimitiveTypes implements InitialSchemaBuilder {

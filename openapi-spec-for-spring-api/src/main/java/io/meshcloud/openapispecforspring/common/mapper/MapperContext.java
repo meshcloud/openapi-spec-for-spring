@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.HasReferencedItemConsu
 import io.meshcloud.openapispecforspring.model.trait.HasContent;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Context swagger annotations mapping.

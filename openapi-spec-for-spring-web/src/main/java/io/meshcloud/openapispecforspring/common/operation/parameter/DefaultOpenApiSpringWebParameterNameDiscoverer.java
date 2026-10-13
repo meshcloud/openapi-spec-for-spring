@@ -25,8 +25,8 @@ import io.meshcloud.openapispecforspring.autoconfigure.OpenApiSpecWebAutoConfigu
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;

@@ -22,7 +22,7 @@
 package io.meshcloud.openapispecforspring.common.reference.handler;
 
 import io.meshcloud.openapispecforspring.model.OpenApi;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public interface ReferencedItemHandler {
     void applyToOpenApi(OpenApi openApi);

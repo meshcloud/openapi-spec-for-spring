@@ -17,6 +17,7 @@ dependencies {
   constraints {
     api('org.projectlombok:lombok:1.18.48')
 
+    api('org.jspecify:jspecify:1.0.0')
     api('com.google.code.findbugs:jsr305:3.0.2')
     api('io.swagger.core.v3:swagger-annotations:2.2.55')
 

@@ -37,7 +37,7 @@ dependencies {
 
   annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
 
-  api('com.google.code.findbugs:jsr305')
+  api('org.jspecify:jspecify')
 
   testImplementation('org.springframework.boot:spring-boot-starter-test')
   testRuntimeOnly('org.junit.platform:junit-platform-launcher')

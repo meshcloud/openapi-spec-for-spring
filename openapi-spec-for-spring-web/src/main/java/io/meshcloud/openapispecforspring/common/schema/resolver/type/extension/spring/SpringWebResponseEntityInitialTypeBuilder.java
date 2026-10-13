@@ -26,7 +26,7 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialType;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialTypeBuilder;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
 
 public class SpringWebResponseEntityInitialTypeBuilder implements InitialTypeBuilder {

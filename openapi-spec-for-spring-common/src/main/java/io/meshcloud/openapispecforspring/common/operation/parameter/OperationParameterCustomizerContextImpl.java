@@ -28,13 +28,12 @@ import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.O
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.reference.ReferencedItemConsumer;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor(staticName = "of")
 public class OperationParameterCustomizerContextImpl implements OperationParameterCustomizerContext {
-    @Nullable
-    private final HandlerMethod.Parameter handlerMethodParameter;
+    private final HandlerMethod.@Nullable Parameter handlerMethodParameter;
 
     private final OperationBuilderContext operationBuilderContext;
 
@@ -49,7 +48,7 @@ public class OperationParameterCustomizerContextImpl implements OperationParamet
     }
 
     @Override
-    public MapperContext getMapperContext(@Nullable HandlerMethod.Context context) {
+    public MapperContext getMapperContext(HandlerMethod.@Nullable Context context) {
         return operationBuilderContext.getMapperContext(context);
     }
 

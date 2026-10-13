@@ -33,7 +33,7 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.extension.j
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.extension.java8.Java8TimeTypeResolverConfigurationProperties;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import jakarta.validation.constraints.Min;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -46,8 +46,8 @@ public class OpenApiSpecSchemaExtensionAutoConfiguration {
     public Java8TimeInitialSchemaBuilder defaultJava8TimeInitialSchemaBuilder(
             Java8TimeTypeResolverConfigurationProperties properties,
             // Use Spring Web's object mapper bean
-            @Nullable ObjectMapper objectMapper) {
-        return new DefaultJava8TimeInitialSchemaBuilder(properties, objectMapper);
+            Optional<ObjectMapper> objectMapper) {
+        return new DefaultJava8TimeInitialSchemaBuilder(properties, objectMapper.orElse(null));
     }
 
     @Bean

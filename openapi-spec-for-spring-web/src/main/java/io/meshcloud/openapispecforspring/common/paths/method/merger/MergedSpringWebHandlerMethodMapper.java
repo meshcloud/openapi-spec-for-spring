@@ -26,18 +26,17 @@ import io.meshcloud.openapispecforspring.common.mapper.MediaTypesProvider;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.requestbody.RequestBody;
 import java.util.List;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MergedSpringWebHandlerMethodMapper {
 
     public static class ContextModifierMapper implements HandlerMethod.ContextModifierMapper<MapperContext> {
-        @Nullable
         @Override
-        public HandlerMethod.ContextModifier<MapperContext> map(@Nullable HandlerMethod.Context context) {
+        public HandlerMethod.@Nullable ContextModifier<MapperContext> map(HandlerMethod.@Nullable Context context) {
             if (context instanceof MergedSpringWebHandlerMethodContext mergedHandlerMethodContext) {
                 MediaTypesProvider mediaTypesProvider = owningType -> {
                     if (RequestBody.class.equals(owningType)) {

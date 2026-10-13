@@ -26,9 +26,9 @@ import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.reference.ReferencedItemConsumer;
 import io.meshcloud.openapispecforspring.common.reference.ReferencedItemConsumerSupplier;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor(staticName = "of")
 public class OperationBuilderContextImpl implements OperationBuilderContext {
@@ -44,7 +44,7 @@ public class OperationBuilderContextImpl implements OperationBuilderContext {
     }
 
     @Override
-    public MapperContext getMapperContext(@Nullable HandlerMethod.Context context) {
+    public MapperContext getMapperContext(HandlerMethod.@Nullable Context context) {
         return mapperContextSupplier.apply(context);
     }
 }

@@ -21,7 +21,7 @@
 
 package io.meshcloud.openapispecforspring.common.reference;
 
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Supplier for referenced item consumers. Provided during open api

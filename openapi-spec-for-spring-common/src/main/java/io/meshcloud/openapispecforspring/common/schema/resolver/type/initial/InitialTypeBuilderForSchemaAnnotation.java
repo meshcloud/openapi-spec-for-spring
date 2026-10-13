@@ -30,8 +30,8 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFa
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.swagger.v3.oas.annotations.media.Schema;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class InitialTypeBuilderForSchemaAnnotation implements InitialTypeBuilder {

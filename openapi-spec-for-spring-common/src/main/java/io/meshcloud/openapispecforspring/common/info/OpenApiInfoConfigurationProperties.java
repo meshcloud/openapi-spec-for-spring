@@ -24,9 +24,9 @@ package io.meshcloud.openapispecforspring.common.info;
 import static io.meshcloud.openapispecforspring.common.util.OpenApiConstants.CONFIG_PROPERTIES_PREFIX;
 
 import java.util.Map;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 

@@ -25,9 +25,9 @@ import io.meshcloud.openapispecforspring.model.trait.HasIsEmpty;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenApiObjectUtils {

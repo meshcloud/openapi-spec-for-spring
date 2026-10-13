@@ -37,8 +37,8 @@ import io.meshcloud.openapispecforspring.model.operation.Operation;
 import io.meshcloud.openapispecforspring.model.requestbody.RequestBody;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class DefaultRequestBodyOperationCustomizer implements OperationCustomizer {

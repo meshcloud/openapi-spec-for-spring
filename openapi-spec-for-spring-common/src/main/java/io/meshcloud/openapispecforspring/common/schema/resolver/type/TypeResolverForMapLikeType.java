@@ -29,9 +29,9 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.Ini
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialType;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialTypeBuilder;
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSchemaBuilder, TypeResolver {

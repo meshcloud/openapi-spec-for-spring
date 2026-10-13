@@ -29,8 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 public class DefaultReferenceIdentifierBuilderForSchema implements ReferenceIdentifierBuilderForSchema {
 

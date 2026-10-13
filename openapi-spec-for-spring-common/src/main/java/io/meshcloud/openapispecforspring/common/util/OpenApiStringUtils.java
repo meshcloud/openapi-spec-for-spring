@@ -22,10 +22,10 @@
 package io.meshcloud.openapispecforspring.common.util;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jspecify.annotations.Nullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenApiStringUtils {

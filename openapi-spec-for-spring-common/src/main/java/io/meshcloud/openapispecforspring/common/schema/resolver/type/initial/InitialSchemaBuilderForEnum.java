@@ -27,8 +27,8 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class InitialSchemaBuilderForEnum implements InitialSchemaBuilder {

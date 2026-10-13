@@ -33,8 +33,8 @@ import io.meshcloud.openapispecforspring.model.OpenApi;
 import io.swagger.v3.oas.annotations.Hidden;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RequiredArgsConstructor

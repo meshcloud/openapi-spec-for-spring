@@ -29,9 +29,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OpenApiCollectionUtils {
@@ -46,7 +46,7 @@ public class OpenApiCollectionUtils {
         }
     }
 
-    public static <T> List<T> emptyListIfNull(@Nullable T[] values) {
+    public static <T> List<T> emptyListIfNull(T @Nullable [] values) {
         return values == null ? Collections.emptyList() : Arrays.asList(values);
     }
 

@@ -45,12 +45,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -151,7 +151,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
         }
 
         @Nullable
-        private Schema checkKnownSchema(Schema schema, @Nullable TypeResolver.RecursionKey recursionKey) {
+        private Schema checkKnownSchema(Schema schema, TypeResolver.@Nullable RecursionKey recursionKey) {
             if (recursionKey == null) {
                 return null;
             }

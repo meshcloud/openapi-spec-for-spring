@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.util.OpenApiOrderedUtils;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Initial type builder.

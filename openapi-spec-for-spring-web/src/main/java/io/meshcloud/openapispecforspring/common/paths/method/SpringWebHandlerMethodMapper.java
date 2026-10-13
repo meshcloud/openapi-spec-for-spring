@@ -30,10 +30,10 @@ import io.meshcloud.openapispecforspring.model.response.ApiResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SpringWebHandlerMethodMapper {
@@ -43,9 +43,8 @@ public class SpringWebHandlerMethodMapper {
 
         private final SpringWebHandlerMethodContentTypesMapper contentTypesMapper;
 
-        @Nullable
         @Override
-        public HandlerMethod.ContextModifier<MapperContext> map(@Nullable HandlerMethod.Context context) {
+        public HandlerMethod.@Nullable ContextModifier<MapperContext> map(HandlerMethod.@Nullable Context context) {
             if (context instanceof SpringWebHandlerMethod springWebHandlerMethod) {
                 MediaTypesProvider mediaTypesProvider = owningType -> {
                     if (RequestBody.class.equals(owningType)) {

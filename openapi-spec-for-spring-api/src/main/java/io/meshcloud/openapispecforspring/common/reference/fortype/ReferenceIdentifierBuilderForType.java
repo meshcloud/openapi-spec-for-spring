@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Reference identifier builder. This identifier is used to point from various

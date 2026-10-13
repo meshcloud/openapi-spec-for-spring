@@ -17,6 +17,7 @@ dependencies {
   testImplementation('org.springframework.boot:spring-boot-starter-web')
   testImplementation('org.springframework.boot:spring-boot-starter-security')
   testImplementation('commons-io:commons-io')
+  testImplementation('com.google.code.findbugs:jsr305')
   testImplementation('jakarta.servlet:jakarta.servlet-api')
   testImplementation('jakarta.validation:jakarta.validation-api')
   testImplementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')

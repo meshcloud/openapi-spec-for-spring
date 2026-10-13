@@ -42,11 +42,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class TypeResolverForCollectionLikeTypeSupport {
@@ -83,8 +83,7 @@ public class TypeResolverForCollectionLikeTypeSupport {
         return null;
     }
 
-    @Nullable
-    public TypeResolver.RecursionKey resolve(
+    public TypeResolver.@Nullable RecursionKey resolve(
             Object caller,
             Schema schema,
             InitialType initialType,

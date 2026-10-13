@@ -23,7 +23,7 @@ package io.meshcloud.openapispecforspring.common.schema.resolver.type.initial;
 
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class InitialSchemaBuilderForVoid implements InitialSchemaBuilder {
     @Nullable

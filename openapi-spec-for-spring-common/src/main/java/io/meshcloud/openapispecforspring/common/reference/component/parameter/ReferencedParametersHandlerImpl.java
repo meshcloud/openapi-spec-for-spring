@@ -28,10 +28,10 @@ import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.With;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class ReferencedParametersHandlerImpl extends AbstractDependentReferencedComponentHandler

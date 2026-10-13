@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.mapper.MapperContext;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.reference.HasReferencedItemConsumer;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Context for operation building. Carries operation info, supports referencing
@@ -46,7 +46,7 @@ public interface OperationBuilderContext extends HasReferencedItemConsumer {
      * @param context handler method context (maybe null)
      * @return mapper context to be used for additional annotation mapping
      */
-    MapperContext getMapperContext(@Nullable HandlerMethod.Context context);
+    MapperContext getMapperContext(HandlerMethod.@Nullable Context context);
 
     /**
      * Convenience method to obtain a handler method of certain type if possible.
