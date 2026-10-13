@@ -1,0 +1,95 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App73",
+    "version": "unknown"
+  },
+  "paths": {
+    "/garages/default": {
+      "get": {
+        "operationId": "garage",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App73Controller.Garage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App73Controller.VehicleDiscriminator": {
+        "type": "string",
+        "enum": [
+          "car",
+          "bike"
+        ]
+      },
+      "App73Controller.Car": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App73Controller.VehicleDiscriminator"
+          },
+          "doors": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "App73Controller.Bike": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App73Controller.VehicleDiscriminator"
+          },
+          "electric": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App73Controller.Vehicle": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "car": "#/components/schemas/App73Controller.Car",
+            "bike": "#/components/schemas/App73Controller.Bike"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App73Controller.Car"
+          },
+          {
+            "$ref": "#/components/schemas/App73Controller.Bike"
+          }
+        ]
+      },
+      "App73Controller.VehicleType": {
+        "type": "string",
+        "enum": [
+          "CAR",
+          "BIKE"
+        ]
+      },
+      "App73Controller.Garage": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "$ref": "#/components/schemas/App73Controller.Vehicle"
+          },
+          "preferredType": {
+            "$ref": "#/components/schemas/App73Controller.VehicleType"
+          }
+        }
+      }
+    }
+  }
+}

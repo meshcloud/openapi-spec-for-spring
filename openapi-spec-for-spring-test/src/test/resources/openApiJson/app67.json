@@ -42,7 +42,7 @@
   },
   "components": {
     "schemas": {
-      "App67Controller.AnimalType": {
+      "App67Controller.AnimalDiscriminator": {
         "type": "string",
         "enum": [
           "cat",
@@ -53,7 +53,7 @@
         "type": "object",
         "properties": {
           "kind": {
-            "$ref": "#/components/schemas/App67Controller.AnimalType"
+            "$ref": "#/components/schemas/App67Controller.AnimalDiscriminator"
           },
           "indoor": {
             "type": "boolean"
@@ -64,7 +64,7 @@
         "type": "object",
         "properties": {
           "kind": {
-            "$ref": "#/components/schemas/App67Controller.AnimalType"
+            "$ref": "#/components/schemas/App67Controller.AnimalDiscriminator"
           },
           "breed": {
             "type": "string"

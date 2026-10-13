@@ -25,7 +25,7 @@
   },
   "components": {
     "schemas": {
-      "App62Controller.ShapeType": {
+      "App62Controller.ShapeDiscriminator": {
         "type": "string",
         "enum": [
           "circle"
@@ -42,7 +42,7 @@
             "readOnly": true,
             "allOf": [
               {
-                "$ref": "#/components/schemas/App62Controller.ShapeType"
+                "$ref": "#/components/schemas/App62Controller.ShapeDiscriminator"
               }
             ]
           }

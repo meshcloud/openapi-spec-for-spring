@@ -25,7 +25,7 @@
   },
   "components": {
     "schemas": {
-      "App54Controller.AnimalType": {
+      "App54Controller.AnimalDiscriminator": {
         "type": "string",
         "enum": [
           "DOG",
@@ -36,7 +36,7 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App54Controller.AnimalType"
+            "$ref": "#/components/schemas/App54Controller.AnimalDiscriminator"
           }
         }
       },
@@ -44,7 +44,7 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App54Controller.AnimalType"
+            "$ref": "#/components/schemas/App54Controller.AnimalDiscriminator"
           }
         }
       },
