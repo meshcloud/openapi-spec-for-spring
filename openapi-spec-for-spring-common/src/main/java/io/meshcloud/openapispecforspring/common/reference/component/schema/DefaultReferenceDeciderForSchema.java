@@ -21,6 +21,7 @@
 
 package io.meshcloud.openapispecforspring.common.reference.component.schema;
 
+import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.AnyValueSchema;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,7 @@ public class DefaultReferenceDeciderForSchema implements ReferenceDeciderForSche
 
     @Override
     public boolean turnIntoReference(Schema schema, String referenceIdentifier, long numberOfUsages) {
-        if (onlyTypeIsSet(schema)) {
+        if (onlyTypeIsSet(schema) || schema instanceof AnyValueSchema) {
             return false;
         }
         if (StringUtils.isNotBlank(schema.getName())) {

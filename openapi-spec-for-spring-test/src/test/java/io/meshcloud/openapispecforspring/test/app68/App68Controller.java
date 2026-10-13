@@ -11,4 +11,10 @@ class App68Controller {
     ResponseEntity getWithRawResponseEntity() {
         return ResponseEntity.ok("raw");
     }
+
+    @SuppressWarnings("rawtypes")
+    @GetMapping(path = "/raw-again", produces = "text/plain")
+    ResponseEntity getAgainWithRawResponseEntity() {
+        return ResponseEntity.ok("raw");
+    }
 }

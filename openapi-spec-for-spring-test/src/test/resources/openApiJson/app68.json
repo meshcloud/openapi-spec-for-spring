@@ -13,9 +13,22 @@
             "description": "Default response",
             "content": {
               "*/*": {
-                "schema": {
-                  "type": "object"
-                }
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/raw-again": {
+      "get": {
+        "operationId": "getAgainWithRawResponseEntity",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "text/plain": {
+                "schema": {}
               }
             }
           }
