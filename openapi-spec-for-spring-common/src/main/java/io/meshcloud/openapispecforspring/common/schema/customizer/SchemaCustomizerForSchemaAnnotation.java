@@ -74,6 +74,7 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
         setStringIfNotBlank(annotation.title(), schema::setTitle);
         setStringIfNotBlank(annotation.description(), schema::setDescription);
         setStringIfNotBlank(annotation.format(), schema::setFormat);
+        setStringIfNotBlank(annotation.pattern(), schema::setPattern);
         setStringIfNotBlank(annotation.ref(), schema::setRef);
 
         if (annotation.nullable()) {
