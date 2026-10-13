@@ -1,0 +1,15 @@
+/**
+ The plugins-platform is the single source of truth for the versions of the Gradle plugins the convention plugins use.
+*/
+
+plugins {
+  id('java-platform')
+}
+
+group = 'io.meshcloud.openapi-spec-for-spring.platform'
+
+dependencies {
+  constraints {
+    api('com.diffplug.spotless:spotless-plugin-gradle:8.9.0')
+  }
+}

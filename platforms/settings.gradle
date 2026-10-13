@@ -1,0 +1,11 @@
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    gradlePluginPortal()
+  }
+}
+
+rootProject.name = 'platforms'
+
+include('plugins-platform')
+include('jvm-platform')

@@ -1,14 +1,50 @@
 version: 2
+
+# target-branch takes a single branch, so each maintained branch gets its own block per ecosystem.
 updates:
-  - package-ecosystem: "maven"
-    directory: "/"
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: spring-boot-3.x
     schedule:
-      interval: "daily"
-  - package-ecosystem: "maven"
-    directory: "demo/openapi-generator-for-spring-demo-webmvc"
+      interval: weekly
+    # A compromised release is usually pulled within days of publication.
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: gradle
+    directories:
+      - /
+      - /build-plugins
+      - /platforms
+    target-branch: spring-boot-3.x
     schedule:
-      interval: "daily"
-  - package-ecosystem: "maven"
-    directory: "demo/openapi-generator-for-spring-demo-webflux"
-    schedule:
-      interval: "daily"
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      gradle:
+        patterns:
+          - "*"
+    # The next majors are Spring Boot 4, Spring Framework 7 and Jackson 3, which belong to another branch.
+    ignore:
+      - dependency-name: "org.springframework*"
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "com.fasterxml.jackson*"
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "tools.jackson*"
+        update-types:
+          - version-update:semver-major
+    commit-message:
+      prefix: chore

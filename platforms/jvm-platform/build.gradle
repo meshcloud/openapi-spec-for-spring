@@ -1,0 +1,26 @@
+/**
+ The jvm-platform is the single source of truth for the versions of all dependencies of the library and its tests.
+ Builds declare dependencies without a version.
+*/
+
+plugins {
+  id('java-platform')
+}
+
+group = 'io.meshcloud.openapi-spec-for-spring.platform'
+
+javaPlatform.allowDependencies()
+
+dependencies {
+  api(platform('org.springframework.boot:spring-boot-dependencies:3.0.4'))
+
+  constraints {
+    // Spring Boot 3.0 manages 1.18.26, which cannot compile on JDK 21.
+    api('org.projectlombok:lombok:1.18.48')
+
+    api('com.google.code.findbugs:jsr305:3.0.2')
+    api('io.swagger.core.v3:swagger-annotations:2.2.8')
+
+    api('commons-io:commons-io:2.16.1')
+  }
+}

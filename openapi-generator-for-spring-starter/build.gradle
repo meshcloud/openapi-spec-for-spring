@@ -1,0 +1,11 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Generator for Spring Boot :: Starter'
+
+dependencies {
+  api(project(':openapi-generator-for-spring-webmvc'))
+  // Library users can exclude YAML support.
+  api('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+}

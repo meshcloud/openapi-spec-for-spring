@@ -1,0 +1,43 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'spring-boot-*-v*'
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Derive branch and version from the tag
+        id: tag
+        run: |
+          echo "branch=${GITHUB_REF_NAME%-v*}" >> "$GITHUB_OUTPUT"
+          echo "version=${GITHUB_REF_NAME##*-v}" >> "$GITHUB_OUTPUT"
+      - name: Check that the tagged commit is on its branch
+        run: git merge-base --is-ancestor "$GITHUB_SHA" "origin/$BRANCH"
+        env:
+          BRANCH: ${{ steps.tag.outputs.branch }}
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
+        with:
+          github_access_token: ${{ github.token }}
+      # Without cache-provider, the action uses Gradle's commercial caching service.
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-provider: basic
+      - run: nix develop --command ./gradlew build publish -Pversion="$VERSION"
+        env:
+          VERSION: ${{ steps.tag.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}

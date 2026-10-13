@@ -1,0 +1,51 @@
+plugins {
+  id('java-library')
+  id('jacoco')
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
+
+tasks.withType(JavaCompile).configureEach {
+  options.release = 17
+  options.encoding = 'UTF-8'
+  // Spring and Jackson read parameter names from the bytecode.
+  options.compilerArgs.add('-parameters')
+}
+
+// The platform only goes into resolvable configurations, so the published metadata does not import the unpublished
+// jvm-platform. The publishing plugin writes the resolved versions instead.
+def jvmPlatformScope = configurations.dependencyScope('jvmPlatform')
+dependencies {
+  jvmPlatform(platform('io.meshcloud.openapi-spec-for-spring.platform:jvm-platform'))
+}
+configurations.configureEach {
+  if (canBeResolved) {
+    extendsFrom(jvmPlatformScope.get())
+  }
+}
+
+dependencies {
+  compileOnly('org.projectlombok:lombok')
+  annotationProcessor('org.projectlombok:lombok')
+  testCompileOnly('org.projectlombok:lombok')
+  testAnnotationProcessor('org.projectlombok:lombok')
+
+  annotationProcessor('org.springframework.boot:spring-boot-configuration-processor')
+
+  api('com.google.code.findbugs:jsr305')
+
+  testImplementation('org.springframework.boot:spring-boot-starter-test')
+  testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+}
+
+tasks.withType(Test).configureEach {
+  useJUnitPlatform()
+  testLogging {
+    exceptionFormat = 'full'
+    events 'skipped', 'failed'
+  }
+}

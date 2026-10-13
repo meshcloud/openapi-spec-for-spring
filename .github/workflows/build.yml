@@ -1,62 +1,36 @@
-# This workflow will build a Java project with Maven including tests
-# Also runs SonarQube analysis and deploys artifacts
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: build
 
 on:
+  pull_request:
+    branches:
+      - 'spring-boot-*'
   push:
     branches:
-      - master
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+      - 'spring-boot-*'
+
+permissions:
+  contents: read
 
 jobs:
-  build-on-linux:
+  build:
     runs-on: ubuntu-latest
-    env:
-      MAVEN_OPTS: >- # strip any newlines
-        -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-        -Dorg.slf4j.simpleLogger.log.org.codehaus.mojo.license.model.LicenseRepository=warn
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+          github_access_token: ${{ github.token }}
+      # Without cache-provider, the action uses Gradle's commercial caching service.
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
-          distribution: 'adopt'
-          java-version: 17
-          server-id: ossrh
-          server-username: SONATYPE_USER
-          server-password: SONATYPE_PASSWORD
-          gpg-private-key: ${{ secrets.ARTIFACT_SIGNING_GPG_PRIVATE_KEY }}
-          gpg-passphrase: ARTIFACT_SIGNING_GPG_PRIVATE_KEY_PASSPHRASE
-      - name: Wait for previous workflows to complete
-        uses: softprops/turnstyle@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
+          cache-provider: basic
+      - run: nix develop --command ./gradlew build
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v2
+          name: coverage-report
+          path: openapi-generator-for-spring-test/build/reports/jacoco/testCodeCoverageReport/
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build & Analyze
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Deploy
-        if: github.ref == 'refs/heads/master'
-        run: mvn -B deploy -Ddeploy -DskipTests
-        env:
-          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          ARTIFACT_SIGNING_GPG_PRIVATE_KEY_PASSPHRASE: ${{ secrets.ARTIFACT_SIGNING_GPG_PRIVATE_KEY_PASSPHRASE }}
+          name: test-reports
+          path: '**/build/reports/tests/'

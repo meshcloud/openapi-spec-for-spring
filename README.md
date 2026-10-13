@@ -1,8 +1,6 @@
 # OpenAPI v3 generator for Spring Boot
 
 [![Build Status](https://github.com/qaware/openapi-generator-for-spring/workflows/build/badge.svg?branch=master)](https://github.com/qaware/openapi-generator-for-spring/actions?query=workflow%3A%22build%22)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=qaware_openapi-generator-for-spring&metric=alert_status)](https://sonarcloud.io/dashboard?id=qaware_openapi-generator-for-spring)
-[![Code Coverage](https://sonarcloud.io/api/project_badges/measure?project=qaware_openapi-generator-for-spring&metric=coverage)](https://sonarcloud.io/dashboard?id=qaware_openapi-generator-for-spring)
 [![Maven Central](https://img.shields.io/maven-central/v/de.qaware.tools.openapi-generator-for-spring/openapi-generator-for-spring-starter)](https://mvnrepository.com/artifact/de.qaware.tools.openapi-generator-for-spring/openapi-generator-for-spring-starter)
 
 This library automagically generates a [OpenApi v3 specification](https://github.com/OAI/OpenAPI-Specification) at
@@ -282,5 +280,5 @@ Each module aims to have minimal dependencies. General library dependencies are:
 
 Please open an issue before posting a pull request unless you have a very obvious fix or improvement to contribute.
 
-When developing with IntelliJ, run `mvn clean package -DskipTests` first in order to get the integration tests also
-running from within the IDE.
+Build and test with `./gradlew build`. The aggregated coverage report lands in
+`openapi-generator-for-spring-test/build/reports/jacoco/testCodeCoverageReport/`.

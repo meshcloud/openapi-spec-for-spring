@@ -1,0 +1,17 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Generator for Spring Boot :: WebMVC'
+
+dependencies {
+  api(project(':openapi-generator-for-spring-autoconfigure'))
+  api(project(':openapi-generator-for-spring-web'))
+
+  compileOnly('org.springframework:spring-webmvc')
+  compileOnly('jakarta.servlet:jakarta.servlet-api')
+  testImplementation('org.springframework:spring-webmvc')
+  testImplementation('jakarta.servlet:jakarta.servlet-api')
+
+  annotationProcessor('org.springframework.boot:spring-boot-autoconfigure-processor')
+}

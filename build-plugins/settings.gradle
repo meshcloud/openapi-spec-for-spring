@@ -1,0 +1,12 @@
+dependencyResolutionManagement {
+  repositories {
+    gradlePluginPortal()
+  }
+}
+
+includeBuild('../platforms')
+
+rootProject.name = 'build-plugins'
+
+include('java-library')
+include('publishing')
