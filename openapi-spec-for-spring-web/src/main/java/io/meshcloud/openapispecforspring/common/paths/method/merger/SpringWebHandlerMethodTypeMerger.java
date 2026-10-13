@@ -23,6 +23,7 @@ package io.meshcloud.openapispecforspring.common.paths.method.merger;
 
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.paths.method.AbstractSpringWebHandlerMethod;
+import io.meshcloud.openapispecforspring.common.util.OpenApiVoidUtils;
 import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -51,6 +52,6 @@ public class SpringWebHandlerMethodTypeMerger {
     }
 
     private static boolean isNotVoid(HandlerMethod.Type type) {
-        return !void.class.equals(type.getType()) && !Void.class.equals(type.getType());
+        return !OpenApiVoidUtils.isVoid(type.getType());
     }
 }
