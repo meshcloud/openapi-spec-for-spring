@@ -23,11 +23,11 @@ package io.meshcloud.openapispecforspring.autoconfigure;
 
 import io.meshcloud.openapispecforspring.common.reference.component.schema.DefaultReferenceDeciderForSchema;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.DefaultReferenceIdentifierBuilderForSchema;
+import io.meshcloud.openapispecforspring.common.reference.component.schema.DefaultReferenceIdentifierConflictResolverForSchema;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferenceDeciderForSchema;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferenceIdentifierBuilderForSchema;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferenceIdentifierConflictResolverForSchema;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferencedSchemaHandlerFactory;
-import io.meshcloud.openapispecforspring.common.reference.fortype.DefaultReferenceIdentifierConflictResolverFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
@@ -51,9 +51,8 @@ public class OpenApiSpecReferenceSchemaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ReferenceIdentifierConflictResolverForSchema defaultReferenceIdentifierConflictResolverForSchema(
-            DefaultReferenceIdentifierConflictResolverFactory factory) {
-        return factory.create(defImpl -> defImpl::resolveConflict);
+    public ReferenceIdentifierConflictResolverForSchema defaultReferenceIdentifierConflictResolverForSchema() {
+        return new DefaultReferenceIdentifierConflictResolverForSchema();
     }
 
     @Bean

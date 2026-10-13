@@ -81,6 +81,14 @@ public class ReferencedSchemaStorage extends AbstractReferencedItemStorage<Schem
         return List.of(schema.getClass(), schema.withUseFacets(GROUPING_USE_FACETS));
     }
 
+    // One component that serves both directions belongs to neither, so it must not get a Request or Response name.
+    @Override
+    protected void mergeEqualItems(Schema keptItem, Schema mergedItem) {
+        if (keptItem.getDirection() != mergedItem.getDirection()) {
+            keptItem.setDirection(null);
+        }
+    }
+
     @Override
     public void buildReferencedItems(Consumer<Map<String, Schema>> referencedItemsConsumer) {
         super.buildReferencedItems(referencedItemsConsumer);

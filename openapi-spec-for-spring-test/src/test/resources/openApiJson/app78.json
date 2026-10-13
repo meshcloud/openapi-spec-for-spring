@@ -14,7 +14,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/App78Plant_0"
+                  "$ref": "#/components/schemas/App78PlantResponse"
                 }
               }
             }
@@ -27,7 +27,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/App78Plant_1"
+                "$ref": "#/components/schemas/App78PlantRequest"
               }
             }
           },
@@ -51,7 +51,7 @@
         "type": "object",
         "additionalProperties": {}
       },
-      "App78Plant_0": {
+      "App78PlantResponse": {
         "required": [
           "name",
           "height",
@@ -85,7 +85,7 @@
           }
         }
       },
-      "App78Plant_1": {
+      "App78PlantRequest": {
         "required": [
           "name",
           "attributes"

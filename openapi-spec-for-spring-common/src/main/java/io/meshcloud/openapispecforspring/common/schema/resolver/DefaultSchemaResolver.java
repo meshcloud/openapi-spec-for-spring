@@ -206,6 +206,10 @@ public class DefaultSchemaResolver implements SchemaResolver {
             for (InitialSchemaBuilder initialSchemaBuilder : initialSchemaBuilders) {
                 Schema initialSchema = initialSchemaBuilder.buildFromType(caller, initialType);
                 if (initialSchema != null) {
+                    initialSchema.setDirection(
+                            caller.getMode() == SchemaResolver.Mode.FOR_DESERIALIZATION
+                                    ? Schema.Direction.REQUEST
+                                    : Schema.Direction.RESPONSE);
                     return initialSchema;
                 }
             }
