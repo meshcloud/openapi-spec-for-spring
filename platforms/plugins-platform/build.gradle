@@ -1,6 +1,6 @@
 /**
  The plugins-platform is the single source of truth for the versions of the Gradle plugins the convention plugins use.
-*/
+ */
 
 plugins {
   id('java-platform')
@@ -11,5 +11,8 @@ group = 'io.meshcloud.openapi-spec-for-spring.platform'
 dependencies {
   constraints {
     api('com.diffplug.spotless:spotless-plugin-gradle:8.9.0')
+
+    // 3.x, as Gradle 8 runs Groovy 3. CodeNarc 4 and the -groovy-4.0 builds need Groovy 4.
+    api('org.codenarc:CodeNarc:3.7.0')
   }
 }

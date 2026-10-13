@@ -3,8 +3,5 @@ plugins {
 }
 
 dependencies {
-  implementation(platform('io.meshcloud.openapi-spec-for-spring.platform:plugins-platform'))
-  implementation('com.diffplug.spotless:spotless-plugin-gradle')
-
   implementation(project(':java-library'))
 }

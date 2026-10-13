@@ -1,7 +1,7 @@
 /**
  The jvm-platform is the single source of truth for the versions of all dependencies of the library and its tests.
  Builds declare dependencies without a version.
-*/
+ */
 
 plugins {
   id('java-platform')

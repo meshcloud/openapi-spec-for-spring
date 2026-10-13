@@ -46,5 +46,9 @@ updates:
       - dependency-name: "tools.jackson*"
         update-types:
           - version-update:semver-major
+      # CodeNarc 4 needs Groovy 4, and Gradle 8 runs Groovy 3.
+      - dependency-name: "org.codenarc:CodeNarc"
+        update-types:
+          - version-update:semver-major
     commit-message:
       prefix: chore

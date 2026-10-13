@@ -8,5 +8,13 @@ includeBuild('../platforms')
 
 rootProject.name = 'build-plugins'
 
+include('lint')
 include('java-library')
 include('publishing')
+
+// Here rather than in a convention plugin: no project of this build can apply a plugin this build compiles.
+gradle.lifecycle.beforeProject { project ->
+  project.pluginManager.withPlugin('groovy-gradle-plugin') {
+    project.apply(from: new File(project.rootDir, 'config/codenarc/codenarc.gradle'))
+  }
+}

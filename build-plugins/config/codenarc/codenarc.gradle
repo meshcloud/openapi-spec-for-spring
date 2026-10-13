@@ -1,0 +1,25 @@
+apply(plugin: 'codenarc')
+
+dependencies {
+  codenarc(platform('io.meshcloud.openapi-spec-for-spring.platform:plugins-platform'))
+  codenarc('org.codenarc:CodeNarc')
+}
+
+codenarc {
+  configFile = new File(rootDir, 'config/codenarc/rules.groovy')
+  reportFormat = 'console'
+}
+
+// The rules in rulesets/enhanced.xml compile the sources, which needs the classpath gradle does not set.
+sourceSets.configureEach { sourceSet ->
+  tasks.named(sourceSet.getTaskName('codenarc', null), CodeNarc) {
+    compilationClasspath = sourceSet.compileClasspath + sourceSet.output
+  }
+}
+
+// The source set tasks cover **/*.groovy only, and miss the precompiled script plugins.
+def codenarcScriptPlugins = tasks.register('codenarcScriptPlugins', CodeNarc) {
+  source = fileTree('src/main/groovy') { include('**/*.gradle') }
+  compilationClasspath = sourceSets.main.compileClasspath + sourceSets.main.output
+}
+tasks.named('check') { dependsOn(codenarcScriptPlugins) }

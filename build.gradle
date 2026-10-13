@@ -1,0 +1,18 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.lint')
+}
+
+// The included builds cannot apply the plugins that build-plugins compiles.
+spotless {
+  groovyGradle {
+    target('*.gradle', 'platforms/**/*.gradle', 'build-plugins/**/*.gradle')
+    targetExclude('**/build/**', '**/.gradle/**')
+  }
+}
+
+def buildPlugins = gradle.includedBuild('build-plugins')
+tasks.named('check') {
+  dependsOn(buildPlugins.task(':lint:check'))
+  dependsOn(buildPlugins.task(':java-library:check'))
+  dependsOn(buildPlugins.task(':publishing:check'))
+}
