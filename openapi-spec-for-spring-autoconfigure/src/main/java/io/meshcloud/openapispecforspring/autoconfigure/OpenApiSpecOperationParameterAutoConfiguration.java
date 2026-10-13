@@ -21,6 +21,8 @@
 
 package io.meshcloud.openapispecforspring.autoconfigure;
 
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
+import io.meshcloud.openapispecforspring.common.annotation.NullnessDetector;
 import io.meshcloud.openapispecforspring.common.filter.operation.parameter.OperationParameterPostFilter;
 import io.meshcloud.openapispecforspring.common.filter.operation.parameter.OperationParameterPreFilter;
 import io.meshcloud.openapispecforspring.common.mapper.ContentAnnotationMapper;
@@ -91,8 +93,9 @@ public class OpenApiSpecOperationParameterAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultOperationParameterDeprecatedCustomizer defaultOperationParameterDeprecatedCustomizer() {
-        return new DefaultOperationParameterDeprecatedCustomizer();
+    public DefaultOperationParameterDeprecatedCustomizer defaultOperationParameterDeprecatedCustomizer(
+            DeprecationDetector deprecationDetector) {
+        return new DefaultOperationParameterDeprecatedCustomizer(deprecationDetector);
     }
 
     @Bean
@@ -103,8 +106,9 @@ public class OpenApiSpecOperationParameterAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultOperationParameterNullableCustomizer defaultOperationParameterNullableCustomizer() {
-        return new DefaultOperationParameterNullableCustomizer();
+    public DefaultOperationParameterNullableCustomizer defaultOperationParameterNullableCustomizer(
+            NullnessDetector nullnessDetector) {
+        return new DefaultOperationParameterNullableCustomizer(nullnessDetector);
     }
 
     @Bean

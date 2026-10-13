@@ -23,9 +23,13 @@ package io.meshcloud.openapispecforspring.common.schema.customizer;
 
 import com.fasterxml.jackson.databind.JavaType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
 import io.meshcloud.openapispecforspring.model.media.Schema;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class SchemaCustomizerForDeprecated implements SchemaCustomizer {
+    private final DeprecationDetector deprecationDetector;
 
     @Override
     public void customize(
@@ -33,9 +37,8 @@ public class SchemaCustomizerForDeprecated implements SchemaCustomizer {
             JavaType javaType,
             AnnotationsSupplier annotationsSupplier,
             RecursiveResolver recursiveResolver) {
-        annotationsSupplier
-                .findAnnotations(Deprecated.class)
-                .findFirst()
-                .ifPresent(ignored -> schema.setDeprecated(true));
+        if (deprecationDetector.isDeprecated(annotationsSupplier)) {
+            schema.setDeprecated(true);
+        }
     }
 }

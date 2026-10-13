@@ -23,13 +23,13 @@ package io.meshcloud.openapispecforspring.common.schema.customizer;
 
 import com.fasterxml.jackson.databind.JavaType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
+import io.meshcloud.openapispecforspring.common.annotation.NullnessDetector;
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import java.lang.annotation.Annotation;
-import java.util.Optional;
-import org.springframework.util.ClassUtils;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class SchemaCustomizerForNullable implements SchemaCustomizer {
-    private static final String JSR305_NULLABLE_CLASS_NAME = "javax.annotation.Nullable";
+    private final NullnessDetector nullnessDetector;
 
     @Override
     public void customize(
@@ -37,17 +37,8 @@ public class SchemaCustomizerForNullable implements SchemaCustomizer {
             JavaType javaType,
             AnnotationsSupplier annotationsSupplier,
             RecursiveResolver recursiveResolver) {
-        findJsr305Nullable()
-                .flatMap(nullable ->
-                        annotationsSupplier.findAnnotations(nullable).findFirst())
-                .ifPresent(ignored -> schema.setNullable(true));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Optional<Class<? extends Annotation>> findJsr305Nullable() {
-        if (!ClassUtils.isPresent(JSR305_NULLABLE_CLASS_NAME, null)) {
-            return Optional.empty();
+        if (nullnessDetector.isNullable(annotationsSupplier)) {
+            schema.setNullable(true);
         }
-        return Optional.of((Class<? extends Annotation>) ClassUtils.resolveClassName(JSR305_NULLABLE_CLASS_NAME, null));
     }
 }

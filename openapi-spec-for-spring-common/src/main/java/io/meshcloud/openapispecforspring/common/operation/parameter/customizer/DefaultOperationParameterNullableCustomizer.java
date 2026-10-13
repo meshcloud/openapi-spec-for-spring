@@ -21,37 +21,22 @@
 
 package io.meshcloud.openapispecforspring.common.operation.parameter.customizer;
 
-import java.lang.annotation.Annotation;
-import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ClassUtils;
+import io.meshcloud.openapispecforspring.common.annotation.HasAnnotationsSupplier;
+import io.meshcloud.openapispecforspring.common.annotation.NullnessDetector;
+import lombok.RequiredArgsConstructor;
 
-@Slf4j
+@RequiredArgsConstructor
 public class DefaultOperationParameterNullableCustomizer implements OperationParameterCustomizer {
-    private static final String JSR305_NULLABLE_CLASS_NAME = "javax.annotation.Nullable";
+    private final NullnessDetector nullnessDetector;
 
     @Override
     public void customize(
             io.meshcloud.openapispecforspring.model.parameter.Parameter parameter,
             OperationParameterCustomizerContext context) {
-        findJsr305Nullable()
-                .flatMap(nullable -> context.getHandlerMethodParameter()
-                        .flatMap(handlerMethodParameter -> handlerMethodParameter
-                                .getAnnotationsSupplier()
-                                .findAnnotations(nullable)
-                                .findFirst()))
-                .ifPresent(ignored ->
-                        // always set the parameter as "not required",
-                        // as Spring is smart enough that if the parameter is marked as @Nullable,
-                        // the parameter can be omitted
-                        parameter.setRequired(false));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Optional<Class<? extends Annotation>> findJsr305Nullable() {
-        if (!ClassUtils.isPresent(JSR305_NULLABLE_CLASS_NAME, null)) {
-            return Optional.empty();
-        }
-        return Optional.of((Class<? extends Annotation>) ClassUtils.resolveClassName(JSR305_NULLABLE_CLASS_NAME, null));
+        context.getHandlerMethodParameter()
+                .map(HasAnnotationsSupplier::getAnnotationsSupplier)
+                .filter(nullnessDetector::isNullable)
+                // Spring lets the client omit a nullable parameter.
+                .ifPresent(ignored -> parameter.setRequired(false));
     }
 }

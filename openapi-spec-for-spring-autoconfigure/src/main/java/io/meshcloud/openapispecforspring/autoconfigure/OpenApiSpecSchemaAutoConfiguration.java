@@ -22,6 +22,8 @@
 package io.meshcloud.openapispecforspring.autoconfigure;
 
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
+import io.meshcloud.openapispecforspring.common.annotation.NullnessDetector;
 import io.meshcloud.openapispecforspring.common.mapper.ExtensionAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.mapper.ExternalDocumentationAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.mapper.ParsableValueMapper;
@@ -158,14 +160,14 @@ public class OpenApiSpecSchemaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SchemaCustomizerForNullable defaultSchemaCustomizerForNullable() {
-        return new SchemaCustomizerForNullable();
+    public SchemaCustomizerForNullable defaultSchemaCustomizerForNullable(NullnessDetector nullnessDetector) {
+        return new SchemaCustomizerForNullable(nullnessDetector);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SchemaCustomizerForDeprecated defaultSchemaCustomizerForDeprecated() {
-        return new SchemaCustomizerForDeprecated();
+    public SchemaCustomizerForDeprecated defaultSchemaCustomizerForDeprecated(DeprecationDetector deprecationDetector) {
+        return new SchemaCustomizerForDeprecated(deprecationDetector);
     }
 
     @Bean

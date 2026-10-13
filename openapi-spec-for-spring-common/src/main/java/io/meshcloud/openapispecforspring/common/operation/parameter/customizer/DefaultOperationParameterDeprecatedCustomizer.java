@@ -21,17 +21,21 @@
 
 package io.meshcloud.openapispecforspring.common.operation.parameter.customizer;
 
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
 import io.meshcloud.openapispecforspring.common.annotation.HasAnnotationsSupplier;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class DefaultOperationParameterDeprecatedCustomizer implements OperationParameterCustomizer {
+    private final DeprecationDetector deprecationDetector;
+
     @Override
     public void customize(
             io.meshcloud.openapispecforspring.model.parameter.Parameter parameter,
             OperationParameterCustomizerContext context) {
         context.getHandlerMethodParameter()
                 .map(HasAnnotationsSupplier::getAnnotationsSupplier)
-                .flatMap(annotationsSupplier ->
-                        annotationsSupplier.findAnnotations(Deprecated.class).findFirst())
+                .filter(deprecationDetector::isDeprecated)
                 .ifPresent(ignored -> parameter.setDeprecated(true));
     }
 }

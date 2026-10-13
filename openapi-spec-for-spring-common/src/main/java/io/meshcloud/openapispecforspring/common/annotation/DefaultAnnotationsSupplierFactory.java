@@ -22,14 +22,20 @@
 package io.meshcloud.openapispecforspring.common.annotation;
 
 import com.fasterxml.jackson.databind.introspect.AnnotatedMember;
+import com.fasterxml.jackson.databind.introspect.AnnotatedParameter;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.AnnotationFilter;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
@@ -93,13 +99,40 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
         protected abstract <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType);
     }
 
-    @RequiredArgsConstructor
     private static class AnnotationSupplierFromMember extends RepeatableContainerAwareAnnotationsSupplier {
         private final AnnotatedMember annotatedMember;
+        private final Optional<AnnotationsSupplierFromAnnotatedElement> typeUseAnnotationsSupplier;
+
+        AnnotationSupplierFromMember(AnnotatedMember annotatedMember) {
+            this.annotatedMember = annotatedMember;
+            this.typeUseAnnotationsSupplier =
+                    findAnnotatedType(annotatedMember).map(AnnotationsSupplierFromAnnotatedElement::new);
+        }
 
         @Override
         public <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType) {
-            return Optional.ofNullable(annotatedMember.getAnnotation(annotationType)).stream();
+            // Jackson only sees declaration annotations, which misses TYPE_USE annotations such as JSpecify's.
+            return Optional.ofNullable(annotatedMember.getAnnotation(annotationType))
+                    .or(() -> typeUseAnnotationsSupplier.flatMap(supplier ->
+                            supplier.findAnnotationsDelegate(annotationType).findFirst()))
+                    .stream();
+        }
+
+        private static Optional<AnnotatedType> findAnnotatedType(AnnotatedMember annotatedMember) {
+            if (annotatedMember instanceof AnnotatedParameter annotatedParameter
+                    && annotatedParameter.getOwner().getMember() instanceof Executable executable) {
+                Parameter[] parameters = executable.getParameters();
+                int index = annotatedParameter.getIndex();
+                return index < parameters.length ? Optional.of(parameters[index].getAnnotatedType()) : Optional.empty();
+            }
+            Member member = annotatedMember.getMember();
+            if (member instanceof Field field) {
+                return Optional.of(field.getAnnotatedType());
+            }
+            if (member instanceof Method method && method.getParameterCount() == 0) {
+                return Optional.of(method.getAnnotatedReturnType());
+            }
+            return Optional.empty();
         }
     }
 

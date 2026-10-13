@@ -23,6 +23,10 @@ package io.meshcloud.openapispecforspring.autoconfigure;
 
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
 import io.meshcloud.openapispecforspring.common.annotation.DefaultAnnotationsSupplierFactory;
+import io.meshcloud.openapispecforspring.common.annotation.DefaultDeprecationDetector;
+import io.meshcloud.openapispecforspring.common.annotation.DefaultNullnessDetector;
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
+import io.meshcloud.openapispecforspring.common.annotation.NullnessDetector;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 
@@ -31,5 +35,17 @@ public class OpenApiSpecAnnotationAutoConfiguration {
     @ConditionalOnMissingBean
     public AnnotationsSupplierFactory defaultAnnotationsSupplierFactory() {
         return new DefaultAnnotationsSupplierFactory();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public NullnessDetector defaultNullnessDetector() {
+        return new DefaultNullnessDetector();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DeprecationDetector defaultDeprecationDetector() {
+        return new DefaultDeprecationDetector();
     }
 }

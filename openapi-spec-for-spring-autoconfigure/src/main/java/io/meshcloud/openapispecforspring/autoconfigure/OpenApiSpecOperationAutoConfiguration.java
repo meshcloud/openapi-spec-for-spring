@@ -21,6 +21,7 @@
 
 package io.meshcloud.openapispecforspring.autoconfigure;
 
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
 import io.meshcloud.openapispecforspring.common.mapper.CallbackAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.mapper.MapperContext;
 import io.meshcloud.openapispecforspring.common.mapper.OperationAnnotationMapper;
@@ -77,8 +78,9 @@ public class OpenApiSpecOperationAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultDeprecatedOperationCustomizer defaultDeprecatedOperationCustomizer() {
-        return new DefaultDeprecatedOperationCustomizer();
+    public DefaultDeprecatedOperationCustomizer defaultDeprecatedOperationCustomizer(
+            DeprecationDetector deprecationDetector) {
+        return new DefaultDeprecatedOperationCustomizer(deprecationDetector);
     }
 
     @Bean

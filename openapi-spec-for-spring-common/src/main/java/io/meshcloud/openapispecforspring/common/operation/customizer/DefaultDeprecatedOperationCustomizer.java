@@ -21,7 +21,9 @@
 
 package io.meshcloud.openapispecforspring.common.operation.customizer;
 
+import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
 import io.meshcloud.openapispecforspring.common.operation.OperationBuilderContext;
+import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.operation.Operation;
 import lombok.RequiredArgsConstructor;
 
@@ -30,17 +32,17 @@ public class DefaultDeprecatedOperationCustomizer implements OperationCustomizer
 
     public static final int ORDER = DEFAULT_ORDER;
 
+    private final DeprecationDetector deprecationDetector;
+
     @Override
     public void customize(Operation operation, OperationBuilderContext operationBuilderContext) {
         if (operation.getDeprecated() != null) {
             return;
         }
-        operationBuilderContext
-                .getOperationInfo()
-                .getHandlerMethod()
-                .findAnnotations(Deprecated.class)
-                .findAny()
-                .ifPresent(ignored -> operation.setDeprecated(true));
+        HandlerMethod handlerMethod = operationBuilderContext.getOperationInfo().getHandlerMethod();
+        if (deprecationDetector.isDeprecated(handlerMethod::findAnnotations)) {
+            operation.setDeprecated(true);
+        }
     }
 
     @Override
