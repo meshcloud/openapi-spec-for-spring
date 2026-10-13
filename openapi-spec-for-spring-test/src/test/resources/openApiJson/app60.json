@@ -1,0 +1,86 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App60",
+    "version": "unknown"
+  },
+  "paths": {
+    "/schedule": {
+      "get": {
+        "operationId": "schedule",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60Controller.Schedule"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "string_date-time": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "string_duration": {
+        "type": "string",
+        "format": "duration"
+      },
+      "App60Controller.Schedule": {
+        "type": "object",
+        "properties": {
+          "instant": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "localDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "localDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "offsetDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "zonedDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "localTime": {
+            "type": "string"
+          },
+          "offsetTime": {
+            "type": "string"
+          },
+          "yearMonth": {
+            "type": "string"
+          },
+          "monthDay": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/string_duration"
+          },
+          "period": {
+            "$ref": "#/components/schemas/string_duration"
+          },
+          "zoneId": {
+            "type": "string"
+          },
+          "zoneOffset": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
