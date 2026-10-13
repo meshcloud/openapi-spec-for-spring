@@ -22,7 +22,7 @@
 package io.meshcloud.openapispecforspring.autoconfigure;
 
 import io.meshcloud.openapispecforspring.common.OpenApiConfigurationProperties;
-import io.meshcloud.openapispecforspring.common.OpenApiSpecGenerator;
+import io.meshcloud.openapispecforspring.common.OpenApiSpecBuilder;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
 import io.meshcloud.openapispecforspring.common.operation.parameter.DefaultOpenApiSpringWebParameterNameDiscoverer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.OpenApiSpringWebParameterNameDiscoverer;
@@ -49,12 +49,12 @@ public class OpenApiSpecWebAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public OpenApiResource openApiResource(
-            OpenApiSpecGenerator openApiSpecGenerator,
+            OpenApiSpecBuilder openApiSpecBuilder,
             OpenApiConfigurationProperties openApiConfigurationProperties,
             OpenApiObjectMapperSupplier openApiObjectMapperSupplier,
             Optional<OpenApiYamlMapper> openApiYamlMapper) {
         return new OpenApiResource(
-                openApiSpecGenerator,
+                openApiSpecBuilder,
                 openApiConfigurationProperties,
                 openApiObjectMapperSupplier,
                 openApiYamlMapper.orElse(null));

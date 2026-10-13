@@ -30,13 +30,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class OpenApiSpecGenerator {
+public class OpenApiSpecBuilder {
 
     private final PathsBuilder pathsBuilder;
     private final ReferencedItemSupportFactory referencedItemSupportFactory;
     private final List<OpenApiCustomizer> openApiCustomizers;
 
-    public OpenApi generateOpenApi() {
+    public OpenApi buildOpenApi() {
 
         ReferencedItemSupport referencedItemSupport = referencedItemSupportFactory.create();
         Paths paths = pathsBuilder.buildPaths(referencedItemSupport.getReferencedItemConsumerSupplier());

@@ -24,7 +24,7 @@ package io.meshcloud.openapispecforspring.autoconfigure;
 import io.meshcloud.openapispecforspring.common.DefaultOpenApiCustomizer;
 import io.meshcloud.openapispecforspring.common.OpenApiConfigurationProperties;
 import io.meshcloud.openapispecforspring.common.OpenApiCustomizer;
-import io.meshcloud.openapispecforspring.common.OpenApiSpecGenerator;
+import io.meshcloud.openapispecforspring.common.OpenApiSpecBuilder;
 import io.meshcloud.openapispecforspring.common.info.OpenApiInfoSupplier;
 import io.meshcloud.openapispecforspring.common.mapper.ExtensionAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.mapper.ExternalDocumentationAnnotationMapper;
@@ -59,11 +59,11 @@ public class OpenApiSpecAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public OpenApiSpecGenerator openApiSpecGenerator(
+    public OpenApiSpecBuilder openApiSpecBuilder(
             PathsBuilder pathsBuilder,
             ReferencedItemSupportFactory referencedItemSupportFactory,
             List<OpenApiCustomizer> openApiCustomizers) {
-        return new OpenApiSpecGenerator(pathsBuilder, referencedItemSupportFactory, openApiCustomizers);
+        return new OpenApiSpecBuilder(pathsBuilder, referencedItemSupportFactory, openApiCustomizers);
     }
 
     @Bean

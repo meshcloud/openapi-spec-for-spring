@@ -26,7 +26,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.meshcloud.openapispecforspring.common.OpenApiConfigurationProperties;
-import io.meshcloud.openapispecforspring.common.OpenApiSpecGenerator;
+import io.meshcloud.openapispecforspring.common.OpenApiSpecBuilder;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiYamlMapper;
 import io.meshcloud.openapispecforspring.model.OpenApi;
@@ -48,7 +48,7 @@ public class OpenApiResource {
         "application/yaml", "application/x-yaml", "text/yaml", "text/x-yaml", "text/vnd.yaml",
     };
 
-    private final OpenApiSpecGenerator openApiSpecGenerator;
+    private final OpenApiSpecBuilder openApiSpecBuilder;
     private final OpenApiConfigurationProperties properties;
     private final OpenApiObjectMapperSupplier objectMapperSupplier;
 
@@ -81,7 +81,7 @@ public class OpenApiResource {
     }
 
     public String getOpenApiAsJson() throws JsonProcessingException {
-        OpenApi openApi = openApiSpecGenerator.generateOpenApi();
+        OpenApi openApi = openApiSpecBuilder.buildOpenApi();
         return objectMapperSupplier.get(OPEN_API_JSON).writeValueAsString(openApi);
     }
 
@@ -89,7 +89,7 @@ public class OpenApiResource {
         if (openApiYamlMapper == null) {
             throw new OpenApiYamlNotSupportedException();
         }
-        OpenApi openApi = openApiSpecGenerator.generateOpenApi();
+        OpenApi openApi = openApiSpecBuilder.buildOpenApi();
         return openApiYamlMapper.map(openApi);
     }
 
