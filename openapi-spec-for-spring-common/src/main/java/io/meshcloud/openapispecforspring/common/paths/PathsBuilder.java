@@ -96,7 +96,7 @@ public class PathsBuilder {
                     PathItem pathItem = pathItemBuilder.build(pathPattern, mergedHandlerMethods);
                     if (isAcceptedByAllPathItemFilters(pathItem, pathPattern)) {
                         operationsById.addAll(pathItemBuilder.getOperationsById());
-                        paths.put(pathPattern, pathItem);
+                        paths.put(PathPatternVariables.withoutRegex(pathPattern), pathItem);
                     }
                 });
         resolveOperationIdConflicts(operationsById);
