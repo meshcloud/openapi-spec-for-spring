@@ -32,7 +32,6 @@ import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -65,12 +64,6 @@ public class SpringWebHandlerMethodParameterMerger {
                             return buildMergedParameter(parameterName, parameters, parameter -> {
                                 if (!handlerMethodsForParameters.containsAll(handlerMethods)) {
                                     parameter.setRequired(false); // otherwise, the Swagger UI doesn't work
-                                    if (parameter.getDescription() == null) {
-                                        parameter.setDescription("Only used by "
-                                                + handlerMethodsForParameters.stream()
-                                                        .map(HandlerMethod::getIdentifier)
-                                                        .collect(Collectors.joining(", ")));
-                                    }
                                 }
                             });
                         })
