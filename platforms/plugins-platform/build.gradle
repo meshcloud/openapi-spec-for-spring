@@ -10,9 +10,9 @@ group = 'io.meshcloud.openapi-spec-for-spring.platform'
 
 dependencies {
   constraints {
-    api('com.diffplug.spotless:spotless-plugin-gradle:8.9.0')
+    api('com.diffplug.spotless:spotless-plugin-gradle:8.10.3')
 
-    // 3.x, as Gradle 8 runs Groovy 3. CodeNarc 4 and the -groovy-4.0 builds need Groovy 4.
-    api('org.codenarc:CodeNarc:3.7.0')
+    // The -groovy-4.0 build matches the Groovy 4 that Gradle 9 runs.
+    api('org.codenarc:CodeNarc:3.7.0-groovy-4.0')
   }
 }
