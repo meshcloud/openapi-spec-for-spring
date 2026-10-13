@@ -25,12 +25,15 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.paths.method.AbstractSpringWebHandlerMethod.SpringWebParameter;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethod;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper.RequestBodyParameter;
 import io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,10 +45,11 @@ import org.apache.commons.lang3.tuple.Pair;
 public class SpringWebHandlerMethodParameterMerger {
 
     private final SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger;
+    private final SpringWebHandlerMethodRequestBodyParameterMapper requestBodyParameterMapper;
 
     public List<HandlerMethod.Parameter> mergeParameters(List<SpringWebHandlerMethod> handlerMethods) {
         return handlerMethods.stream()
-                .flatMap(handlerMethod -> handlerMethod.getParameters().stream()
+                .flatMap(handlerMethod -> parametersWithoutRequestBody(handlerMethod)
                         .map(parameter -> buildExtendedParameterPair(handlerMethod, parameter)))
                 .collect(OpenApiStreamUtils.groupingByPairKeyAndCollectingValuesToList())
                 .entrySet()
@@ -73,6 +77,15 @@ public class SpringWebHandlerMethodParameterMerger {
                         .orElseThrow(() -> new IllegalStateException(
                                 "Cannot merge handler methods with unnamed parameters: " + entry.getValue())))
                 .toList();
+    }
+
+    // SpringWebHandlerMethodRequestBodyMerger merges request bodies per consumed media type, so their types may differ.
+    private Stream<HandlerMethod.Parameter> parametersWithoutRequestBody(SpringWebHandlerMethod handlerMethod) {
+        Optional<HandlerMethod.Parameter> requestBody = requestBodyParameterMapper
+                .findRequestBodyParameter(handlerMethod)
+                .map(RequestBodyParameter::getParameter);
+        return handlerMethod.getParameters().stream()
+                .filter(parameter -> requestBody.filter(parameter::equals).isEmpty());
     }
 
     private Pair<Optional<String>, ExtendedParameter> buildExtendedParameterPair(
