@@ -167,9 +167,17 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         }
     }
 
+    protected Object groupingKey(T item) {
+        return item;
+    }
+
     private Stream<GroupedEntry> buildGroupedEntries() {
         return entries.stream()
-                .collect(Collectors.toMap(e -> e, this::createNewGroupedEntry, GroupedEntry::merge, LinkedHashMap::new))
+                .collect(Collectors.toMap(
+                        e -> groupingKey(e.getItem()),
+                        this::createNewGroupedEntry,
+                        GroupedEntry::merge,
+                        LinkedHashMap::new))
                 .values()
                 .stream();
     }

@@ -40,6 +40,6 @@ public class DefaultReferenceDeciderForSchema implements ReferenceDeciderForSche
     private boolean onlyTypeIsSet(Schema schema) {
         // check if the schema becomes "empty" once the type is also null
         // this is a little trick to avoid checking all other properties!
-        return schema.withType(null).isEmpty();
+        return schema.withType(null).withUseFacets(null).isEmpty();
     }
 }

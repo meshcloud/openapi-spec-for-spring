@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App71",
+    "version": "unknown"
+  },
+  "paths": {
+    "/visits": {
+      "get": {
+        "operationId": "visit",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App71Controller.Visit"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App71Controller.PetRef": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the pet"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Always pet"
+          }
+        }
+      },
+      "App71Controller.OwnerRef": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the owner"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Always owner"
+          }
+        }
+      },
+      "App71Controller.Visit": {
+        "type": "object",
+        "properties": {
+          "pet": {
+            "$ref": "#/components/schemas/App71Controller.PetRef"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/App71Controller.OwnerRef"
+          }
+        }
+      }
+    }
+  }
+}

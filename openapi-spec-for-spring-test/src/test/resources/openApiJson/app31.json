@@ -79,22 +79,16 @@
   },
   "components": {
     "schemas": {
-      "string_0": {
-        "type": "string",
-        "description": "Error code, machine-readable"
-      },
-      "string_1": {
-        "type": "string",
-        "description": "Error description, human-readable"
-      },
       "App31Controller.ErrorDto": {
         "type": "object",
         "properties": {
           "errorCode": {
-            "$ref": "#/components/schemas/string_0"
+            "type": "string",
+            "description": "Error code, machine-readable"
           },
           "errorDescription": {
-            "$ref": "#/components/schemas/string_1"
+            "type": "string",
+            "description": "Error description, human-readable"
           }
         }
       }

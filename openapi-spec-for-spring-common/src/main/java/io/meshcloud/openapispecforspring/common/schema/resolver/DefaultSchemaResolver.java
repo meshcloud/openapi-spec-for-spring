@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
+import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferenceDecisionAwareSchemaSetter;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferencedSchemaConsumer;
 import io.meshcloud.openapispecforspring.common.schema.customizer.SchemaCustomizer;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolver;
@@ -97,7 +98,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
     }
 
     @RequiredArgsConstructor
-    private class Context implements RecursiveSchemaBuilder {
+    private class Context implements NestedSchemaBuilder {
 
         private final Caller caller;
         private final ReferencedSchemaConsumer referencedSchemaConsumer;
@@ -105,12 +106,38 @@ public class DefaultSchemaResolver implements SchemaResolver {
         private final Map<TypeResolver.RecursionKey, Schema> knownSchemas = new LinkedHashMap<>();
         private final LinkedList<ReferencableSchema> referencableSchemas = new LinkedList<>();
 
-        @Override
-        public Schema buildSchemaFromTypeRecursively(JavaType javaType, AnnotationsSupplier annotationsSupplier) {
+        Schema buildSchemaFromTypeRecursively(JavaType javaType, AnnotationsSupplier annotationsSupplier) {
             InitialType initialType = buildInitialType(javaType, annotationsSupplier);
             Schema schema = buildInitialSchema(initialType);
             customizeSchema(schema, initialType);
             return runTypeResolvers(schema, initialType);
+        }
+
+        @Override
+        public NestedSchema buildNestedSchema(JavaType javaType, AnnotationsSupplier annotationsSupplier) {
+            InitialType initialType = buildInitialType(javaType, annotationsSupplier);
+            Schema schema = buildInitialSchema(initialType);
+            customizeSchema(schema, initialType);
+            Schema typeOnlySchema = buildCustomizedSchema(
+                    initialType,
+                    annotationsSupplierFactory.createFromAnnotatedElement(
+                            initialType.getType().getRawClass()));
+            Schema useFacets = SchemaUseFacets.moveDifferingFacets(schema, typeOnlySchema);
+            boolean initialTypeBuilderReplacedAnnotations = initialType.getAnnotationsSupplier() != annotationsSupplier;
+            if (initialTypeBuilderReplacedAnnotations) {
+                SchemaUseFacets.addMissing(
+                        useFacets,
+                        SchemaUseFacets.moveDifferingFacets(
+                                buildCustomizedSchema(initialType, annotationsSupplier), typeOnlySchema));
+            }
+            return new NestedSchema(runTypeResolvers(schema, initialType), useFacets);
+        }
+
+        private Schema buildCustomizedSchema(InitialType initialType, AnnotationsSupplier annotationsSupplier) {
+            Schema schema = buildInitialSchema(initialType);
+            schemaCustomizers.forEach(customizer ->
+                    customizer.customize(schema, initialType.getType(), annotationsSupplier, (clazz, setter) -> {}));
+            return schema;
         }
 
         private Schema runTypeResolvers(Schema schema, InitialType initialType) {
@@ -235,8 +262,37 @@ public class DefaultSchemaResolver implements SchemaResolver {
     }
 
     @FunctionalInterface
-    private interface RecursiveSchemaBuilder {
-        Schema buildSchemaFromTypeRecursively(JavaType javaType, AnnotationsSupplier annotationsSupplier);
+    private interface NestedSchemaBuilder {
+        NestedSchema buildNestedSchema(JavaType javaType, AnnotationsSupplier annotationsSupplier);
+    }
+
+    private record NestedSchema(Schema schema, Schema useFacets) {}
+
+    // The facets go onto an inline schema only once the storage has compared the schemas, so that schemas which
+    // differ only in their use still share one component.
+    @RequiredArgsConstructor
+    private static class UseFacetsApplyingSetter implements ReferenceDecisionAwareSchemaSetter {
+        private final Schema schema;
+        private final Schema useFacets;
+        private final Consumer<Schema> schemaConsumer;
+        private boolean referenced;
+
+        @Override
+        public void accept(Schema schemaOrReference) {
+            if (schemaOrReference.getRef() != null) {
+                referenced = true;
+                schemaConsumer.accept(SchemaUseFacets.wrapReference(useFacets, schemaOrReference));
+            } else {
+                schemaConsumer.accept(schemaOrReference);
+            }
+        }
+
+        @Override
+        public void afterReferencesDecided() {
+            if (!referenced) {
+                SchemaUseFacets.copyInto(useFacets, schema);
+            }
+        }
     }
 
     @RequiredArgsConstructor(staticName = "of")
@@ -254,11 +310,18 @@ public class DefaultSchemaResolver implements SchemaResolver {
         private final Consumer<Schema> schemaConsumer;
         private final boolean mustBeReferenced;
 
-        ReferencableSchema run(RecursiveSchemaBuilder recursiveSchemaBuilder) {
-            Schema schema = recursiveSchemaBuilder.buildSchemaFromTypeRecursively(javaType, annotationsSupplier);
+        ReferencableSchema run(NestedSchemaBuilder nestedSchemaBuilder) {
+            NestedSchema nestedSchema = nestedSchemaBuilder.buildNestedSchema(javaType, annotationsSupplier);
+            Schema schema = nestedSchema.schema();
+            if (!nestedSchema.useFacets().isEmpty()) {
+                schema.setUseFacets(nestedSchema.useFacets());
+            }
             LOGGER.debug("Setting {}", logPretty(schema));
             schemaConsumer.accept(schema);
-            return ReferencableSchema.of(schema, schemaConsumer, mustBeReferenced);
+            return ReferencableSchema.of(
+                    schema,
+                    new UseFacetsApplyingSetter(schema, nestedSchema.useFacets(), schemaConsumer),
+                    mustBeReferenced);
         }
     }
 
@@ -270,6 +333,11 @@ public class DefaultSchemaResolver implements SchemaResolver {
 
         @EqualsAndHashCode.Include
         private final TypeResolver.RecursionKey recursionKey;
+
+        @EqualsAndHashCode.Include
+        private @Nullable Schema includedUseFacets() {
+            return getUseFacets();
+        }
 
         public static Schema unwrap(Schema schema) {
             if (schema instanceof RecursiveSchema recursiveSchema) {

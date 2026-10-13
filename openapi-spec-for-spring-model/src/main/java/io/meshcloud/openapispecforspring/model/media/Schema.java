@@ -54,6 +54,12 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
     @EqualsAndHashCode.Exclude
     private String name;
 
+    // Facets that a property puts on this schema. They count for the equality of the schema that owns the property,
+    // so two objects whose properties differ only in their descriptions stay two components.
+    @JsonIgnore
+    @With
+    private Schema useFacets;
+
     @JsonProperty("default")
     private Object defaultValue;
 
