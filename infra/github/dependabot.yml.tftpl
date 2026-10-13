@@ -1,0 +1,59 @@
+# Managed by infra/github/dependabot.tf: change infra/github/dependabot.yml.tftpl and apply.
+version: 2
+
+# target-branch takes a single branch, so each maintained branch gets its own block per ecosystem.
+updates:
+%{ for branch_name, branch in branches ~}
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: ${branch_name}
+    schedule:
+      interval: weekly
+    # A compromised release is usually pulled within days of publication.
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+          - major
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: gradle
+    directories:
+      - /
+      - /build-plugins
+      - /platforms
+    target-branch: ${branch_name}
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      gradle:
+        patterns:
+          - "*"
+    # ${branch.ignored_majors.reason}
+    ignore:
+%{ for dependency in branch.ignored_majors.dependencies ~}
+      - dependency-name: "${dependency}"
+        update-types:
+          - version-update:semver-major
+%{ endfor ~}
+    commit-message:
+      prefix: chore
+
+%{ endfor ~}
+  - package-ecosystem: terraform
+    directory: /infra/github
+    target-branch: ${default_branch}
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: chore

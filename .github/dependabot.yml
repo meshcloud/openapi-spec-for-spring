@@ -1,3 +1,4 @@
+# Managed by infra/github/dependabot.tf: change infra/github/dependabot.yml.tftpl and apply.
 version: 2
 
 # target-branch takes a single branch, so each maintained branch gets its own block per ecosystem.
@@ -46,5 +47,15 @@ updates:
       - dependency-name: "tools.jackson*"
         update-types:
           - version-update:semver-major
+    commit-message:
+      prefix: chore
+
+  - package-ecosystem: terraform
+    directory: /infra/github
+    target-branch: spring-boot-3.x
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: chore
