@@ -6,4 +6,5 @@ description = 'OpenAPI Spec for Spring :: Starter'
 
 dependencies {
   api(project(':openapi-spec-for-spring-webmvc'))
+  api(project(':openapi-spec-for-spring-hateoas'))
 }

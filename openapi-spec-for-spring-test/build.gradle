@@ -13,9 +13,11 @@ dependencies {
   implementation(project(':openapi-spec-for-spring-autoconfigure'))
   implementation(project(':openapi-spec-for-spring-web'))
   implementation(project(':openapi-spec-for-spring-webmvc'))
+  implementation(project(':openapi-spec-for-spring-hateoas'))
 
   testImplementation('org.springframework.boot:spring-boot-starter-web')
   testImplementation('org.springframework.boot:spring-boot-starter-security')
+  testImplementation('org.springframework.boot:spring-boot-starter-hateoas')
   testImplementation('commons-io:commons-io')
   testImplementation('com.google.code.findbugs:jsr305')
   testImplementation('jakarta.servlet:jakarta.servlet-api')
