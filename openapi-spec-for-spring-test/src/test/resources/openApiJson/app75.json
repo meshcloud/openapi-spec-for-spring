@@ -1,0 +1,100 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App75",
+    "version": "unknown"
+  },
+  "paths": {
+    "/zoo": {
+      "get": {
+        "operationId": "getZoo",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App75Controller.Zoo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App75Controller.Animal": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "An animal of the zoo"
+      },
+      "MapOfApp75Controller.Animal": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/App75Controller.Animal"
+        }
+      },
+      "MapOfList": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/App75Controller.Animal"
+          }
+        }
+      },
+      "App75Controller.Keeper": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "MapOfApp75Controller.Keeper": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/App75Controller.Keeper"
+        }
+      },
+      "App75Controller.Zoo": {
+        "type": "object",
+        "properties": {
+          "animalsByName": {
+            "description": "Animals by their name",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp75Controller.Animal"
+              }
+            ]
+          },
+          "animalsByEnclosure": {
+            "description": "Animals by their enclosure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp75Controller.Animal"
+              }
+            ]
+          },
+          "animalsBySpecies": {
+            "$ref": "#/components/schemas/MapOfList"
+          },
+          "keepersByShift": {
+            "description": "Keepers by shift",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp75Controller.Keeper"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
