@@ -77,6 +77,15 @@ public class InitialSchemaBuilderForPrimitiveTypes implements InitialSchemaBuild
         putValueForKeys(map, getNumberSchemaSupplier("double"), Double.class, Double.TYPE);
         putValueForKeys(map, getIntegerSchemaSupplier(null), BigInteger.class);
         putValueForKeys(map, getNumberSchemaSupplier(null), BigDecimal.class, Number.class);
+        putValueForKeys(
+                map,
+                getStringSchemaSupplier(null),
+                Class.class,
+                java.util.Locale.class,
+                java.util.TimeZone.class,
+                java.util.Currency.class,
+                java.nio.charset.Charset.class,
+                java.util.regex.Pattern.class);
         putValueForKeys(map, getBinaryStringSchemaSupplier(), java.io.File.class);
         putValueForKeys(map, getBinaryStringSchemaSupplier(), java.io.InputStream.class);
         putValueForKeys(map, getBinaryStringSchemaSupplier(), InputStreamResource.class);
