@@ -30,14 +30,18 @@ import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMet
 import io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -47,6 +51,11 @@ public class SpringWebHandlerMethodParameterMerger {
     private final SpringWebHandlerMethodRequestBodyParameterMapper requestBodyParameterMapper;
 
     public List<HandlerMethod.Parameter> mergeParameters(List<SpringWebHandlerMethod> handlerMethods) {
+        Map<Optional<String>, Set<HandlerMethod>> handlerMethodsByParameterName = handlerMethods.stream()
+                .flatMap(handlerMethod -> parametersWithoutRequestBody(handlerMethod)
+                        .map(parameter -> Pair.of(parameter.getName(), (HandlerMethod) handlerMethod)))
+                .collect(OpenApiStreamUtils.groupingByPairKeyAndCollectingValuesTo(Collectors.toSet()));
+        // parameters whose types differ stay apart, the operation builder merges their schemas
         return handlerMethods.stream()
                 .flatMap(handlerMethod -> parametersWithoutRequestBody(handlerMethod)
                         .map(parameter -> buildExtendedParameterPair(handlerMethod, parameter)))
@@ -54,15 +63,16 @@ public class SpringWebHandlerMethodParameterMerger {
                 .entrySet()
                 .stream()
                 .map(entry -> entry.getKey()
+                        .name()
                         .map(parameterName -> {
                             val parameters = entry.getValue().stream()
                                     .map(ExtendedParameter::getParameter)
                                     .toList();
-                            val handlerMethodsForParameters = entry.getValue().stream()
-                                    .map(ExtendedParameter::getOwningHandlerMethod)
-                                    .toList();
+                            boolean inEveryHandlerMethod = handlerMethodsByParameterName
+                                    .getOrDefault(entry.getKey().name(), Set.of())
+                                    .containsAll(handlerMethods);
                             return buildMergedParameter(parameterName, parameters, parameter -> {
-                                if (!handlerMethodsForParameters.containsAll(handlerMethods)) {
+                                if (!inEveryHandlerMethod) {
                                     parameter.setRequired(false); // otherwise, the Swagger UI doesn't work
                                 }
                             });
@@ -81,10 +91,16 @@ public class SpringWebHandlerMethodParameterMerger {
                 .filter(parameter -> requestBody.filter(parameter::equals).isEmpty());
     }
 
-    private Pair<Optional<String>, ExtendedParameter> buildExtendedParameterPair(
+    private Pair<NameAndType, ExtendedParameter> buildExtendedParameterPair(
             SpringWebHandlerMethod handlerMethod, HandlerMethod.Parameter parameter) {
-        return Pair.of(parameter.getName(), ExtendedParameter.of(parameter, handlerMethod));
+        return Pair.of(
+                new NameAndType(
+                        parameter.getName(),
+                        parameter.getType().map(HandlerMethod.Type::getType).orElse(null)),
+                ExtendedParameter.of(parameter, handlerMethod));
     }
+
+    private record NameAndType(Optional<String> name, java.lang.reflect.@Nullable Type type) {}
 
     private HandlerMethod.Parameter buildMergedParameter(
             String parameterName, List<HandlerMethod.Parameter> parameters, Consumer<Parameter> parameterCustomizer) {

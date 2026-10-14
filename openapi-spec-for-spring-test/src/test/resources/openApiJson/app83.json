@@ -1,0 +1,58 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App83",
+    "version": "unknown"
+  },
+  "paths": {
+    "/readings": {
+      "get": {
+        "operationId": "readingsV_1_2",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.readings.v1+json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/vnd.readings.v2+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -29,6 +29,7 @@ import io.meshcloud.openapispecforspring.common.filter.operation.parameter.Opera
 import io.meshcloud.openapispecforspring.common.filter.operation.parameter.OperationParameterPreFilter;
 import io.meshcloud.openapispecforspring.common.mapper.ParameterAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.operation.OperationBuilderContext;
+import io.meshcloud.openapispecforspring.common.operation.OperationInfo;
 import io.meshcloud.openapispecforspring.common.operation.customizer.OperationCustomizer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.converter.ParameterMethodConverter;
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.OperationParameterCustomizer;
@@ -36,26 +37,32 @@ import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.O
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.reference.component.parameter.ReferencedParametersConsumer;
 import io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils;
+import io.meshcloud.openapispecforspring.model.media.Schema;
 import io.meshcloud.openapispecforspring.model.operation.Operation;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultOperationParameterCustomizer implements OperationCustomizer {
 
     public static final int ORDER = DEFAULT_ORDER;
+
+    private static final String STRING = "string";
 
     private final List<OperationParameterPreFilter> parameterPreFilters;
     private final List<OperationParameterPostFilter> parameterPostFilters;
@@ -116,7 +123,107 @@ public class DefaultOperationParameterCustomizer implements OperationCustomizer 
             setIfNotEmpty(parameter, parameters::add);
         });
 
-        return preferRequiredParameters(parameters);
+        return preferRequiredParameters(
+                mergeParametersWithSameNameAndLocation(parameters, operationBuilderContext.getOperationInfo()));
+    }
+
+    // Handler methods merged by their produced media types can each bring the same request parameter, for example
+    // a path variable bound to differently named method parameters.
+    private static List<Parameter> mergeParametersWithSameNameAndLocation(
+            List<Parameter> parameters, OperationInfo operationInfo) {
+        return parameters.stream()
+                .collect(Collectors.groupingBy(
+                        parameter -> Pair.of(parameter.getIn(), parameter.getName()),
+                        LinkedHashMap::new,
+                        Collectors.toList()))
+                .values()
+                .stream()
+                .map(sameParameters -> sameParameters.size() == 1
+                        ? sameParameters.get(0)
+                        : mergeParameters(sameParameters, operationInfo))
+                .toList();
+    }
+
+    private static Parameter mergeParameters(List<Parameter> parameters, OperationInfo operationInfo) {
+        Parameter first = parameters.get(0);
+        if (parameters.stream()
+                        .map(DefaultOperationParameterCustomizer::copyWithoutMergedFields)
+                        .distinct()
+                        .count()
+                > 1) {
+            throw cannotMerge(
+                    first, operationInfo, "they differ in more than description, required, deprecated and schema");
+        }
+        Parameter merged;
+        List<Schema> schemas =
+                parameters.stream().map(Parameter::getSchema).distinct().toList();
+        if (schemas.size() == 1) {
+            // keeps the schema, which may still become a reference
+            merged = first;
+        } else if (schemas.contains(null)) {
+            throw cannotMerge(first, operationInfo, "only some of them have a schema");
+        } else {
+            merged = copyWithoutMergedFields(first);
+            merged.setSchema(buildUnion(schemas));
+        }
+        merged.setDescription(mergeDescriptions(parameters));
+        merged.setRequired(
+                "path".equals(first.getIn()) || parameters.stream().allMatch(p -> Boolean.TRUE.equals(p.getRequired()))
+                        ? Boolean.TRUE
+                        : null);
+        merged.setDeprecated(
+                parameters.stream().allMatch(p -> Boolean.TRUE.equals(p.getDeprecated())) ? Boolean.TRUE : null);
+        return merged;
+    }
+
+    private static Parameter copyWithoutMergedFields(Parameter parameter) {
+        return Parameter.builder()
+                .name(parameter.getName())
+                .in(parameter.getIn())
+                .allowEmptyValue(parameter.getAllowEmptyValue())
+                .ref(parameter.getRef())
+                .style(parameter.getStyle())
+                .explode(parameter.getExplode())
+                .allowReserved(parameter.getAllowReserved())
+                .examples(parameter.getExamples())
+                .example(parameter.getExample())
+                .content(parameter.getContent())
+                .extensions(parameter.getExtensions())
+                .build();
+    }
+
+    private static Schema buildUnion(List<Schema> schemas) {
+        if (schemas.stream().anyMatch(DefaultOperationParameterCustomizer::isUnconstrainedString)
+                && schemas.stream().allMatch(schema -> STRING.equals(schema.getType()))) {
+            return Schema.builder().type(STRING).build();
+        }
+        return Schema.builder().anyOf(schemas).build();
+    }
+
+    private static boolean isUnconstrainedString(Schema schema) {
+        return STRING.equals(schema.getType())
+                && schema.getRef() == null
+                && schema.getFormat() == null
+                && schema.getPattern() == null
+                && schema.getEnumValues() == null
+                && schema.getMinLength() == null
+                && schema.getMaxLength() == null;
+    }
+
+    @Nullable
+    private static String mergeDescriptions(List<Parameter> parameters) {
+        String descriptions = parameters.stream()
+                .map(Parameter::getDescription)
+                .filter(description -> description != null && !description.isBlank())
+                .distinct()
+                .collect(Collectors.joining("\n\n"));
+        return descriptions.isEmpty() ? null : descriptions;
+    }
+
+    private static IllegalStateException cannotMerge(Parameter parameter, OperationInfo operationInfo, String reason) {
+        return new IllegalStateException("Cannot merge the parameters named " + parameter.getName() + " in "
+                + parameter.getIn() + " of " + operationInfo.getRequestMethod() + " " + operationInfo.getPathPattern()
+                + ", because " + reason);
     }
 
     private static List<Parameter> preferRequiredParameters(List<Parameter> parameters) {
