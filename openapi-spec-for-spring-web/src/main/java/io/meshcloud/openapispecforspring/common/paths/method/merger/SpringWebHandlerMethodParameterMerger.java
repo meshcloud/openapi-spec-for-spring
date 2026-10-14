@@ -108,9 +108,13 @@ public class SpringWebHandlerMethodParameterMerger {
         val mergedType = springWebHandlerMethodTypeMerger
                 .mergeTypes(parameters.stream())
                 .orElseThrow(() -> new IllegalStateException("Grouped parameters should contain at least one entry"));
-        return new SpringWebParameter(parameterName, mergedType, mergedAnnotationsSupplier) {
+        boolean optional = parameters.stream()
+                .anyMatch(parameter ->
+                        parameter instanceof SpringWebParameter springWebParameter && springWebParameter.isOptional());
+        return new SpringWebParameter(parameterName, mergedType, mergedAnnotationsSupplier, optional) {
             @Override
             public void customize(Parameter parameter) {
+                super.customize(parameter);
                 parameterCustomizer.accept(parameter);
             }
         };

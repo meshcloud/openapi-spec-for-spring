@@ -109,6 +109,7 @@ public class DefaultSpringWebHandlerMethodBuilder implements SpringWebHandlerMet
                     public <A extends Annotation> Stream<A> findAnnotations(Class<A> annotationType) {
                         return Optional.ofNullable(parameter.getParameterAnnotation(annotationType)).stream();
                     }
-                });
+                },
+                parameter.isOptional());
     }
 }

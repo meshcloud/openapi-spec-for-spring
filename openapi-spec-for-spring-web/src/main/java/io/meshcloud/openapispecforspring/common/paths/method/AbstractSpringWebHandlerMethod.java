@@ -26,6 +26,7 @@ import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.media.Content;
 import io.meshcloud.openapispecforspring.model.response.ApiResponse;
 import io.meshcloud.openapispecforspring.model.trait.HasIsEmpty;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -61,6 +62,14 @@ public abstract class AbstractSpringWebHandlerMethod implements HandlerMethod {
         @Getter
         private final AnnotationsSupplier annotationsSupplier;
 
+        @Getter
+        private final boolean optional;
+
+        public SpringWebParameter(
+                @Nullable String parameterName, Type parameterType, AnnotationsSupplier annotationsSupplier) {
+            this(parameterName, parameterType, annotationsSupplier, false);
+        }
+
         @Override
         public Optional<String> getName() {
             return Optional.ofNullable(parameterName);
@@ -69,6 +78,13 @@ public abstract class AbstractSpringWebHandlerMethod implements HandlerMethod {
         @Override
         public Optional<Type> getType() {
             return Optional.of(parameterType);
+        }
+
+        @Override
+        public void customize(io.meshcloud.openapispecforspring.model.parameter.Parameter parameter) {
+            if (optional && !ParameterIn.PATH.toString().equals(parameter.getIn())) {
+                parameter.setRequired(false);
+            }
         }
     }
 
