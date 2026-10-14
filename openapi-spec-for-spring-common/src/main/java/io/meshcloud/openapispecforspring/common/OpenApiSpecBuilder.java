@@ -24,6 +24,7 @@ package io.meshcloud.openapispecforspring.common;
 import io.meshcloud.openapispecforspring.common.paths.PathsBuilder;
 import io.meshcloud.openapispecforspring.common.reference.ReferencedItemSupport;
 import io.meshcloud.openapispecforspring.common.reference.ReferencedItemSupportFactory;
+import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaBuildMemo;
 import io.meshcloud.openapispecforspring.model.OpenApi;
 import io.meshcloud.openapispecforspring.model.path.Paths;
 import java.util.List;
@@ -37,6 +38,10 @@ public class OpenApiSpecBuilder {
     private final List<OpenApiCustomizer> openApiCustomizers;
 
     public OpenApi buildOpenApi() {
+        return SchemaBuildMemo.during(this::build);
+    }
+
+    private OpenApi build() {
 
         ReferencedItemSupport referencedItemSupport = referencedItemSupportFactory.create();
         Paths paths = pathsBuilder.buildPaths(referencedItemSupport.getReferencedItemConsumerSupplier());

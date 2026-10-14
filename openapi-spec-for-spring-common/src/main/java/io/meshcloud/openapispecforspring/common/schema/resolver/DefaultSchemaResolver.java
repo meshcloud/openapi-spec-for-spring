@@ -118,17 +118,19 @@ public class DefaultSchemaResolver implements SchemaResolver {
             InitialType initialType = buildInitialType(javaType, annotationsSupplier);
             Schema schema = buildInitialSchema(initialType);
             customizeSchema(schema, initialType);
-            Schema typeOnlySchema = buildCustomizedSchema(
-                    initialType,
-                    annotationsSupplierFactory.createFromAnnotatedElement(
-                            initialType.getType().getRawClass()));
-            Schema useFacets = SchemaUseFacets.moveDifferingFacets(schema, typeOnlySchema);
+            SchemaUseFacets.TypeFacets typeFacets = SchemaBuildMemo.computeIfAbsent(
+                    new TypeFacetsKey(initialType.getType(), caller.getMode()),
+                    () -> SchemaUseFacets.TypeFacets.of(buildCustomizedSchema(
+                            initialType,
+                            annotationsSupplierFactory.createFromAnnotatedElement(
+                                    initialType.getType().getRawClass()))));
+            Schema useFacets = SchemaUseFacets.moveDifferingFacets(schema, typeFacets);
             boolean initialTypeBuilderReplacedAnnotations = initialType.getAnnotationsSupplier() != annotationsSupplier;
             if (initialTypeBuilderReplacedAnnotations) {
                 SchemaUseFacets.addMissing(
                         useFacets,
                         SchemaUseFacets.moveDifferingFacets(
-                                buildCustomizedSchema(initialType, annotationsSupplier), typeOnlySchema));
+                                buildCustomizedSchema(initialType, annotationsSupplier), typeFacets));
             }
             return new NestedSchema(runTypeResolvers(schema, initialType), useFacets);
         }
@@ -271,6 +273,8 @@ public class DefaultSchemaResolver implements SchemaResolver {
     }
 
     private record NestedSchema(Schema schema, Schema useFacets) {}
+
+    private record TypeFacetsKey(JavaType javaType, Mode mode) {}
 
     // The facets go onto an inline schema only once the storage has compared the schemas, so that schemas which
     // differ only in their use still share one component.
