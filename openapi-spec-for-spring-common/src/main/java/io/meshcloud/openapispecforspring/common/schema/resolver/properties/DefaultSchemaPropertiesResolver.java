@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
+import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaBuildMemo;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils;
@@ -41,6 +42,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,6 +72,13 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
     @Override
     public Map<String, SchemaProperty> findProperties(
             SchemaResolver.Caller caller, JavaType javaType, AnnotationsSupplier annotationsSupplier) {
+        return SchemaBuildMemo.computeIfAbsent(
+                new PropertiesKey(javaType, caller.getMode()), () -> findPropertiesOfType(caller, javaType));
+    }
+
+    private Map<String, SchemaProperty> findPropertiesOfType(SchemaResolver.Caller caller, JavaType javaType) {
+        AnnotationsSupplier annotationsSupplier =
+                annotationsSupplierFactory.createFromAnnotatedElement(javaType.getRawClass());
         SchemaResolver.Mode otherMode = caller.getMode() == SchemaResolver.Mode.FOR_SERIALIZATION
                 ? SchemaResolver.Mode.FOR_DESERIALIZATION
                 : SchemaResolver.Mode.FOR_SERIALIZATION;
@@ -84,7 +93,7 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
                 allProperties.put(name, withOnlyMode(property, otherMode));
             }
         });
-        return allProperties;
+        return Collections.unmodifiableMap(allProperties);
     }
 
     private static final AnnotationsSupplier KOTLIN_NULLABLE = new AnnotationsSupplier() {
@@ -186,6 +195,8 @@ public class DefaultSchemaPropertiesResolver implements SchemaPropertiesResolver
                     return null;
                 });
     }
+
+    private record PropertiesKey(JavaType javaType, SchemaResolver.Mode mode) {}
 
     @RequiredArgsConstructor(staticName = "of")
     @Getter
