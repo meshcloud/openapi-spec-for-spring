@@ -1,0 +1,244 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App87",
+    "version": "unknown"
+  },
+  "paths": {
+    "/setting": {
+      "get": {
+        "operationId": "getSetting",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App87SettingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveSetting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App87SettingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "integer_int64": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "App87SecretResponse": {
+        "required": [
+          "hash",
+          "plaintext"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "readOnly": true
+          },
+          "plaintext": {
+            "type": "string",
+            "writeOnly": true
+          }
+        }
+      },
+      "App87SecretRequest": {
+        "required": [
+          "plaintext",
+          "hash"
+        ],
+        "type": "object",
+        "properties": {
+          "plaintext": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "hash": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "App87ShelfRef": {
+        "required": [
+          "shelfId"
+        ],
+        "type": "object",
+        "properties": {
+          "shelfId": {
+            "type": "string"
+          }
+        }
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App87RoomResponse": {
+        "required": [
+          "floor"
+        ],
+        "type": "object",
+        "properties": {
+          "floor": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App87RoomRequest": {
+        "type": "object",
+        "properties": {
+          "floor": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App87LocationResponse": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App87RoomResponse"
+          },
+          {
+            "$ref": "#/components/schemas/App87ShelfRef"
+          }
+        ]
+      },
+      "App87LocationRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App87RoomRequest"
+          },
+          {
+            "$ref": "#/components/schemas/App87ShelfRef"
+          }
+        ]
+      },
+      "App87SettingResponse": {
+        "required": [
+          "key",
+          "fallback",
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/integer_int64"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "$ref": "#/components/schemas/array_string"
+              },
+              {
+                "$ref": "#/components/schemas/App87SecretResponse"
+              },
+              {
+                "$ref": "#/components/schemas/App87ShelfRef"
+              }
+            ]
+          },
+          "fallback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/App87ShelfRef"
+              }
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/App87LocationResponse"
+          }
+        }
+      },
+      "App87SettingRequest": {
+        "required": [
+          "key",
+          "fallback",
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/integer_int64"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "$ref": "#/components/schemas/array_string"
+              },
+              {
+                "$ref": "#/components/schemas/App87SecretRequest"
+              },
+              {
+                "$ref": "#/components/schemas/App87ShelfRef"
+              }
+            ]
+          },
+          "fallback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/App87ShelfRef"
+              }
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/App87LocationRequest"
+          }
+        }
+      }
+    }
+  }
+}
