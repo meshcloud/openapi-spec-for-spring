@@ -115,6 +115,33 @@ resource "github_repository_ruleset" "protect_branch" {
   }
 }
 
+resource "github_repository_ruleset" "restrict_branch_creation" {
+  repository  = github_repository.this.name
+  name        = "Restrict creating spring-boot branches"
+  target      = "branch"
+  enforcement = "active"
+
+  dynamic "bypass_actors" {
+    for_each = local.admin_bypass_actors
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = "always"
+    }
+  }
+
+  conditions {
+    ref_name {
+      include = ["refs/heads/spring-boot-*"]
+      exclude = []
+    }
+  }
+
+  rules {
+    creation = true
+  }
+}
+
 resource "github_repository_ruleset" "protect_release_tags" {
   repository  = github_repository.this.name
   name        = "Protect release tags"

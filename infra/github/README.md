@@ -7,6 +7,7 @@ This OpenTofu module manages the GitHub repository `meshcloud/openapi-spec-for-s
 - a ruleset for each maintained branch (`spring-boot-3.x`, `spring-boot-4.x`): no deletion, no force push,
   linear history, a pull request merged by rebase, a passing `build` check, and Conventional Commits
   headers (scope and `!` allowed)
+- a ruleset that lets only org and repository admins create a branch `spring-boot-*`
 - a ruleset that makes the release tags `spring-boot-*-v*` immutable
 - `.github/dependabot.yml` on the default branch, rendered from `dependabot.yml.tftpl` with one block per
   maintained branch that has `dependabot = true`
@@ -14,7 +15,8 @@ This OpenTofu module manages the GitHub repository `meshcloud/openapi-spec-for-s
 Change `.github/dependabot.yml` only through the template and the branch list in `main.tf`, then apply. The
 apply commits the file to the default branch. A plan shows a diff when someone edits the file directly.
 
-A ruleset for a branch that does not exist yet applies as soon as someone creates the branch.
+A ruleset for a branch that does not exist yet applies as soon as someone creates the branch. For a new maintained
+branch, add it to `maintained_branches`, apply, and then an org or repository admin creates the branch.
 
 ## Apply
 
