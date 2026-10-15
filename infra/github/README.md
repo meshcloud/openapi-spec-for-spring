@@ -18,7 +18,7 @@ A ruleset for a branch that does not exist yet applies as soon as someone create
 
 ## Apply
 
-A meshcloud org admin applies the module by hand. Org admins bypass the branch rules, so the apply can
+A meshcloud org admin or a repository admin applies the module by hand. Both bypass every ruleset, so the apply can
 commit `.github/dependabot.yml` without a pull request. The token needs the `repo` scope; a fine-grained token
 needs the permissions "Administration" and "Contents" (read and write) on the repository, and creating the
 repository needs an org member allowed to create public repositories.
