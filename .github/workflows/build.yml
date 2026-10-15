@@ -3,10 +3,10 @@ name: build
 on:
   pull_request:
     branches:
-      - 'spring-boot-*'
+      - 'spring-boot-[0-9]+.x'
   push:
     branches:
-      - 'spring-boot-*'
+      - 'spring-boot-[0-9]+.x'
 
 permissions:
   contents: read
