@@ -91,7 +91,7 @@ resource "github_repository_ruleset" "protect_branch" {
     commit_message_pattern {
       name     = "Conventional Commits header"
       operator = "regex"
-      pattern  = "^(feat|fix|ci|chore|docs|test|style|refactor|config|hotfix)(\\([a-z0-9._/-]+\\))?!?: .+"
+      pattern  = "^(feat|fix|perf|ci|chore|docs|test|style|refactor|config|hotfix)(\\([a-z0-9._/-]+\\))?!?: .+"
     }
 
     pull_request {
