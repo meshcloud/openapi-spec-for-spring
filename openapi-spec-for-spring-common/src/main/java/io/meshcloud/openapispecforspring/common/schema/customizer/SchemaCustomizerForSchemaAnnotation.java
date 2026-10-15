@@ -106,6 +106,7 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
                 annotation.defaultValue(), value -> schema.setDefaultValue(parsableValueMapper.parse(value)));
 
         setDiscriminator(schema, annotation, recursiveResolver);
+        setAdditionalProperties(annotation.additionalProperties(), schema);
 
         mergeWithExistingMap(
                 schema::getExtensions,
@@ -131,6 +132,20 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
             recursiveResolver.alwaysAsReference(
                     mapping.schema(),
                     schemaReference -> schemaReferenceMapping.put(mapping.value(), schemaReference.getRef()));
+        }
+    }
+
+    private void setAdditionalProperties(
+            io.swagger.v3.oas.annotations.media.Schema.AdditionalPropertiesValue value, Schema schema) {
+        switch (value) {
+            case TRUE -> schema.setAdditionalProperties(true);
+            case FALSE -> schema.setAdditionalProperties(false);
+            case USE_ADDITIONAL_PROPERTIES_ANNOTATION -> {
+                return;
+            }
+        }
+        if (schema.getType() == null) {
+            schema.setType("object");
         }
     }
 
