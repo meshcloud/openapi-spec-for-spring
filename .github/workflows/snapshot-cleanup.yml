@@ -1,0 +1,46 @@
+name: snapshot-cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'spring-boot-[0-9]+.x'
+
+permissions:
+  contents: read
+
+jobs:
+  delete-pr-snapshots:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Delete the snapshot versions of this pull request
+        shell: bash
+        run: |
+          version="${BRANCH}-PR-${PR}-SNAPSHOT"
+          gh api --paginate "/orgs/${OWNER}/packages?package_type=maven" \
+            --jq ".[] | select(.repository.full_name == \"${REPO}\") | .name" |
+            while read -r package; do
+              versions="/orgs/${OWNER}/packages/maven/${package}/versions"
+              ids=$(gh api --paginate "${versions}" --jq '.[] | [.id, .name] | @tsv')
+              id=$(awk -v v="${version}" '$2 == v { print $1 }' <<< "${ids}")
+              [[ -z "${id}" ]] && continue
+              # GitHub refuses to delete the last version of a package.
+              if [[ $(wc -l <<< "${ids}") -eq 1 ]]; then
+                gh api -X DELETE "/orgs/${OWNER}/packages/maven/${package}"
+              else
+                gh api -X DELETE "${versions}/${id}"
+              fi
+              echo "Deleted ${package}:${version}"
+            done
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.base_ref }}
+          PR: ${{ github.event.pull_request.number }}
