@@ -29,5 +29,15 @@ def coverageReports = [
 sonar {
   properties {
     property('sonar.coverage.jacoco.xmlReportPaths', coverageReports)
+    property('sonar.issue.ignore.multicriteria', 'emptyFixtureHandler,demoXss,parameterOwner')
+    // The test apps' handlers only declare the signature the spec is derived from; they never run.
+    property('sonar.issue.ignore.multicriteria.emptyFixtureHandler.ruleKey', 'java:S1186')
+    property('sonar.issue.ignore.multicriteria.emptyFixtureHandler.resourceKey', '**/openapi-spec-for-spring-test/src/*/java/**/test/app*/**')
+    // The demo echoes its input on purpose and is never deployed.
+    property('sonar.issue.ignore.multicriteria.demoXss.ruleKey', 'javasecurity:S5131')
+    property('sonar.issue.ignore.multicriteria.demoXss.resourceKey', '**/demo/**')
+    // The owner is null only on the unbound handler of the factory; every caller binds it with withOwner first.
+    property('sonar.issue.ignore.multicriteria.parameterOwner.ruleKey', 'javabugs:S6416')
+    property('sonar.issue.ignore.multicriteria.parameterOwner.resourceKey', '**/ReferencedParameterStorage.java')
   }
 }
