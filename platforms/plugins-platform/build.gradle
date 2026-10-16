@@ -10,7 +10,7 @@ group = 'io.meshcloud.openapi-spec-for-spring.platform'
 
 dependencies {
   constraints {
-    api('com.diffplug.spotless:spotless-plugin-gradle:8.10.3')
+    api('com.diffplug.spotless:spotless-plugin-gradle:8.10.4')
     api('net.ltgt.gradle:gradle-errorprone-plugin:5.1.1')
     api('org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.5.0.8588')
 
