@@ -1,6 +1,8 @@
 # OpenAPI Spec for Spring
 
 [![build](https://github.com/meshcloud/openapi-spec-for-spring/actions/workflows/build.yml/badge.svg?branch=spring-boot-3.x)](https://github.com/meshcloud/openapi-spec-for-spring/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=meshcloud_openapi-spec-for-spring&branch=spring-boot-3.x&metric=alert_status)](https://sonarcloud.io/summary/overall?id=meshcloud_openapi-spec-for-spring&branch=spring-boot-3.x)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=meshcloud_openapi-spec-for-spring&branch=spring-boot-3.x&metric=coverage)](https://sonarcloud.io/summary/overall?id=meshcloud_openapi-spec-for-spring&branch=spring-boot-3.x)
 
 This library builds an [OpenAPI 3](https://github.com/OAI/OpenAPI-Specification) spec at runtime for a
 [Spring Boot](https://spring.io/projects/spring-boot) application. It reads the Spring WebMVC handler methods and
