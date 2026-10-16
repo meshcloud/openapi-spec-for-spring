@@ -48,5 +48,6 @@ class App16Controller {
     @SecurityRequirement(
             name = "scheme2",
             scopes = {"scope1", "scope2"})
+    @SuppressWarnings("java:S1710") // the test covers the container annotation
     public void mapping4() {}
 }

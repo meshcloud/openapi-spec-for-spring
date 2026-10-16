@@ -102,6 +102,7 @@ class DefaultAnnotationsSupplierFactoryTest {
     }
 
     @RepeatableTestAnnotations({@RepeatableTestAnnotation, @RepeatableTestAnnotation})
+    @SuppressWarnings("java:S1710") // the test covers the container annotation
     private static class TestClassWithRepeatableTestAnnotations {
         // just for testing
     }
