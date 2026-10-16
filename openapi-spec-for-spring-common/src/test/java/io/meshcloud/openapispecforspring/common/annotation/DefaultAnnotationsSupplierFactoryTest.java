@@ -22,7 +22,7 @@ class DefaultAnnotationsSupplierFactoryTest {
     private DefaultAnnotationsSupplierFactory sut;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         sut = new DefaultAnnotationsSupplierFactory();
     }
 
