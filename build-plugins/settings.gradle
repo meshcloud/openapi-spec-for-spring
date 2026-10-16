@@ -11,6 +11,7 @@ rootProject.name = 'build-plugins'
 include('lint')
 include('java-library')
 include('publishing')
+include('sonar')
 
 // Here rather than in a convention plugin: no project of this build can apply a plugin this build compiles.
 gradle.lifecycle.beforeProject { project ->

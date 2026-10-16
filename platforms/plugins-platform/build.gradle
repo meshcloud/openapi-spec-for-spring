@@ -12,6 +12,7 @@ dependencies {
   constraints {
     api('com.diffplug.spotless:spotless-plugin-gradle:8.10.3')
     api('net.ltgt.gradle:gradle-errorprone-plugin:5.1.1')
+    api('org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:7.5.0.8588')
 
     // The -groovy-4.0 build matches the Groovy 4 that Gradle 9 runs.
     api('org.codenarc:CodeNarc:3.7.0-groovy-4.0')

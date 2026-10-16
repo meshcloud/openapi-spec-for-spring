@@ -1,5 +1,6 @@
 plugins {
   id('io.meshcloud.openapi-spec-for-spring.lint')
+  id('io.meshcloud.openapi-spec-for-spring.sonar')
 }
 
 // The included builds cannot apply the plugins that build-plugins compiles.
@@ -15,4 +16,18 @@ tasks.named('check') {
   dependsOn(buildPlugins.task(':lint:check'))
   dependsOn(buildPlugins.task(':java-library:check'))
   dependsOn(buildPlugins.task(':publishing:check'))
+  dependsOn(buildPlugins.task(':sonar:check'))
+}
+
+// The test project measures the coverage of all library projects.
+def coverageReports = [
+  'testCodeCoverageReport',
+  'yamlTestCodeCoverageReport'
+].collect { report ->
+  file("openapi-spec-for-spring-test/build/reports/jacoco/${report}/${report}.xml")
+}
+sonar {
+  properties {
+    property('sonar.coverage.jacoco.xmlReportPaths', coverageReports)
+  }
 }

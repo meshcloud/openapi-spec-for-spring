@@ -1,0 +1,10 @@
+plugins {
+  id('org.sonarqube')
+}
+
+sonar {
+  properties {
+    property('sonar.organization', 'meshcloud')
+    property('sonar.projectKey', 'meshcloud_openapi-spec-for-spring')
+  }
+}
