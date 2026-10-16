@@ -47,7 +47,10 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolve
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForCollectionLikeTypeSupport;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForMapLikeType;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForObject;
+import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForSchemaComposition;
+import io.meshcloud.openapispecforspring.common.schema.resolver.type.TypeResolverForSealedClass;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilder;
+import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForAnyValue;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForEnum;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForPrimitiveTypes;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilderForVoid;
@@ -100,8 +103,30 @@ public class OpenApiSpecSchemaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TypeResolverForMapLikeType defaultTypeResolverForMapLikeType(SchemaNameBuilder schemaNameBuilder) {
-        return new TypeResolverForMapLikeType(schemaNameBuilder);
+    public TypeResolverForMapLikeType defaultTypeResolverForMapLikeType(
+            SchemaNameBuilder schemaNameBuilder,
+            AnnotationsSupplierFactory annotationsSupplierFactory,
+            OpenApiObjectMapperSupplier openApiObjectMapperSupplier) {
+        return new TypeResolverForMapLikeType(
+                schemaNameBuilder, annotationsSupplierFactory, openApiObjectMapperSupplier);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TypeResolverForSealedClass defaultTypeResolverForSealedClass(
+            SchemaNameBuilder schemaNameBuilder,
+            AnnotationsSupplierFactory annotationsSupplierFactory,
+            OpenApiObjectMapperSupplier openApiObjectMapperSupplier) {
+        return new TypeResolverForSealedClass(
+                schemaNameBuilder, annotationsSupplierFactory, openApiObjectMapperSupplier);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TypeResolverForSchemaComposition defaultTypeResolverForSchemaComposition(
+            AnnotationsSupplierFactory annotationsSupplierFactory,
+            OpenApiObjectMapperSupplier openApiObjectMapperSupplier) {
+        return new TypeResolverForSchemaComposition(annotationsSupplierFactory, openApiObjectMapperSupplier);
     }
 
     @Bean
@@ -134,6 +159,12 @@ public class OpenApiSpecSchemaAutoConfiguration {
     @ConditionalOnMissingBean
     public InitialSchemaBuilderForPrimitiveTypes defaultInitialSchemaBuilderForPrimitiveTypes() {
         return new InitialSchemaBuilderForPrimitiveTypes();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public InitialSchemaBuilderForAnyValue defaultInitialSchemaBuilderForAnyValue() {
+        return new InitialSchemaBuilderForAnyValue();
     }
 
     @Bean

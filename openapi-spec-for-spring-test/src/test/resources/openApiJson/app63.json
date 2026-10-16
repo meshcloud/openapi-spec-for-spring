@@ -1,0 +1,87 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App63",
+    "version": "unknown"
+  },
+  "paths": {
+    "/pets/default": {
+      "get": {
+        "operationId": "pet",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App63Controller.Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App63Controller.Color": {
+        "type": "string",
+        "enum": [
+          "BLACK",
+          "WHITE"
+        ]
+      },
+      "App63Controller.Address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string"
+          }
+        },
+        "description": "A postal address"
+      },
+      "App63Controller.Pet": {
+        "type": "object",
+        "properties": {
+          "mainColor": {
+            "description": "The main color",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App63Controller.Color"
+              }
+            ]
+          },
+          "accentColor": {
+            "description": "The accent color",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App63Controller.Color"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "A name of the pet"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "A name of the pet"
+          },
+          "home": {
+            "description": "Where the pet lives",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App63Controller.Address"
+              }
+            ]
+          },
+          "vet": {
+            "$ref": "#/components/schemas/App63Controller.Address"
+          }
+        }
+      }
+    }
+  }
+}

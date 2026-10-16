@@ -1,0 +1,46 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App74",
+    "version": "unknown"
+  },
+  "paths": {
+    "/ponds": {
+      "get": {
+        "operationId": "getPond",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App74Controller.Pond"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App74Controller.Pond": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^P-[0-9]{3}$",
+            "type": "string"
+          },
+          "neighbourId": {
+            "pattern": "^P-[0-9]{3}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

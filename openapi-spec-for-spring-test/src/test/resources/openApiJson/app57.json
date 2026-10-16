@@ -1,0 +1,408 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App57",
+    "version": "unknown"
+  },
+  "paths": {
+    "/books": {
+      "get": {
+        "operationId": "listBooksV_1_2",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.library.book.v1.hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalPageApp57Controller.BookV1"
+                }
+              },
+              "application/vnd.library.book.v2.hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalPageApp57Controller.BookV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/shelves": {
+      "get": {
+        "operationId": "listShelves",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalCollectionApp57Controller.Shelf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{isbn}": {
+      "get": {
+        "operationId": "getBookV2",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/isbn"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.library.book.v2.hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalEntityModelApp57Controller.BookV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{isbn}/editions": {
+      "get": {
+        "operationId": "listEditions",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/isbn"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.library.book.v2.hal+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HalCollectionApp57Controller.Edition"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "isbn": {
+        "name": "isbn",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "App57Controller.BookV1": {
+        "type": "object",
+        "properties": {
+          "isbn": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "HalLink": {
+        "required": [
+          "href"
+        ],
+        "type": "object",
+        "properties": {
+          "href": {
+            "type": "string"
+          },
+          "templated": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "deprecation": {
+            "type": "string"
+          },
+          "profile": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "hreflang": {
+            "type": "string"
+          }
+        }
+      },
+      "HalLinks": {
+        "type": "object",
+        "readOnly": true,
+        "additionalProperties": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/HalLink"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/HalLink"
+              }
+            }
+          ]
+        }
+      },
+      "HalEntityModelApp57Controller.BookV1": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/App57Controller.BookV1"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "$ref": "#/components/schemas/HalLinks"
+              }
+            }
+          }
+        ]
+      },
+      "HalPageMetadata": {
+        "readOnly": true,
+        "required": [
+          "size",
+          "totalElements",
+          "totalPages",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "HalPageApp57Controller.BookV1": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "books": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HalEntityModelApp57Controller.BookV1"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/HalLinks"
+          },
+          "page": {
+            "$ref": "#/components/schemas/HalPageMetadata"
+          }
+        }
+      },
+      "App57Controller.EditionDiscriminator": {
+        "type": "string",
+        "enum": [
+          "paperback",
+          "ebook"
+        ]
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App57Controller.Paperback": {
+        "required": [
+          "format"
+        ],
+        "type": "object",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/App57Controller.EditionDiscriminator"
+          },
+          "pages": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App57Controller.Ebook": {
+        "required": [
+          "format"
+        ],
+        "type": "object",
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/App57Controller.EditionDiscriminator"
+          },
+          "fileFormat": {
+            "type": "string"
+          }
+        }
+      },
+      "App57Controller.Edition": {
+        "discriminator": {
+          "propertyName": "format",
+          "mapping": {
+            "paperback": "#/components/schemas/App57Controller.Paperback",
+            "ebook": "#/components/schemas/App57Controller.Ebook"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App57Controller.Paperback"
+          },
+          {
+            "$ref": "#/components/schemas/App57Controller.Ebook"
+          }
+        ]
+      },
+      "array_App57Controller.Edition": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/App57Controller.Edition"
+        }
+      },
+      "App57Controller.BookV2": {
+        "type": "object",
+        "properties": {
+          "isbn": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "editions": {
+            "$ref": "#/components/schemas/array_App57Controller.Edition"
+          }
+        }
+      },
+      "HalEntityModelApp57Controller.BookV2": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/App57Controller.BookV2"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "$ref": "#/components/schemas/HalLinks"
+              }
+            }
+          }
+        ]
+      },
+      "HalPageApp57Controller.BookV2": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "books": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HalEntityModelApp57Controller.BookV2"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/HalLinks"
+          },
+          "page": {
+            "$ref": "#/components/schemas/HalPageMetadata"
+          }
+        }
+      },
+      "App57Controller.Shelf": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/HalLinks"
+          }
+        }
+      },
+      "HalCollectionApp57Controller.Shelf": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "shelfList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/App57Controller.Shelf"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/HalLinks"
+          }
+        }
+      },
+      "HalEntityModelApp57Controller.Edition": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/App57Controller.Edition"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "_links": {
+                "$ref": "#/components/schemas/HalLinks"
+              }
+            }
+          }
+        ]
+      },
+      "HalCollectionApp57Controller.Edition": {
+        "type": "object",
+        "properties": {
+          "_embedded": {
+            "type": "object",
+            "properties": {
+              "editionList": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HalEntityModelApp57Controller.Edition"
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/HalLinks"
+          }
+        }
+      }
+    }
+  }
+}

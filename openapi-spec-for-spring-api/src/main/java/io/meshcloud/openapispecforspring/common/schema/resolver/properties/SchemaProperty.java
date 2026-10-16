@@ -43,4 +43,12 @@ public interface SchemaProperty {
      * @return annotations supplier
      */
     AnnotationsSupplier getAnnotationsSupplier();
+
+    /**
+     * Jackson's required marker, set by {@code @JsonProperty(required = true)} or by a module such as
+     * jackson-module-kotlin.
+     */
+    default boolean isRequired() {
+        return false;
+    }
 }

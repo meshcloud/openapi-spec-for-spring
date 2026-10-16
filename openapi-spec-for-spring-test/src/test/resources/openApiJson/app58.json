@@ -1,0 +1,31 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App58",
+    "version": "unknown"
+  },
+  "paths": {
+    "/greeting": {
+      "get": {
+        "operationId": "greeting",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

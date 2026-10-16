@@ -1,0 +1,199 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App89",
+    "version": "unknown"
+  },
+  "paths": {
+    "/feeding": {
+      "get": {
+        "operationId": "getFeeding",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App89FeedingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveFeeding",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App89FeedingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App89Confirmation": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "App89Marker": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "App89Extras": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "App89ScheduleDiscriminator": {
+        "type": "string",
+        "enum": [
+          "none",
+          "daily"
+        ]
+      },
+      "App89NoSchedule": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App89ScheduleDiscriminator"
+          }
+        }
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App89DailyScheduleResponse": {
+        "required": [
+          "type",
+          "hour"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App89ScheduleDiscriminator"
+          },
+          "hour": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App89DailyScheduleRequest": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App89ScheduleDiscriminator"
+          },
+          "hour": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App89ScheduleResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "none": "#/components/schemas/App89NoSchedule",
+            "daily": "#/components/schemas/App89DailyScheduleResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App89NoSchedule"
+          },
+          {
+            "$ref": "#/components/schemas/App89DailyScheduleResponse"
+          }
+        ]
+      },
+      "App89ScheduleRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "none": "#/components/schemas/App89NoSchedule",
+            "daily": "#/components/schemas/App89DailyScheduleRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App89NoSchedule"
+          },
+          {
+            "$ref": "#/components/schemas/App89DailyScheduleRequest"
+          }
+        ]
+      },
+      "App89FeedingResponse": {
+        "required": [
+          "confirmation",
+          "marker",
+          "extras",
+          "food",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "$ref": "#/components/schemas/App89Confirmation"
+          },
+          "marker": {
+            "$ref": "#/components/schemas/App89Marker"
+          },
+          "extras": {
+            "$ref": "#/components/schemas/App89Extras"
+          },
+          "food": {
+            "type": "object"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/App89ScheduleResponse"
+          }
+        }
+      },
+      "App89FeedingRequest": {
+        "required": [
+          "confirmation",
+          "marker",
+          "extras",
+          "food",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "$ref": "#/components/schemas/App89Confirmation"
+          },
+          "marker": {
+            "$ref": "#/components/schemas/App89Marker"
+          },
+          "extras": {
+            "$ref": "#/components/schemas/App89Extras"
+          },
+          "food": {
+            "type": "object"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/App89ScheduleRequest"
+          }
+        }
+      }
+    }
+  }
+}

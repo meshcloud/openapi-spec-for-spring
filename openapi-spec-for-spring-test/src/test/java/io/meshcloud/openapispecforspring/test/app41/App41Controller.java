@@ -26,7 +26,7 @@ class App41Controller {
         @SuppressWarnings("FieldCanBeLocal")
         private final String finalProperty;
 
-        private SomeType2(
+        SomeType2(
                 @JsonProperty(value = "final_property", access = JsonProperty.Access.WRITE_ONLY)
                         @Schema(description = "description for final property", implementation = Integer.class)
                         String finalProperty) {

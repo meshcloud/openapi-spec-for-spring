@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultJacksonPolymorphismTypeSchemaNameBuilder implements JacksonPolymorphismTypeSchemaNameBuilder {
 
-    public static final String SCHEMA_NAME_SUFFIX = "Type";
+    public static final String SCHEMA_NAME_SUFFIX = "Discriminator";
 
     private final SchemaNameBuilder schemaNameBuilder;
 

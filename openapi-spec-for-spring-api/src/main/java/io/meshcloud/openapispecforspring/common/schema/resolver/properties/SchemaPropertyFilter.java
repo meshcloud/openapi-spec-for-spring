@@ -40,7 +40,8 @@ public interface SchemaPropertyFilter extends OpenApiOrderedUtils.DefaultOrdered
      * @param caller                     caller of the schema resolver
      * @param property                   property definition
      * @param beanDescriptionForType     bean description from Jackson for type owning given property
-     * @param annotationsSupplierForType annotations supplier for type owning given property
+     * @param annotationsSupplierForType annotations of the class owning given property; the default resolver reuses
+     *                                   its result for every use of that class within one build
      * @param mapperConfig               object mapper config from Jackson
      * @return true if property shall be used, false otherwise
      */

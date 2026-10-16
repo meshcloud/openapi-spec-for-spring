@@ -1,0 +1,86 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App86",
+    "version": "unknown"
+  },
+  "paths": {
+    "/labels": {
+      "get": {
+        "operationId": "getLabels",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/array_string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelf": {
+      "get": {
+        "operationId": "getShelf",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App86Controller.Shelf"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "App86Controller.Book": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "App86Controller.Shelf": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "$ref": "#/components/schemas/array_string"
+          },
+          "heights": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "books": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/App86Controller.Book"
+            }
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      }
+    }
+  }
+}

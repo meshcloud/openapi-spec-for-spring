@@ -1,0 +1,70 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App82",
+    "version": "unknown"
+  },
+  "paths": {
+    "/depots/{depotId}": {
+      "get": {
+        "operationId": "depotV_1_2",
+        "parameters": [
+          {
+            "name": "depotId",
+            "in": "path",
+            "description": "The code of the depot.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/parcels/{parcelId}": {
+      "get": {
+        "operationId": "parcelV_1_2",
+        "parameters": [
+          {
+            "name": "parcelId",
+            "in": "path",
+            "description": "In this version, the tracking code of the parcel.\n\nThe UUID of the parcel.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "200": {
+        "description": "Default response",
+        "content": {
+          "application/vnd.parcel.v1+json": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "application/vnd.parcel.v2+json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

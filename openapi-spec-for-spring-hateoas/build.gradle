@@ -1,0 +1,14 @@
+plugins {
+  id('io.meshcloud.openapi-spec-for-spring.publishing')
+}
+
+description = 'OpenAPI Spec for Spring :: HATEOAS'
+
+dependencies {
+  api(project(':openapi-spec-for-spring-autoconfigure'))
+
+  compileOnly('org.springframework.hateoas:spring-hateoas')
+  testImplementation('org.springframework.hateoas:spring-hateoas')
+
+  annotationProcessor('org.springframework.boot:spring-boot-autoconfigure-processor')
+}

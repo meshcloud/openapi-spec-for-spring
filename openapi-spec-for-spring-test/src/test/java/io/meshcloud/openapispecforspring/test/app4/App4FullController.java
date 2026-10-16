@@ -36,7 +36,10 @@ class App4FullController {
                         name = "link1",
                         operationId = "getMapping3",
                         description = "link 1 description",
-                        requestBody = "{\n" + "  \"keyInBody1\": \"value1\"\n" + "}",
+                        requestBody = """
+                            {
+                              "keyInBody1": "value1"
+                            }""",
                         parameters = {@LinkParameter(name = "parameter1", expression = "parameterExpression1")},
                         server =
                                 @Server(
@@ -60,9 +63,11 @@ class App4FullController {
                                                                 properties = {
                                                                     @ExtensionProperty(
                                                                             name = "name1",
-                                                                            value = "{\n" + "  \"key1\": \"value1\",\n"
-                                                                                    + "  \"key2\": \"value2\"\n"
-                                                                                    + "}",
+                                                                            value = """
+                                                                            {
+                                                                              "key1": "value1",
+                                                                              "key2": "value2"
+                                                                            }""",
                                                                             parseValue = true),
                                                                 })
                                                     })
@@ -139,10 +144,11 @@ class App4FullController {
                 @Extension(
                         properties = {
                             @ExtensionProperty(name = "nameless-property-1", value = "value2"),
-                            @ExtensionProperty(
-                                    name = "nameless-property-2",
-                                    value = "{\n" + "  \"key1\": \"value1\",\n" + "  \"key2\": \"value2\"\n" + "}",
-                                    parseValue = true)
+                            @ExtensionProperty(name = "nameless-property-2", value = """
+                                        {
+                                          "key1": "value1",
+                                          "key2": "value2"
+                                        }""", parseValue = true)
                         })
             })
     public String getMapping3() {

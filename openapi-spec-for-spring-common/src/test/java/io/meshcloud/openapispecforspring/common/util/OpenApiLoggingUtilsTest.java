@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,11 +14,6 @@ class OpenApiLoggingUtilsTest {
 
     @Mock
     private OpenApiLoggingUtils.HasToPrettyString hasToPrettyString;
-
-    @BeforeAll
-    static void beforeAll() {
-        OpenApiLoggingUtils.registerPrettyPrinter(Schema.class, OpenApiLoggingUtils::prettyPrintSchema);
-    }
 
     @Test
     void logPretty_schema() {

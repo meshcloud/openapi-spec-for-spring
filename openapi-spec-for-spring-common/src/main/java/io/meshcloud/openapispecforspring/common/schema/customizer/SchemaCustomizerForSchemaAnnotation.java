@@ -34,6 +34,7 @@ import io.meshcloud.openapispecforspring.common.mapper.ParsableValueMapper;
 import io.meshcloud.openapispecforspring.model.media.Discriminator;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -73,6 +74,7 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
         setStringIfNotBlank(annotation.title(), schema::setTitle);
         setStringIfNotBlank(annotation.description(), schema::setDescription);
         setStringIfNotBlank(annotation.format(), schema::setFormat);
+        setStringIfNotBlank(annotation.pattern(), schema::setPattern);
         setStringIfNotBlank(annotation.ref(), schema::setRef);
 
         if (annotation.nullable()) {
@@ -86,6 +88,14 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
             schema.setDeprecated(true);
         }
         setStringIfNotBlank(annotation.type(), schema::setType);
+        setStringIfNotBlank(annotation.minimum(), minimum -> schema.setMinimum(new BigDecimal(minimum)));
+        if (annotation.exclusiveMinimum()) {
+            schema.setExclusiveMinimum(true);
+        }
+        setStringIfNotBlank(annotation.maximum(), maximum -> schema.setMaximum(new BigDecimal(maximum)));
+        if (annotation.exclusiveMaximum()) {
+            schema.setExclusiveMaximum(true);
+        }
 
         List<Object> allowableValues = Stream.of(annotation.allowableValues())
                 .map(parsableValueMapper::parse)
@@ -96,6 +106,7 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
                 annotation.defaultValue(), value -> schema.setDefaultValue(parsableValueMapper.parse(value)));
 
         setDiscriminator(schema, annotation, recursiveResolver);
+        setAdditionalProperties(annotation.additionalProperties(), schema);
 
         mergeWithExistingMap(
                 schema::getExtensions,
@@ -121,6 +132,20 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
             recursiveResolver.alwaysAsReference(
                     mapping.schema(),
                     schemaReference -> schemaReferenceMapping.put(mapping.value(), schemaReference.getRef()));
+        }
+    }
+
+    private void setAdditionalProperties(
+            io.swagger.v3.oas.annotations.media.Schema.AdditionalPropertiesValue value, Schema schema) {
+        switch (value) {
+            case TRUE -> schema.setAdditionalProperties(true);
+            case FALSE -> schema.setAdditionalProperties(false);
+            case USE_ADDITIONAL_PROPERTIES_ANNOTATION -> {
+                return;
+            }
+        }
+        if (schema.getType() == null) {
+            schema.setType("object");
         }
     }
 

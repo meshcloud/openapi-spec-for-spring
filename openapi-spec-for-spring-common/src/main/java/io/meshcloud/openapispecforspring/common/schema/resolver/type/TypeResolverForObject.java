@@ -84,10 +84,17 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
                     Map.Entry::getKey,
                     Map.Entry::getValue);
 
+            if (properties.isEmpty() && isConcrete(initialType.getType()) && schema.getAdditionalProperties() == null) {
+                schema.setAdditionalProperties(false);
+            }
+
             Map<String, PropertyCustomizer> propertyCustomizers =
                     buildPropertyCustomizers(schema, initialType, properties.keySet());
 
             properties.forEach((propertyName, property) -> {
+                if (property.isRequired()) {
+                    schema.addRequired(propertyName);
+                }
                 PropertyCustomizer propertyCustomizer = Objects.requireNonNull(propertyCustomizers.get(propertyName));
                 schemaBuilderFromType.buildSchemaFromType(
                         property.getType(),
@@ -101,6 +108,11 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
             return new UniqueSchemaKey(initialType.getType(), getSchemaSnapshot(schema));
         }
         return null;
+    }
+
+    // Jackson writes an interface or abstract class with the properties of the actual class.
+    private static boolean isConcrete(JavaType javaType) {
+        return !javaType.isInterface() && !javaType.isAbstract();
     }
 
     private String getSchemaSnapshot(Schema schema) {

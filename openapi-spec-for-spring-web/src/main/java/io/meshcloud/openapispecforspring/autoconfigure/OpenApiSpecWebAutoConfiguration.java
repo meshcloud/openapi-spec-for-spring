@@ -32,12 +32,14 @@ import io.meshcloud.openapispecforspring.common.operation.parameter.converter.De
 import io.meshcloud.openapispecforspring.common.operation.parameter.converter.DefaultParameterMethodConverterFromRequestParamAnnotation;
 import io.meshcloud.openapispecforspring.common.paths.DefaultSpringWebHandlerMethodBuilder;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebHandlerMethodBuilder;
+import io.meshcloud.openapispecforspring.common.paths.SpringWebHandlerMethodParameterExpander;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebRequestMethodEnumMapper;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.extension.spring.SpringWebResponseEntityInitialTypeBuilder;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiYamlMapper;
 import io.meshcloud.openapispecforspring.common.web.OpenApiResource;
 import java.util.Optional;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -64,9 +66,12 @@ public class OpenApiSpecWebAutoConfiguration {
     @ConditionalOnMissingBean
     public SpringWebHandlerMethodBuilder springWebHandlerMethodBuilder(
             AnnotationsSupplierFactory annotationsSupplierFactory,
-            OpenApiSpringWebParameterNameDiscoverer openApiSpringWebParameterNameDiscoverer) {
+            OpenApiSpringWebParameterNameDiscoverer openApiSpringWebParameterNameDiscoverer,
+            ObjectProvider<SpringWebHandlerMethodParameterExpander> parameterExpanders) {
         return new DefaultSpringWebHandlerMethodBuilder(
-                annotationsSupplierFactory, openApiSpringWebParameterNameDiscoverer);
+                annotationsSupplierFactory,
+                openApiSpringWebParameterNameDiscoverer,
+                parameterExpanders.orderedStream().toList());
     }
 
     @Bean

@@ -1,0 +1,56 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App59",
+    "version": "unknown"
+  },
+  "paths": {
+    "/java-void/{id}": {
+      "delete": {
+        "operationId": "deleteReturningJavaVoid",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/kotlin-unit/{id}": {
+      "delete": {
+        "operationId": "deleteReturningKotlinUnit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    }
+  }
+}
