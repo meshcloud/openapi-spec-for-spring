@@ -56,6 +56,16 @@ public interface HandlerMethod {
     String getIdentifier();
 
     /**
+     * The handler methods that this handler method merges, such as handler methods that differ only in the content
+     * types they produce.
+     *
+     * @return the merged handler methods, or only this handler method
+     */
+    default List<HandlerMethod> getMergedHandlerMethods() {
+        return List.of(this);
+    }
+
+    /**
      * List of {@link Parameter parameters}. May include parameters
      * which may not map to actual OpenApi spec parameters.
      *
