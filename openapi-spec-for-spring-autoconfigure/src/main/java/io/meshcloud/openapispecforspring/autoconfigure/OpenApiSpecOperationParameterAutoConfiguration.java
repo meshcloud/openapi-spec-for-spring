@@ -37,6 +37,7 @@ import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.D
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.DefaultOperationParameterDeprecatedCustomizer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.DefaultOperationParameterNameCustomizer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.DefaultOperationParameterNullableCustomizer;
+import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.DefaultOperationParameterPathPatternCustomizer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.DefaultOperationParameterSchemaCustomizer;
 import io.meshcloud.openapispecforspring.common.operation.parameter.customizer.OperationParameterCustomizer;
 import io.meshcloud.openapispecforspring.common.schema.mapper.SchemaAnnotationMapper;
@@ -109,6 +110,12 @@ public class OpenApiSpecOperationParameterAutoConfiguration {
     public DefaultOperationParameterNullableCustomizer defaultOperationParameterNullableCustomizer(
             NullnessDetector nullnessDetector) {
         return new DefaultOperationParameterNullableCustomizer(nullnessDetector);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DefaultOperationParameterPathPatternCustomizer defaultOperationParameterPathPatternCustomizer() {
+        return new DefaultOperationParameterPathPatternCustomizer();
     }
 
     @Bean

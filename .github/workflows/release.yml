@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - 'spring-boot-*-v*'
+      - 'spring-boot-[0-9]+.x-v*'
 
 permissions:
   contents: read

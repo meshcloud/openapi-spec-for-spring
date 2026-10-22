@@ -1,0 +1,71 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App88",
+    "version": "unknown"
+  },
+  "paths": {
+    "/pet": {
+      "get": {
+        "operationId": "getPet",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App88Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MapOfObject": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "App88Tag": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "App88Pet": {
+        "required": [
+          "traits",
+          "notes",
+          "medicalRecord",
+          "tag"
+        ],
+        "type": "object",
+        "properties": {
+          "traits": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "notes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "medicalRecord": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "tag": {
+            "$ref": "#/components/schemas/App88Tag"
+          }
+        }
+      }
+    }
+  }
+}

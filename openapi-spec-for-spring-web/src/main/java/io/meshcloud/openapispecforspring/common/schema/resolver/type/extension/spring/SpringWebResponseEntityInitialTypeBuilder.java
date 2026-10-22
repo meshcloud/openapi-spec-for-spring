@@ -41,7 +41,7 @@ public class SpringWebResponseEntityInitialTypeBuilder implements InitialTypeBui
             AnnotationsSupplier annotationsSupplier,
             RecursiveBuilder recursiveBuilder) {
         if (javaType.getRawClass().equals(ResponseEntity.class)) {
-            return recursiveBuilder.build(javaType.containedType(0), annotationsSupplier);
+            return recursiveBuilder.build(javaType.containedTypeOrUnknown(0), annotationsSupplier);
         }
         return null;
     }

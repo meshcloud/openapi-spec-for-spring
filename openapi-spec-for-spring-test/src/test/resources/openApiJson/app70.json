@@ -1,0 +1,51 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App70",
+    "version": "unknown"
+  },
+  "paths": {
+    "/aquarium": {
+      "get": {
+        "operationId": "getAquarium",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App70Controller.Aquarium"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App70Controller.Aquarium": {
+        "type": "object",
+        "properties": {
+          "fishCount": {
+            "maximum": 10,
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureCelsius": {
+            "maximum": 100,
+            "exclusiveMaximum": true,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "plantCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

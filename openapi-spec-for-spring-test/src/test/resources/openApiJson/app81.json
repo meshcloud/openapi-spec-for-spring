@@ -1,0 +1,173 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App81",
+    "version": "unknown"
+  },
+  "paths": {
+    "/drawing": {
+      "get": {
+        "operationId": "getDrawing",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App81DrawingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveDrawing",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App81DrawingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App81ShapeDiscriminator": {
+        "type": "string",
+        "enum": [
+          "circle",
+          "square"
+        ]
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App81CircleResponse": {
+        "required": [
+          "type",
+          "radius"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App81ShapeDiscriminator"
+          },
+          "radius": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App81CircleRequest": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App81ShapeDiscriminator"
+          },
+          "radius": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App81SquareResponse": {
+        "required": [
+          "type",
+          "side"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App81ShapeDiscriminator"
+          },
+          "side": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App81SquareRequest": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App81ShapeDiscriminator"
+          },
+          "side": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App81ShapeResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App81CircleResponse",
+            "square": "#/components/schemas/App81SquareResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App81CircleResponse"
+          },
+          {
+            "$ref": "#/components/schemas/App81SquareResponse"
+          }
+        ]
+      },
+      "App81ShapeRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App81CircleRequest",
+            "square": "#/components/schemas/App81SquareRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App81CircleRequest"
+          },
+          {
+            "$ref": "#/components/schemas/App81SquareRequest"
+          }
+        ]
+      },
+      "App81DrawingResponse": {
+        "required": [
+          "shape"
+        ],
+        "type": "object",
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/App81ShapeResponse"
+          }
+        }
+      },
+      "App81DrawingRequest": {
+        "required": [
+          "shape"
+        ],
+        "type": "object",
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/App81ShapeRequest"
+          }
+        }
+      }
+    }
+  }
+}

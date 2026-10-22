@@ -46,7 +46,13 @@ public class TypeResolverForCollectionLikeType implements InitialTypeBuilder, In
             JavaType javaType,
             AnnotationsSupplier annotationsSupplier,
             RecursiveBuilder recursiveBuilder) {
-        return support.build(this, JavaType::isCollectionLikeType, javaType, annotationsSupplier);
+        return support.build(
+                this, TypeResolverForCollectionLikeType::isCollectionOrArray, javaType, annotationsSupplier);
+    }
+
+    // Jackson writes byte[] as a Base64 string.
+    private static boolean isCollectionOrArray(JavaType javaType) {
+        return javaType.isCollectionLikeType() || (javaType.isArrayType() && !javaType.hasRawClass(byte[].class));
     }
 
     @Nullable

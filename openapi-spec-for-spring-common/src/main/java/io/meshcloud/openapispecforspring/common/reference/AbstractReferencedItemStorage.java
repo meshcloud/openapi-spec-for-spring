@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -106,20 +107,20 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
     public void buildReferencedItems(Consumer<Map<String, T>> referencedItemsConsumer) {
         Map<String, T> referencedItems = new LinkedHashMap<>();
         ReferenceActions referenceActions = new ReferenceActions();
-        buildGroupedEntries()
+        Map<String, Map<T, List<ReferenceSetter<T>>>> itemsPerIdentifier = buildGroupedEntries()
                 .flatMap(this::buildNonUniqueReferenceIdentifiers)
-                .collect(groupingByPairKeyAndCollectingValuesTo(groupingByPairKeyAndCollectingValuesToList()))
-                .forEach((referenceIdentifier, itemsGroupedPerIdentifier) -> {
-                    removeNotToBeReferencedItems(itemsGroupedPerIdentifier, referenceIdentifier);
-                    buildUniqueReferenceIdentifiers(referenceIdentifier, itemsGroupedPerIdentifier)
-                            .forEach((uniqueReferenceIdentifier, itemWithReferenceSetters) -> {
-                                referencedItems.put(uniqueReferenceIdentifier, itemWithReferenceSetters.getKey());
-                                // defer reference action as calling the reference setters will modify items T,
-                                // which spoil the usage of the map "itemsGroupedPerIdentifier" where T item is used as
-                                // the key
-                                referenceActions.add(uniqueReferenceIdentifier, itemWithReferenceSetters.getValue());
-                            });
-                });
+                .collect(groupingByPairKeyAndCollectingValuesTo(groupingByPairKeyAndCollectingValuesToList()));
+        itemsPerIdentifier.forEach((referenceIdentifier, itemsGroupedPerIdentifier) -> {
+            removeNotToBeReferencedItems(itemsGroupedPerIdentifier, referenceIdentifier);
+            buildUniqueReferenceIdentifiers(referenceIdentifier, itemsGroupedPerIdentifier, itemsPerIdentifier.keySet())
+                    .forEach((uniqueReferenceIdentifier, itemWithReferenceSetters) -> {
+                        referencedItems.put(uniqueReferenceIdentifier, itemWithReferenceSetters.getKey());
+                        // defer reference action as calling the reference setters will modify items T,
+                        // which spoil the usage of the map "itemsGroupedPerIdentifier" where T item is used as
+                        // the key
+                        referenceActions.add(uniqueReferenceIdentifier, itemWithReferenceSetters.getValue());
+                    });
+        });
         referenceActions.run();
         setMapIfNotEmpty(referencedItems, referencedItemsConsumer);
     }
@@ -167,15 +168,27 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         }
     }
 
+    protected Object groupingKey(T item) {
+        return item;
+    }
+
+    protected void mergeEqualItems(T keptItem, T mergedItem) {}
+
     private Stream<GroupedEntry> buildGroupedEntries() {
         return entries.stream()
-                .collect(Collectors.toMap(e -> e, this::createNewGroupedEntry, GroupedEntry::merge, LinkedHashMap::new))
+                .collect(Collectors.toMap(
+                        e -> groupingKey(e.getItem()),
+                        this::createNewGroupedEntry,
+                        GroupedEntry::merge,
+                        LinkedHashMap::new))
                 .values()
                 .stream();
     }
 
     private Map<String, Map.Entry<T, List<ReferenceSetter<T>>>> buildUniqueReferenceIdentifiers(
-            String referenceIdentifier, Map<T, List<ReferenceSetter<T>>> itemsGroupedByIdentifier) {
+            String referenceIdentifier,
+            Map<T, List<ReferenceSetter<T>>> itemsGroupedByIdentifier,
+            Set<String> identifiersOfOtherItems) {
         if (itemsGroupedByIdentifier.size() == 1) {
             // there's no conflict if there's only one item to be consumed,
             // then just return the identifier itself
@@ -186,8 +199,16 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
 
         List<T> itemsWithSameIdentifier = new ArrayList<>(itemsGroupedByIdentifier.keySet());
 
-        List<String> uniqueIdentifiers =
+        List<String> resolvedIdentifiers =
                 referenceIdentifierConflictResolver.resolveConflict(itemsWithSameIdentifier, referenceIdentifier);
+        // A resolver sees only the conflicting items, so it may pick a name that another item already has.
+        List<String> uniqueIdentifiers = resolvedIdentifiers.stream()
+                        .anyMatch(identifier ->
+                                !identifier.equals(referenceIdentifier) && identifiersOfOtherItems.contains(identifier))
+                ? IntStream.range(0, itemsWithSameIdentifier.size())
+                        .mapToObj(i -> referenceIdentifier + "_" + i)
+                        .toList()
+                : resolvedIdentifiers;
         if (uniqueIdentifiers.size() != itemsWithSameIdentifier.size()) {
             throw new IllegalStateException(String.format(
                     "Conflict resolver %s did not return expected number %d but %d unique reference identifiers for items referenced by %s",
@@ -268,6 +289,7 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         }
 
         public GroupedEntry merge(GroupedEntry other) {
+            mergeEqualItems(item, other.item);
             referenceSetters.addAll(other.referenceSetters);
             return this;
         }

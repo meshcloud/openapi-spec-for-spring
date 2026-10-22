@@ -20,7 +20,6 @@
           {
             "name": "param2",
             "in": "query",
-            "description": "Only used by mapping1_plain",
             "required": false,
             "schema": {
               "type": "string"
@@ -29,7 +28,6 @@
           {
             "name": "param1",
             "in": "query",
-            "description": "Only used by mapping1_textHtml",
             "required": false,
             "schema": {
               "type": "string"
@@ -79,22 +77,16 @@
   },
   "components": {
     "schemas": {
-      "string_0": {
-        "type": "string",
-        "description": "Error code, machine-readable"
-      },
-      "string_1": {
-        "type": "string",
-        "description": "Error description, human-readable"
-      },
       "App31Controller.ErrorDto": {
         "type": "object",
         "properties": {
           "errorCode": {
-            "$ref": "#/components/schemas/string_0"
+            "type": "string",
+            "description": "Error code, machine-readable"
           },
           "errorDescription": {
-            "$ref": "#/components/schemas/string_1"
+            "type": "string",
+            "description": "Error description, human-readable"
           }
         }
       }

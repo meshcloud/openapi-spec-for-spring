@@ -1,0 +1,68 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App90",
+    "version": "unknown"
+  },
+  "paths": {
+    "/letters": {
+      "get": {
+        "operationId": "getLetterV_1_2",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.example.letter.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App90Controller.App90Parcel"
+                }
+              },
+              "application/vnd.example.letter.v2+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App90Controller.App90Parcel"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/parcels": {
+      "get": {
+        "operationId": "getParcelV_1_2",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.example.parcel.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App90Controller.App90Parcel"
+                }
+              },
+              "application/vnd.example.parcel.v2+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App90Controller.App90Parcel"
+                }
+              }
+            }
+          }
+        },
+        "x-sunset": "2030-01-01",
+        "x-owner": "shipping"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App90Controller.App90Parcel": {
+        "type": "object",
+        "properties": {
+          "trackingNumber": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

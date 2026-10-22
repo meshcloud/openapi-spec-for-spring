@@ -36,7 +36,6 @@ import io.meshcloud.openapispecforspring.model.media.MediaType;
 import io.meshcloud.openapispecforspring.model.operation.Operation;
 import io.meshcloud.openapispecforspring.model.requestbody.RequestBody;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 
@@ -98,7 +97,7 @@ public class DefaultRequestBodyOperationCustomizer implements OperationCustomize
             List<HandlerMethod.RequestBody> handlerMethodRequestBodies,
             @Nullable RequestBody existingRequestBody,
             OperationBuilderContext operationBuilderContext) {
-        RequestBody requestBody = Optional.ofNullable(existingRequestBody).orElseGet(RequestBody::new);
+        RequestBody requestBody = existingRequestBody != null ? existingRequestBody : new RequestBody();
         handlerMethodRequestBodies.forEach(handlerMethodRequestBody -> handlerMethodRequestBody
                 .getAnnotationsSupplier()
                 .findAnnotations(io.swagger.v3.oas.annotations.parameters.RequestBody.class)

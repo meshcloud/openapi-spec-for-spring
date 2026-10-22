@@ -34,7 +34,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import org.springframework.core.annotation.AnnotationFilter;
 import org.springframework.core.annotation.MergedAnnotation;
@@ -43,16 +47,41 @@ import org.springframework.core.annotation.RepeatableContainers;
 
 public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFactory {
 
+    private static final ClassValue<Optional<Class<? extends Annotation>>> REPEATABLE_CONTAINER = new ClassValue<>() {
+        @Override
+        protected Optional<Class<? extends Annotation>> computeValue(Class<?> annotationType) {
+            return Optional.ofNullable(annotationType.getAnnotation(Repeatable.class))
+                    .map(Repeatable::value);
+        }
+    };
+
+    private static final ClassValue<Optional<Method>> CONTAINER_VALUE_METHOD = new ClassValue<>() {
+        @Override
+        protected Optional<Method> computeValue(Class<?> containerType) {
+            return Arrays.stream(containerType.getMethods())
+                    .filter(method -> MergedAnnotation.VALUE.equals(method.getName()))
+                    .filter(method -> method.getParameterCount() == 0)
+                    .findFirst();
+        }
+    };
+
+    private final Map<AnnotatedElement, AnnotationsSupplierFromAnnotatedElement> elementSuppliers =
+            new ConcurrentHashMap<>();
+
     @Override
     public AnnotationsSupplier createFromMember(AnnotatedMember annotatedMember) {
         // using annotatedMember.getAnnotatedElement() and falling back
         // to the other method is not correct, as it doesn't find annotations specified on fields
-        return new AnnotationSupplierFromMember(annotatedMember);
+        return new AnnotationSupplierFromMember(annotatedMember, this::supplierFor);
     }
 
     @Override
     public AnnotationsSupplier createFromAnnotatedElement(AnnotatedElement annotatedElement) {
-        return new AnnotationsSupplierFromAnnotatedElement(annotatedElement);
+        return supplierFor(annotatedElement);
+    }
+
+    private AnnotationsSupplierFromAnnotatedElement supplierFor(AnnotatedElement annotatedElement) {
+        return elementSuppliers.computeIfAbsent(annotatedElement, AnnotationsSupplierFromAnnotatedElement::new);
     }
 
     private abstract static class RepeatableContainerAwareAnnotationsSupplier implements AnnotationsSupplier {
@@ -63,38 +92,24 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
         }
 
         private <A extends Annotation> Stream<A> findFromRepeatableContainer(Class<A> annotationType) {
-            // important to always use findAnnotationsDelegate here,
-            // otherwise we cause a Stackoverflow due to infinite recursion
-            return new AnnotationsSupplierFromAnnotatedElement(annotationType)
-                    .findAnnotationsDelegate(Repeatable.class)
-                    .findFirst()
-                    .map(Repeatable::value)
-                    .map(this::findAnnotationsDelegate)
-                    .orElseGet(Stream::empty)
-                    // if, for example, annotationType is @ApiResponse.class,
-                    // then the repeatableAnnotationContainer is of type @ApiResponses.class here,
-                    // so the @Repeatable annotation tells us the type of repeatableAnnotationContainer
-                    .flatMap(repeatableAnnotationContainer -> Stream.of(repeatableAnnotationContainer
-                                    .annotationType()
-                                    .getMethods())
-                            // find "value" method getter(s) and invoke them on the repeatableAnnotationContainer
-                            // to obtain the contained annotations
-                            .filter(method -> MergedAnnotation.VALUE.equals(method.getName()))
-                            .filter(method -> method.getParameterCount() == 0)
-                            .flatMap(valueMethodGetter -> {
-                                // there should only be one method getter, but we don't mind invoking multiple of them,
-                                // they're simply flat mapped anyway
-                                try {
-                                    Object result = valueMethodGetter.invoke(repeatableAnnotationContainer);
-                                    return result instanceof Object[] objects ? Arrays.stream(objects) : Stream.empty();
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    // getter method should always be invokable
-                                    throw new IllegalStateException(
-                                            "Cannot invoke value method getter " + valueMethodGetter, e);
-                                }
-                            })
-                            .filter(annotationType::isInstance)
-                            .map(annotationType::cast));
+            Optional<Class<? extends Annotation>> containerType = REPEATABLE_CONTAINER.get(annotationType);
+            Optional<Method> valueMethod = containerType.flatMap(CONTAINER_VALUE_METHOD::get);
+            if (containerType.isEmpty() || valueMethod.isEmpty()) {
+                return Stream.empty();
+            }
+            return findAnnotationsDelegate(containerType.get())
+                    .flatMap(container -> containedAnnotations(container, valueMethod.get()))
+                    .filter(annotationType::isInstance)
+                    .map(annotationType::cast);
+        }
+
+        private static Stream<Object> containedAnnotations(Annotation container, Method valueMethod) {
+            try {
+                Object result = valueMethod.invoke(container);
+                return result instanceof Object[] objects ? Arrays.stream(objects) : Stream.empty();
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Cannot invoke value method getter " + valueMethod, e);
+            }
         }
 
         protected abstract <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType);
@@ -104,10 +119,11 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
         private final AnnotatedMember annotatedMember;
         private final Optional<AnnotationsSupplierFromAnnotatedElement> typeUseAnnotationsSupplier;
 
-        AnnotationSupplierFromMember(AnnotatedMember annotatedMember) {
+        AnnotationSupplierFromMember(
+                AnnotatedMember annotatedMember,
+                Function<AnnotatedElement, AnnotationsSupplierFromAnnotatedElement> elementSuppliers) {
             this.annotatedMember = annotatedMember;
-            this.typeUseAnnotationsSupplier =
-                    findAnnotatedType(annotatedMember).map(AnnotationsSupplierFromAnnotatedElement::new);
+            this.typeUseAnnotationsSupplier = findAnnotatedType(annotatedMember).map(elementSuppliers);
         }
 
         @Override
@@ -140,8 +156,9 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
     private static class AnnotationsSupplierFromAnnotatedElement extends RepeatableContainerAwareAnnotationsSupplier {
         private final AnnotatedElement annotatedElement;
         private final MergedAnnotations mergedAnnotations;
+        private final Map<Class<?>, List<? extends Annotation>> foundAnnotations = new ConcurrentHashMap<>();
 
-        public AnnotationsSupplierFromAnnotatedElement(AnnotatedElement annotatedElement) {
+        AnnotationsSupplierFromAnnotatedElement(AnnotatedElement annotatedElement) {
             this.annotatedElement = annotatedElement;
             this.mergedAnnotations = MergedAnnotations.from(
                     annotatedElement,
@@ -150,14 +167,21 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType) {
+            return ((List<A>) foundAnnotations.computeIfAbsent(annotationType, ignored -> lookUp(annotationType)))
+                    .stream();
+        }
+
+        private <A extends Annotation> List<A> lookUp(Class<A> annotationType) {
             if (AnnotationFilter.PLAIN.matches(annotationType)) {
                 // PLAIN annotations are ignored by merged annotations API, see
                 // https://github.com/spring-projects/spring-framework/issues/24932
-                return Arrays.stream(annotatedElement.getAnnotationsByType(annotationType));
-            } else {
-                return mergedAnnotations.stream(annotationType).map(MergedAnnotation::synthesize);
+                return List.of(annotatedElement.getAnnotationsByType(annotationType));
             }
+            return mergedAnnotations.stream(annotationType)
+                    .map(MergedAnnotation::synthesize)
+                    .toList();
         }
     }
 }

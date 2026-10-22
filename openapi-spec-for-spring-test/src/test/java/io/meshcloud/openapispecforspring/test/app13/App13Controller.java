@@ -20,6 +20,7 @@ class App13Controller {
     @GetMapping("mapping-2")
     @Operation(tags = {"tag-1", "tag-3"})
     @Tags({@Tag(name = "tag-6"), @Tag(name = "tag-7")})
+    @SuppressWarnings("java:S1710") // the test covers the container annotation
     public void mapping2() {}
 
     @GetMapping("mapping-3")

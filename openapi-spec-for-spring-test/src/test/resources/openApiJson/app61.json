@@ -1,0 +1,68 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App61",
+    "version": "unknown"
+  },
+  "paths": {
+    "/orders": {
+      "post": {
+        "operationId": "createOrderV_1_2",
+        "parameters": [
+          {
+            "name": "dryRun",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.example.order.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/App61Controller.OrderV1"
+              }
+            },
+            "application/vnd.example.order.v2+json": {
+              "schema": {
+                "$ref": "#/components/schemas/App61Controller.OrderV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App61Controller.OrderV1": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          }
+        }
+      },
+      "App61Controller.OrderV2": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

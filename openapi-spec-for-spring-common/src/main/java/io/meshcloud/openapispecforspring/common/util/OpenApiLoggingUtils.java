@@ -22,25 +22,12 @@
 package io.meshcloud.openapispecforspring.common.util;
 
 import io.meshcloud.openapispecforspring.model.media.Schema;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 public class OpenApiLoggingUtils {
-
-    private static final Map<Class<?>, Function<Object, String>> PRETTY_PRINTERS = new LinkedHashMap<>();
-
-    @SuppressWarnings("unchecked")
-    public static <T> void registerPrettyPrinter(Class<T> clazz, Function<T, String> prettyPrinter) {
-        LOGGER.debug("Registering pretty printer for {}", clazz.getSimpleName());
-        PRETTY_PRINTERS.put(clazz, object -> prettyPrinter.apply((T) object));
-    }
 
     private static Object logLazily(Supplier<String> stringSupplier) {
         return new Object() {
@@ -60,11 +47,10 @@ public class OpenApiLoggingUtils {
             if (object instanceof HasToPrettyString hasToPrettyString) {
                 return hasToPrettyString.toPrettyString();
             }
-            return PRETTY_PRINTERS.entrySet().stream()
-                    .filter(entry -> entry.getKey().isAssignableFrom(object.getClass()))
-                    .findAny()
-                    .map(entry -> entry.getValue().apply(object))
-                    .orElseGet(object::toString);
+            if (object instanceof Schema schema) {
+                return prettyPrintSchema(schema);
+            }
+            return object.toString();
         });
     }
 

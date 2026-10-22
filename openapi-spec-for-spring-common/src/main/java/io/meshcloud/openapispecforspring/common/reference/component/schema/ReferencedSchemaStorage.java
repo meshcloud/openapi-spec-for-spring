@@ -27,10 +27,15 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdentifierBuilderForType;
 import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdentifierConflictResolverForType;
 import io.meshcloud.openapispecforspring.model.media.Schema;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class ReferencedSchemaStorage extends AbstractReferencedItemStorage<Schema> {
+
+    private final List<ReferenceDecisionAwareSchemaSetter> referenceDecisionAwareSetters = new ArrayList<>();
 
     ReferencedSchemaStorage(
             ReferenceDeciderForType<Schema> referenceDecider,
@@ -56,11 +61,37 @@ public class ReferencedSchemaStorage extends AbstractReferencedItemStorage<Schem
     }
 
     void storeMaybeReference(Schema schema, Consumer<Schema> setter) {
+        if (setter instanceof ReferenceDecisionAwareSchemaSetter referenceDecisionAwareSetter) {
+            referenceDecisionAwareSetters.add(referenceDecisionAwareSetter);
+        }
         addEntry(
                 schema,
                 setter,
                 AddEntryParameters.builder()
                         .suggestedIdentifier(schema.getName())
                         .build());
+    }
+
+    private static final Schema GROUPING_USE_FACETS = new Schema();
+
+    // A schema's own use facets stay on the property that uses it, so equal schemas share one component, while the
+    // use facets of nested schemas still distinguish their owners.
+    @Override
+    protected Object groupingKey(Schema schema) {
+        return List.of(schema.getClass(), schema.withUseFacets(GROUPING_USE_FACETS));
+    }
+
+    // One component that serves both directions belongs to neither, so it must not get a Request or Response name.
+    @Override
+    protected void mergeEqualItems(Schema keptItem, Schema mergedItem) {
+        if (keptItem.getDirection() != mergedItem.getDirection()) {
+            keptItem.setDirection(null);
+        }
+    }
+
+    @Override
+    public void buildReferencedItems(Consumer<Map<String, Schema>> referencedItemsConsumer) {
+        super.buildReferencedItems(referencedItemsConsumer);
+        referenceDecisionAwareSetters.forEach(ReferenceDecisionAwareSchemaSetter::afterReferencesDecided);
     }
 }

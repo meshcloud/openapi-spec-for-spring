@@ -78,6 +78,9 @@
         "format": "int32"
       },
       "App43Controller.Rectangle": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
@@ -93,6 +96,9 @@
         "description": "Not quite a square"
       },
       "App43Controller.Circle": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
@@ -124,7 +130,7 @@
           }
         ]
       },
-      "App43Controller.ExtendableBody@c": {
+      "App43Controller.ExtendableBody_c": {
         "type": "string",
         "enum": [
           ".App43Controller$ExtendableBody",
@@ -132,13 +138,17 @@
         ]
       },
       "App43Controller.ExtendableBody_0": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
+            "$ref": "#/components/schemas/App43Controller.ExtendableBody_c"
           },
           "property1": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           }
         }
       },
@@ -160,20 +170,25 @@
         ]
       },
       "App43Controller.ExtendedBody": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
+            "$ref": "#/components/schemas/App43Controller.ExtendableBody_c"
           },
           "property1": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           },
           "property2": {
-            "type": "string"
+            "type": "string",
+            "writeOnly": true
           }
         }
       },
-      "App43Controller.BodyInterface@class": {
+      "App43Controller.BodyInterface_class": {
         "type": "string",
         "enum": [
           "io.meshcloud.openapispecforspring.test.app43.App43Controller$AnotherBody",
@@ -181,24 +196,42 @@
         ]
       },
       "App43Controller.AnotherBody": {
+        "required": [
+          "@class"
+        ],
         "title": "The Title!",
         "type": "object",
         "properties": {
           "@class": {
-            "$ref": "#/components/schemas/App43Controller.BodyInterface@class"
+            "$ref": "#/components/schemas/App43Controller.BodyInterface_class"
           },
           "property3": {
             "type": "string"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
           }
         },
         "description": "Another body with property3"
       },
       "App43Controller.ConcreteBody": {
+        "required": [
+          "@class"
+        ],
         "title": "The Title!",
         "type": "object",
         "properties": {
           "@class": {
-            "$ref": "#/components/schemas/App43Controller.BodyInterface@class"
+            "$ref": "#/components/schemas/App43Controller.BodyInterface_class"
+          },
+          "id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "readOnlyProperty": {
+            "type": "string",
+            "readOnly": true
           }
         }
       },

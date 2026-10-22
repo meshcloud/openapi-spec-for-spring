@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App78",
+    "version": "unknown"
+  },
+  "paths": {
+    "/plant": {
+      "get": {
+        "operationId": "getPlant",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App78PlantResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "plant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App78PlantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "MapOfObject": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "App78PlantResponse": {
+        "required": [
+          "name",
+          "height",
+          "attributes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The botanical name"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "$ref": "#/components/schemas/integer_int32"
+          },
+          "measurement": {
+            "nullable": true
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "notes": {
+            "nullable": true
+          },
+          "gardener": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "App78PlantRequest": {
+        "required": [
+          "name",
+          "attributes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The botanical name"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "$ref": "#/components/schemas/integer_int32"
+          },
+          "measurement": {
+            "nullable": true
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "notes": {
+            "nullable": true
+          },
+          "gardener": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}

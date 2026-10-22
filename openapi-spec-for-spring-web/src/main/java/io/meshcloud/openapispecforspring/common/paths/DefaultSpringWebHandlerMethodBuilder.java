@@ -29,6 +29,7 @@ import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMet
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
@@ -44,6 +45,7 @@ public class DefaultSpringWebHandlerMethodBuilder implements SpringWebHandlerMet
 
     private final AnnotationsSupplierFactory annotationsSupplierFactory;
     private final OpenApiSpringWebParameterNameDiscoverer parameterNameDiscoverer;
+    private final List<SpringWebHandlerMethodParameterExpander> parameterExpanders;
 
     @Override
     public HandlerMethod build(org.springframework.web.method.HandlerMethod springWebHandlerMethod) {
@@ -60,9 +62,19 @@ public class DefaultSpringWebHandlerMethodBuilder implements SpringWebHandlerMet
         IntFunction<String> parameterNameSupplier = buildParameterNameSupplier(springWebHandlerMethod);
         return IntStream.range(0, methodParameters.length)
                 .boxed()
-                .map(parameterIndex ->
-                        buildParameter(methodParameters[parameterIndex], parameterNameSupplier.apply(parameterIndex)))
+                .flatMap(parameterIndex -> expandOrBuildParameter(
+                        methodParameters[parameterIndex], parameterNameSupplier.apply(parameterIndex)))
                 .toList();
+    }
+
+    private Stream<HandlerMethod.Parameter> expandOrBuildParameter(
+            MethodParameter parameter, @Nullable String parameterName) {
+        return parameterExpanders.stream()
+                .map(expander -> expander.expand(parameter))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .map(List::stream)
+                .orElseGet(() -> Stream.of(buildParameter(parameter, parameterName)));
     }
 
     private IntFunction<String> buildParameterNameSupplier(
@@ -97,6 +109,7 @@ public class DefaultSpringWebHandlerMethodBuilder implements SpringWebHandlerMet
                     public <A extends Annotation> Stream<A> findAnnotations(Class<A> annotationType) {
                         return Optional.ofNullable(parameter.getParameterAnnotation(annotationType)).stream();
                     }
-                });
+                },
+                parameter.isOptional());
     }
 }

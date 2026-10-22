@@ -25,8 +25,11 @@ import io.meshcloud.openapispecforspring.common.paths.HandlerMethodWithInfo;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethodsProvider;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebHandlerMethodBuilder;
 import io.meshcloud.openapispecforspring.common.paths.SpringWebRequestMethodEnumMapper;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @RequiredArgsConstructor
@@ -39,7 +42,12 @@ public class HandlerMethodsProviderForWebMvc implements HandlerMethodsProvider {
 
     @Override
     public List<HandlerMethodWithInfo> getHandlerMethods() {
+        // The handler mapping keeps its handlers in a HashMap, whose order changes between runs.
         return requestMappingHandlerMapping.getHandlerMethods().entrySet().stream()
+                .sorted(Comparator.comparing(
+                                (Map.Entry<RequestMappingInfo, org.springframework.web.method.HandlerMethod> entry) ->
+                                        entry.getValue().getMethod().toGenericString())
+                        .thenComparing(entry -> entry.getKey().toString()))
                 .map(entry -> new HandlerMethodWithInfo(
                         springWebHandlerMethodBuilder.build(entry.getValue()),
                         handlerMethodPathPatternsProviderForWebMvc.findPatterns(entry.getKey()),

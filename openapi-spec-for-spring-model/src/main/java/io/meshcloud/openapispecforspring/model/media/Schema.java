@@ -54,6 +54,18 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
     @EqualsAndHashCode.Exclude
     private String name;
 
+    // A type can have a request and a response view that differ, e.g. in their required properties; this tells the
+    // two apart when they need distinct names.
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    private Direction direction;
+
+    // Facets that a property puts on this schema. They count for the equality of the schema that owns the property,
+    // so two objects whose properties differ only in their descriptions stay two components.
+    @JsonIgnore
+    @With
+    private Schema useFacets;
+
     @JsonProperty("default")
     private Object defaultValue;
 
@@ -95,6 +107,8 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
 
     private Discriminator discriminator;
     private Schema items;
+    private List<Schema> allOf;
+    private List<Schema> anyOf;
     private List<Schema> oneOf;
     private Map<String, Object> extensions;
 
@@ -109,11 +123,18 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
         if (required == null) {
             required = new ArrayList<>();
         }
-        required.add(requiredProperty);
+        if (!required.contains(requiredProperty)) {
+            required.add(requiredProperty);
+        }
     }
 
     @Override
     public Schema createInstance() {
         return new Schema();
+    }
+
+    public enum Direction {
+        REQUEST,
+        RESPONSE
     }
 }

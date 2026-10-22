@@ -25,6 +25,7 @@ import io.meshcloud.openapispecforspring.common.annotation.DeprecationDetector;
 import io.meshcloud.openapispecforspring.common.operation.OperationBuilderContext;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.model.operation.Operation;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -36,13 +37,23 @@ public class DefaultDeprecatedOperationCustomizer implements OperationCustomizer
 
     @Override
     public void customize(Operation operation, OperationBuilderContext operationBuilderContext) {
-        if (operation.getDeprecated() != null) {
-            return;
-        }
         HandlerMethod handlerMethod = operationBuilderContext.getOperationInfo().getHandlerMethod();
-        if (deprecationDetector.isDeprecated(handlerMethod::findAnnotations)) {
+        List<HandlerMethod> mergedHandlerMethods = handlerMethod.getMergedHandlerMethods();
+        // A merged handler method has the annotations of all its handler methods, so each one is checked on its own.
+        if (mergedHandlerMethods.size() > 1) {
+            boolean deprecated = mergedHandlerMethods.stream().allMatch(this::isDeprecated);
+            operation.setDeprecated(deprecated ? Boolean.TRUE : null);
+        } else if (operation.getDeprecated() == null
+                && deprecationDetector.isDeprecated(handlerMethod::findAnnotations)) {
             operation.setDeprecated(true);
         }
+    }
+
+    private boolean isDeprecated(HandlerMethod handlerMethod) {
+        return deprecationDetector.isDeprecated(handlerMethod::findAnnotations)
+                || handlerMethod
+                        .findAnnotations(io.swagger.v3.oas.annotations.Operation.class)
+                        .anyMatch(io.swagger.v3.oas.annotations.Operation::deprecated);
     }
 
     @Override

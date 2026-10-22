@@ -28,6 +28,7 @@ import static org.springframework.http.MediaType.ALL_VALUE;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper.RequestBodyParameter;
+import io.meshcloud.openapispecforspring.common.util.OpenApiVoidUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -132,7 +133,7 @@ public class SpringWebHandlerMethodContentTypesMapper {
     private Set<String> supportedConcreteMediaTypes(
             ResolvableType bodyType, Predicate<HttpMessageConverter<?>> canReadOrWrite) {
         Class<?> bodyClass = bodyType.toClass();
-        if (Void.class.equals(bodyClass) || void.class.equals(bodyClass)) {
+        if (OpenApiVoidUtils.isVoid(bodyClass)) {
             return SINGLE_ALL_VALUE;
         }
         Set<String> mediaTypes = httpMessageConvertersSupplier.getHttpMessageConverters().stream()

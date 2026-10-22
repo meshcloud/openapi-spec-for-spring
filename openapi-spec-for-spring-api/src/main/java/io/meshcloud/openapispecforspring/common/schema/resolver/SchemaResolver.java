@@ -74,6 +74,8 @@ public interface SchemaResolver {
      * <p>
      * {@code @EqualsAndHashCode} is left out intentionally as singleton instances should be compared
      */
+    // Public API as SchemaResolver.Caller; moving it out breaks every extension that resolves schemas.
+    @SuppressWarnings("java:S9398")
     @RequiredArgsConstructor(staticName = "of")
     @Getter
     @ToString

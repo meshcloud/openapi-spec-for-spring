@@ -25,48 +25,55 @@ import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.paths.method.AbstractSpringWebHandlerMethod.SpringWebParameter;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethod;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper;
+import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethodRequestBodyParameterMapper.RequestBodyParameter;
 import io.meshcloud.openapispecforspring.common.util.OpenApiStreamUtils;
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jspecify.annotations.Nullable;
 
 @RequiredArgsConstructor
 @Slf4j
 public class SpringWebHandlerMethodParameterMerger {
 
     private final SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger;
+    private final SpringWebHandlerMethodRequestBodyParameterMapper requestBodyParameterMapper;
 
     public List<HandlerMethod.Parameter> mergeParameters(List<SpringWebHandlerMethod> handlerMethods) {
+        Map<Optional<String>, Set<HandlerMethod>> handlerMethodsByParameterName = handlerMethods.stream()
+                .flatMap(handlerMethod -> parametersWithoutRequestBody(handlerMethod)
+                        .map(parameter -> Pair.of(parameter.getName(), (HandlerMethod) handlerMethod)))
+                .collect(OpenApiStreamUtils.groupingByPairKeyAndCollectingValuesTo(Collectors.toSet()));
+        // parameters whose types differ stay apart, the operation builder merges their schemas
         return handlerMethods.stream()
-                .flatMap(handlerMethod -> handlerMethod.getParameters().stream()
+                .flatMap(handlerMethod -> parametersWithoutRequestBody(handlerMethod)
                         .map(parameter -> buildExtendedParameterPair(handlerMethod, parameter)))
                 .collect(OpenApiStreamUtils.groupingByPairKeyAndCollectingValuesToList())
                 .entrySet()
                 .stream()
                 .map(entry -> entry.getKey()
+                        .name()
                         .map(parameterName -> {
                             val parameters = entry.getValue().stream()
                                     .map(ExtendedParameter::getParameter)
                                     .toList();
-                            val handlerMethodsForParameters = entry.getValue().stream()
-                                    .map(ExtendedParameter::getOwningHandlerMethod)
-                                    .toList();
+                            boolean inEveryHandlerMethod = handlerMethodsByParameterName
+                                    .getOrDefault(entry.getKey().name(), Set.of())
+                                    .containsAll(handlerMethods);
                             return buildMergedParameter(parameterName, parameters, parameter -> {
-                                if (!handlerMethodsForParameters.containsAll(handlerMethods)) {
+                                if (!inEveryHandlerMethod) {
                                     parameter.setRequired(false); // otherwise, the Swagger UI doesn't work
-                                    if (parameter.getDescription() == null) {
-                                        parameter.setDescription("Only used by "
-                                                + handlerMethodsForParameters.stream()
-                                                        .map(HandlerMethod::getIdentifier)
-                                                        .collect(Collectors.joining(", ")));
-                                    }
                                 }
                             });
                         })
@@ -75,10 +82,25 @@ public class SpringWebHandlerMethodParameterMerger {
                 .toList();
     }
 
-    private Pair<Optional<String>, ExtendedParameter> buildExtendedParameterPair(
-            SpringWebHandlerMethod handlerMethod, HandlerMethod.Parameter parameter) {
-        return Pair.of(parameter.getName(), ExtendedParameter.of(parameter, handlerMethod));
+    // SpringWebHandlerMethodRequestBodyMerger merges request bodies per consumed media type, so their types may differ.
+    private Stream<HandlerMethod.Parameter> parametersWithoutRequestBody(SpringWebHandlerMethod handlerMethod) {
+        Optional<HandlerMethod.Parameter> requestBody = requestBodyParameterMapper
+                .findRequestBodyParameter(handlerMethod)
+                .map(RequestBodyParameter::getParameter);
+        return handlerMethod.getParameters().stream()
+                .filter(parameter -> requestBody.filter(parameter::equals).isEmpty());
     }
+
+    private Pair<NameAndType, ExtendedParameter> buildExtendedParameterPair(
+            SpringWebHandlerMethod handlerMethod, HandlerMethod.Parameter parameter) {
+        return Pair.of(
+                new NameAndType(
+                        parameter.getName(),
+                        parameter.getType().map(HandlerMethod.Type::getType).orElse(null)),
+                ExtendedParameter.of(parameter, handlerMethod));
+    }
+
+    private record NameAndType(Optional<String> name, java.lang.reflect.@Nullable Type type) {}
 
     private HandlerMethod.Parameter buildMergedParameter(
             String parameterName, List<HandlerMethod.Parameter> parameters, Consumer<Parameter> parameterCustomizer) {
@@ -86,9 +108,13 @@ public class SpringWebHandlerMethodParameterMerger {
         val mergedType = springWebHandlerMethodTypeMerger
                 .mergeTypes(parameters.stream())
                 .orElseThrow(() -> new IllegalStateException("Grouped parameters should contain at least one entry"));
-        return new SpringWebParameter(parameterName, mergedType, mergedAnnotationsSupplier) {
+        boolean optional = parameters.stream()
+                .anyMatch(parameter ->
+                        parameter instanceof SpringWebParameter springWebParameter && springWebParameter.isOptional());
+        return new SpringWebParameter(parameterName, mergedType, mergedAnnotationsSupplier, optional) {
             @Override
             public void customize(Parameter parameter) {
+                super.customize(parameter);
                 parameterCustomizer.accept(parameter);
             }
         };

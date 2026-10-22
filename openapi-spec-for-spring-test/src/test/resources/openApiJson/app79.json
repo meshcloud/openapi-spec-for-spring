@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App79",
+    "version": "unknown"
+  },
+  "paths": {
+    "/seed": {
+      "get": {
+        "operationId": "getSeed",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App79Seed_0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "sow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App79Seed_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/seeds": {
+      "post": {
+        "operationId": "order",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App79SeedRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    },
+    "schemas": {
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App79Seed_0": {
+        "required": [
+          "variety",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "variety": {
+            "type": "string"
+          },
+          "count": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App79Seed_1": {
+        "required": [
+          "variety"
+        ],
+        "type": "object",
+        "properties": {
+          "variety": {
+            "type": "string"
+          },
+          "count": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App79SeedRequest": {
+        "required": [
+          "varieties"
+        ],
+        "type": "object",
+        "properties": {
+          "varieties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

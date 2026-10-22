@@ -1,0 +1,81 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App76",
+    "version": "unknown"
+  },
+  "paths": {
+    "/garden": {
+      "get": {
+        "operationId": "getGarden",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App76Controller.Garden"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App76Controller.Tree": {
+        "type": "object",
+        "properties": {
+          "species": {
+            "type": "string"
+          },
+          "saplings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/App76Controller.Tree"
+            }
+          }
+        }
+      },
+      "App76Controller.OakGrove": {
+        "type": "object",
+        "properties": {
+          "tree": {
+            "description": "The oldest oak",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App76Controller.Tree"
+              }
+            ]
+          }
+        }
+      },
+      "App76Controller.BirchGrove": {
+        "type": "object",
+        "properties": {
+          "tree": {
+            "description": "The tallest birch",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App76Controller.Tree"
+              }
+            ]
+          }
+        }
+      },
+      "App76Controller.Garden": {
+        "type": "object",
+        "properties": {
+          "oaks": {
+            "$ref": "#/components/schemas/App76Controller.OakGrove"
+          },
+          "birches": {
+            "$ref": "#/components/schemas/App76Controller.BirchGrove"
+          }
+        }
+      }
+    }
+  }
+}

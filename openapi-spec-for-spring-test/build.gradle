@@ -1,6 +1,7 @@
 plugins {
   id('io.meshcloud.openapi-spec-for-spring.java-library')
   id('jacoco-report-aggregation')
+  id('org.jetbrains.kotlin.jvm') version '2.2.21'
 }
 
 description = 'OpenAPI Spec for Spring :: Test'
@@ -13,13 +14,32 @@ dependencies {
   implementation(project(':openapi-spec-for-spring-autoconfigure'))
   implementation(project(':openapi-spec-for-spring-web'))
   implementation(project(':openapi-spec-for-spring-webmvc'))
+  implementation(project(':openapi-spec-for-spring-hateoas'))
+  implementation(project(':openapi-spec-for-spring-data'))
 
   testImplementation('org.springframework.boot:spring-boot-starter-web')
   testImplementation('org.springframework.boot:spring-boot-starter-security')
+  testImplementation('org.springframework.boot:spring-boot-starter-hateoas')
+  testImplementation('org.springframework.data:spring-data-commons')
   testImplementation('commons-io:commons-io')
+  testImplementation('org.jetbrains.kotlin:kotlin-stdlib')
+  testImplementation('org.jetbrains.kotlin:kotlin-reflect')
+  testImplementation('com.fasterxml.jackson.module:jackson-module-kotlin')
   testImplementation('com.google.code.findbugs:jsr305')
   testImplementation('jakarta.servlet:jakarta.servlet-api')
   testImplementation('jakarta.validation:jakarta.validation-api')
+}
+
+// Kotlin test classes must target the same JVM as the Java ones.
+kotlin {
+  compilerOptions {
+    jvmTarget = tasks.named('compileTestJava', JavaCompile).flatMap {
+      it.options.release
+    }
+    .map {
+      org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(it.toString())
+    }
+  }
 }
 
 // YAML on the classpath changes what Spring MVC serves, so the YAML tests run with their own classpath.
@@ -29,6 +49,19 @@ testing {
       dependencies {
         implementation(sourceSets.test.output)
         implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
+      }
+    }
+    // The parser brings YAML too, so it checks the expected files, which equal the served specs.
+    specValidityTest(JvmTestSuite) {
+      dependencies {
+        implementation('io.swagger.parser.v3:swagger-parser-v3')
+      }
+      targets.all {
+        testTask.configure {
+          def expectedSpecDirs = files('src/test/resources/openApiJson', 'src/yamlTest/resources/openApiYaml')
+          inputs.files(expectedSpecDirs).withPathSensitivity(PathSensitivity.RELATIVE)
+          systemProperty('expectedSpecDirs', expectedSpecDirs.files.join(File.pathSeparator))
+        }
       }
     }
   }
@@ -61,5 +94,5 @@ sonar {
 }
 
 tasks.named('check') {
-  dependsOn(tasks.named('yamlTest'), tasks.named('testCodeCoverageReport'), tasks.named('yamlTestCodeCoverageReport'))
+  dependsOn(tasks.named('yamlTest'), tasks.named('specValidityTest'), tasks.named('testCodeCoverageReport'), tasks.named('yamlTestCodeCoverageReport'))
 }

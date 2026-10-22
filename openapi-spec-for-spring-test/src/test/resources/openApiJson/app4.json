@@ -10,7 +10,14 @@
         "operationId": "getMapping1",
         "responses": {
           "200": {
-            "description": "All ok"
+            "description": "All ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "310": {
             "description": "Some more responses 1"
@@ -22,7 +29,14 @@
             "$ref": "#/components/responses/503"
           },
           "210": {
-            "description": "Really cool response code from base"
+            "description": "Really cool response code from base",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "410": {
             "description": "Some more responses 1 from base base"
@@ -61,7 +75,14 @@
             "description": "Some response overwrite base base"
           },
           "210": {
-            "description": "All ok overwrite base"
+            "description": "All ok overwrite base",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "503": {
             "$ref": "#/components/responses/503"

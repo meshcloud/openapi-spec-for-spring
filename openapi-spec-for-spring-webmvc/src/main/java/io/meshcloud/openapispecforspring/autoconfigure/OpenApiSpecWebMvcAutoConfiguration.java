@@ -38,6 +38,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -47,6 +48,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class OpenApiSpecWebMvcAutoConfiguration {
 
     @Bean
+    @Lazy(false)
     @Conditional(OpenApiConfigurationProperties.EnabledCondition.class)
     public InitializingBean openApiResourceRegistration(
             OpenApiResource openApiResource, RequestMappingHandlerMapping requestMappingHandlerMapping) {

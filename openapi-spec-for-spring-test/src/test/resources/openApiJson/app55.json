@@ -60,10 +60,6 @@
   },
   "components": {
     "schemas": {
-      "nullable_string": {
-        "type": "string",
-        "nullable": true
-      },
       "App55Controller.ClassDto": {
         "type": "object",
         "properties": {
@@ -71,28 +67,30 @@
             "type": "string"
           },
           "jspecifyNullable": {
-            "$ref": "#/components/schemas/nullable_string"
+            "type": "string",
+            "nullable": true
           },
           "springNullable": {
-            "$ref": "#/components/schemas/nullable_string"
+            "type": "string",
+            "nullable": true
           },
           "jakartaNullable": {
-            "$ref": "#/components/schemas/nullable_string"
+            "type": "string",
+            "nullable": true
           },
           "deprecated": {
             "type": "string",
             "deprecated": true
           },
           "nullableGetter": {
-            "$ref": "#/components/schemas/nullable_string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
-      "nullable_deprecated_integer_int32": {
+      "integer_int32": {
         "type": "integer",
-        "format": "int32",
-        "nullable": true,
-        "deprecated": true
+        "format": "int32"
       },
       "App55Controller.RecordDto": {
         "type": "object",
@@ -101,10 +99,17 @@
             "type": "string"
           },
           "nullable": {
-            "$ref": "#/components/schemas/nullable_string"
+            "type": "string",
+            "nullable": true
           },
           "deprecatedNullable": {
-            "$ref": "#/components/schemas/nullable_deprecated_integer_int32"
+            "nullable": true,
+            "deprecated": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/integer_int32"
+              }
+            ]
           }
         }
       }
