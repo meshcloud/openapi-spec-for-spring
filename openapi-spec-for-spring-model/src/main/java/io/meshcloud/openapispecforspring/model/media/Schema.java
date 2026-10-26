@@ -95,6 +95,7 @@ public class Schema implements HasExtensions, HasReference<Schema>, HasIsEmpty<S
 
     private Discriminator discriminator;
     private Schema items;
+    private List<Schema> allOf;
     private List<Schema> oneOf;
     private Map<String, Object> extensions;
 

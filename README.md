@@ -48,6 +48,23 @@ When the application runs, it serves the spec at `/v3/api-docs` as JSON. It also
 YAML when the application has `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml` on its classpath. See
 the [WebMVC demo](demo/openapi-spec-for-spring-demo-webmvc).
 
+## Spring HATEOAS
+
+When the application has Spring HATEOAS on its classpath, the spec describes every `RepresentationModel` in the HAL
+format:
+
+* A `RepresentationModel` subclass gets `_links` in place of `links`.
+* `EntityModel<T>` is `allOf` the schema of `T` and an object with `_links`.
+* `CollectionModel<T>` has `_embedded` with the content under its collection relation, and `_links`. The relation
+  comes from the application's `LinkRelationProvider`, so `@Relation` applies.
+* `PagedModel<T>` also has `page`.
+* `_links` and `page` are `readOnly` and not required, because Spring HATEOAS leaves out empty links and a
+  `PagedModel` can have no page metadata.
+
+The spec does not check the media type of the response, so a `RepresentationModel` that the application also serves
+as plain JSON still gets the HAL schema. Set `openapi-spec-for-spring.hateoas.enabled=false` to turn the HAL schemas
+off.
+
 ## Branches and versions
 
 Each Spring Boot major version has its own branch, for example `spring-boot-3.x`. The Spring Boot major is part of the
@@ -67,6 +84,7 @@ All properties have the prefix `openapi-spec-for-spring`:
 
 * [OpenApiConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/OpenApiConfigurationProperties.java)
 * [OpenApiInfoConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/info/OpenApiInfoConfigurationProperties.java)
+* [OpenApiHateoasConfigurationProperties](openapi-spec-for-spring-hateoas/src/main/java/io/meshcloud/openapispecforspring/hateoas/OpenApiHateoasConfigurationProperties.java)
 * [Java8TimeTypeResolverConfigurationProperties](openapi-spec-for-spring-common/src/main/java/io/meshcloud/openapispecforspring/common/schema/resolver/type/extension/java8/Java8TimeTypeResolverConfigurationProperties.java)
 
 ## Build
