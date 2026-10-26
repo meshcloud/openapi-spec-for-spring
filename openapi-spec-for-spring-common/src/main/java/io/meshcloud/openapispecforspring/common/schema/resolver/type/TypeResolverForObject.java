@@ -143,7 +143,7 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
             this.schemaPropertyCustomizers.add(propertySchemaCustomizer);
         }
 
-        public Schema customize(Schema propertySchema, JavaType javaType, AnnotationsSupplier annotationsSupplier) {
+        Schema customize(Schema propertySchema, JavaType javaType, AnnotationsSupplier annotationsSupplier) {
             schemaPropertyCustomizers.forEach(
                     customizer -> customizer.customize(propertySchema, javaType, annotationsSupplier));
             // avoid running customizers multiple again when referenced schemas are consumed
@@ -166,7 +166,7 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
 
     @EqualsAndHashCode(callSuper = true)
     private static class ObjectSchema extends Schema {
-        public ObjectSchema(String name) {
+        ObjectSchema(String name) {
             setType("object");
             setName(name);
         }

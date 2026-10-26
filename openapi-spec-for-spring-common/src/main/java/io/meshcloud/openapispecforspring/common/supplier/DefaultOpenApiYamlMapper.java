@@ -36,7 +36,7 @@ public class DefaultOpenApiYamlMapper implements OpenApiYamlMapper {
     private static final ObjectMapper YAML_MAPPER = new YAMLMapper(new YAMLFactory())
             .configure(MINIMIZE_QUOTES, true)
             .configure(WRITE_DOC_START_MARKER, false)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
 
     @Override
     public String map(OpenApi openApi) throws JsonProcessingException {

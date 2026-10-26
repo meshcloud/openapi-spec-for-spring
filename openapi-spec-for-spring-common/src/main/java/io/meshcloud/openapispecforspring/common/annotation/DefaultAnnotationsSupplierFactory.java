@@ -112,7 +112,7 @@ public class DefaultAnnotationsSupplierFactory implements AnnotationsSupplierFac
             }
         }
 
-        protected abstract <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType);
+        abstract <A extends Annotation> Stream<A> findAnnotationsDelegate(Class<A> annotationType);
     }
 
     private static class AnnotationSupplierFromMember extends RepeatableContainerAwareAnnotationsSupplier {

@@ -88,7 +88,7 @@ public class ReferencedItemSupportFactory {
         private final OpenApi openApi;
         private final Map<ReferenceType, HandlerWithDependencies> handlersMap;
 
-        public DependentReferencedComponentHandlersSupport(
+        DependentReferencedComponentHandlersSupport(
                 OpenApi openApi, List<AbstractDependentReferencedComponentHandler> handlers) {
             this.openApi = openApi;
             this.handlersMap = handlers.stream()
@@ -99,7 +99,7 @@ public class ReferencedItemSupportFactory {
                     }));
         }
 
-        public void handle() {
+        void handle() {
             Map<ReferenceType, Set<ReferenceType>> transitiveDependencies = handlersMap.keySet().stream()
                     .collect(Collectors.toMap(
                             r -> r, r -> buildTransitiveDependencies(r).collect(Collectors.toSet())));
@@ -148,7 +148,7 @@ public class ReferencedItemSupportFactory {
             private final ReferenceType type;
             private final List<ReferenceType> directDependencies;
 
-            public static HandlerWithDependencies of(AbstractDependentReferencedComponentHandler handler) {
+            static HandlerWithDependencies of(AbstractDependentReferencedComponentHandler handler) {
                 Pair<ReferenceType, List<ReferenceType>> buildDependencies = handler.getBuildDependencies();
                 return new HandlerWithDependencies(handler, buildDependencies.getKey(), buildDependencies.getValue());
             }

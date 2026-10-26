@@ -150,7 +150,7 @@ public class DefaultOperationParameterCustomizer implements OperationCustomizer 
         @Getter
         private final transient HandlerMethod.Context context;
 
-        public io.swagger.v3.oas.annotations.Parameter get() {
+        io.swagger.v3.oas.annotations.Parameter get() {
             return annotation;
         }
 

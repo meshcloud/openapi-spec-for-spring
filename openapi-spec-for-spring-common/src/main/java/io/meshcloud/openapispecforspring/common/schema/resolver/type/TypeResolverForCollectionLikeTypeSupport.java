@@ -35,8 +35,9 @@ import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupp
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import java.lang.annotation.Annotation;
+import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Deque;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -63,12 +64,12 @@ public class TypeResolverForCollectionLikeTypeSupport {
         if (condition.test(unpackedJavaType)) {
             val arraySchemaAnnotations = annotationsSupplier
                     .findAnnotations(ArraySchema.class)
-                    .collect(Collectors.toCollection(LinkedList::new));
+                    .collect(Collectors.toCollection(ArrayDeque::new));
             return new CollectionLikeInitialType(
                     unpackedJavaType,
                     extendAnnotationsSupplier(annotationsSupplier, arraySchemaAnnotations, ArraySchema::arraySchema),
                     arraySchemaAnnotations,
-                    unpackedJavaType != javaType,
+                    !unpackedJavaType.equals(javaType),
                     caller);
         }
         return null;
@@ -115,7 +116,7 @@ public class TypeResolverForCollectionLikeTypeSupport {
         }
     }
 
-    private CollectionLikeSchema buildArraySchema(LinkedList<ArraySchema> arraySchemaAnnotations) {
+    private CollectionLikeSchema buildArraySchema(Deque<ArraySchema> arraySchemaAnnotations) {
         val arraySchema = new CollectionLikeSchema();
         arraySchemaAnnotations
                 .descendingIterator()
@@ -170,24 +171,24 @@ public class TypeResolverForCollectionLikeTypeSupport {
 
     @EqualsAndHashCode(callSuper = true)
     private static class CollectionLikeSchema extends Schema {
-        public CollectionLikeSchema() {
+        CollectionLikeSchema() {
             setType("array");
         }
     }
 
     private static class CollectionLikeInitialType extends InitialType {
         @Getter
-        private final LinkedList<ArraySchema> arraySchemaAnnotations;
+        private final Deque<ArraySchema> arraySchemaAnnotations;
 
         @Getter
         private final boolean recursiveJacksonType;
 
         private final Object caller;
 
-        protected CollectionLikeInitialType(
+        CollectionLikeInitialType(
                 JavaType type,
                 AnnotationsSupplier annotationsSupplier,
-                LinkedList<ArraySchema> arraySchemaAnnotations,
+                Deque<ArraySchema> arraySchemaAnnotations,
                 boolean recursiveJacksonType,
                 Object caller) {
             super(type, annotationsSupplier);

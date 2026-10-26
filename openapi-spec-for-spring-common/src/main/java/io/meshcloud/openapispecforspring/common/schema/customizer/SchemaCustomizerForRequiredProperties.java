@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class SchemaCustomizerForRequiredProperties implements SchemaPropertiesCustomizer {
     @Override
+    @SuppressWarnings("deprecation")
     public void customize(
             Schema schema,
             JavaType javaType,

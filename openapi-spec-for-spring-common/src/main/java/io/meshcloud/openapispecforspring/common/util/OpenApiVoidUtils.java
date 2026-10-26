@@ -32,6 +32,6 @@ public class OpenApiVoidUtils {
     public static boolean isVoid(Type type) {
         return void.class.equals(type)
                 || Void.class.equals(type)
-                || type instanceof Class<?> clazz && KOTLIN_UNIT.equals(clazz.getName());
+                || (type instanceof Class<?> clazz && KOTLIN_UNIT.equals(clazz.getName()));
     }
 }

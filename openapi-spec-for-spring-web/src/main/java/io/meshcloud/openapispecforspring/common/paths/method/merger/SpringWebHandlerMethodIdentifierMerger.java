@@ -23,8 +23,8 @@ package io.meshcloud.openapispecforspring.common.paths.method.merger;
 
 import io.meshcloud.openapispecforspring.common.paths.HandlerMethod;
 import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMethod;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,11 +34,11 @@ public class SpringWebHandlerMethodIdentifierMerger {
     private static final String SEPARATOR = "_";
 
     public String mergeIdentifiers(List<SpringWebHandlerMethod> handlerMethods) {
-        LinkedList<String> identifiers = handlerMethods.stream()
+        Deque<String> identifiers = handlerMethods.stream()
                 .map(HandlerMethod::getIdentifier)
                 .distinct()
                 .sorted()
-                .collect(Collectors.toCollection(LinkedList::new));
+                .collect(Collectors.toCollection(ArrayDeque::new));
         String commonPrefix = getCommonPrefix(identifiers);
         return Stream.concat(
                         Stream.of(commonPrefix),

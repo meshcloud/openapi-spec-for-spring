@@ -35,9 +35,9 @@ import io.meshcloud.openapispecforspring.model.media.Discriminator;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
 import java.math.BigDecimal;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +62,7 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
         annotationsSupplier
                 .findAnnotations(io.swagger.v3.oas.annotations.media.Schema.class)
                 // apply in reverse order
-                .collect(Collectors.toCollection(LinkedList::new))
+                .collect(Collectors.toCollection(ArrayDeque::new))
                 .descendingIterator()
                 .forEachRemaining(schemaAnnotation -> applyFromAnnotation(schema, schemaAnnotation, recursiveResolver));
     }
@@ -155,14 +155,9 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
 
     private void setAccessMode(io.swagger.v3.oas.annotations.media.Schema.AccessMode accessMode, Schema schema) {
         switch (accessMode) {
-            case READ_ONLY:
-                schema.setReadOnly(true);
-                break;
-            case WRITE_ONLY:
-                schema.setWriteOnly(true);
-                break;
-            case READ_WRITE, AUTO:
-                break;
+            case READ_ONLY -> schema.setReadOnly(true);
+            case WRITE_ONLY -> schema.setWriteOnly(true);
+            case READ_WRITE, AUTO -> {}
         }
     }
 }

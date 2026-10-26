@@ -144,7 +144,7 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
 
     @EqualsAndHashCode(callSuper = true)
     private static class MapLikeSchema extends Schema {
-        public MapLikeSchema(String name) {
+        MapLikeSchema(String name) {
             setName(name);
             setType("object");
         }
@@ -152,7 +152,7 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
 
     private static class MapLikeInitialType extends InitialType {
 
-        protected MapLikeInitialType(JavaType type, AnnotationsSupplier annotationsSupplier) {
+        MapLikeInitialType(JavaType type, AnnotationsSupplier annotationsSupplier) {
             super(type, annotationsSupplier);
         }
     }

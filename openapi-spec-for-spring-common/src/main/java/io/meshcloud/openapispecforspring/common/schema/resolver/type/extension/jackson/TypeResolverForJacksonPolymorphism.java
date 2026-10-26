@@ -374,7 +374,7 @@ public class TypeResolverForJacksonPolymorphism
         @JsonIgnore
         private final JsonTypeInfo jsonTypeInfo;
 
-        public JacksonPolymorphismSchema(String name, JsonTypeInfo jsonTypeInfo) {
+        JacksonPolymorphismSchema(String name, JsonTypeInfo jsonTypeInfo) {
             this.jsonTypeInfo = jsonTypeInfo;
             setName(name);
         }

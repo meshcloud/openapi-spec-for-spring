@@ -78,9 +78,10 @@ public class OpenApiProxyUtils {
         Map<String, Method> gettersBySetterName = buildGettersBySetterName(delegate.getClass(), setterNames);
         return proxy(delegate, method -> gettersBySetterName.get(method.getName()), (getter, newValue) -> {
             Object currentValue = getter.invoke(delegate);
-            if (currentValue instanceof Map && newValue instanceof Map) {
-                //noinspection unchecked
-                return onMapMerge.apply((Map<Object, Object>) currentValue, (Map<?, ?>) newValue);
+            if (currentValue instanceof Map && newValue instanceof Map<?, ?> newMap) {
+                @SuppressWarnings("unchecked")
+                Map<Object, Object> currentMap = (Map<Object, Object>) currentValue;
+                return onMapMerge.apply(currentMap, newMap);
             } else if (currentValue == null) {
                 return newValue;
             }
@@ -102,14 +103,15 @@ public class OpenApiProxyUtils {
                         + " is assumed to be a setter, it doesn't take exactly one argument but " + args.length);
             }
             Object mappedArgument = invocationHandler.handle(mappedMethod, args[0]);
-            if (mappedArgument != DO_NOT_INVOKE) {
+            if (!DO_NOT_INVOKE.equals(mappedArgument)) {
                 methodProxy.invoke(delegate, new Object[] {mappedArgument});
             }
             // setter method doesn't return anything, so this return value doesn't matter
             return null;
         });
-        //noinspection unchecked
-        return (T) enhancer.create();
+        @SuppressWarnings("unchecked")
+        T proxy = (T) enhancer.create();
+        return proxy;
     }
 
     @FunctionalInterface

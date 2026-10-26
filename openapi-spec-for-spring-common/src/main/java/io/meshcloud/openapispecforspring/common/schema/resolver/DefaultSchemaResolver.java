@@ -41,9 +41,9 @@ import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupp
 import io.meshcloud.openapispecforspring.common.util.OpenApiLoggingUtils;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -106,7 +106,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
         private final ReferencedSchemaConsumer referencedSchemaConsumer;
         private final ObjectMapper objectMapper;
         private final Map<TypeResolver.RecursionKey, Schema> knownSchemas = new LinkedHashMap<>();
-        private final LinkedList<ReferencableSchema> referencableSchemas = new LinkedList<>();
+        private final List<ReferencableSchema> referencableSchemas = new ArrayList<>();
 
         Schema buildSchemaFromTypeRecursively(JavaType javaType, AnnotationsSupplier annotationsSupplier) {
             InitialType initialType = buildInitialType(javaType, annotationsSupplier);
@@ -116,6 +116,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
         }
 
         @Override
+        @SuppressWarnings("ReferenceEquality")
         public NestedSchema buildNestedSchema(JavaType javaType, AnnotationsSupplier annotationsSupplier) {
             InitialType initialType = buildInitialType(javaType, annotationsSupplier);
             Schema schema = buildInitialSchema(initialType);
@@ -163,7 +164,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
             return schema;
         }
 
-        public void resolveReferencedSchemas() {
+        void resolveReferencedSchemas() {
             knownSchemas.forEach((recursionKey, knownSchema) ->
                     LOGGER.debug("Known Schema: {} -> {}", recursionKey.hashCode(), logPretty(knownSchema)));
             referencableSchemas.forEach(referencableSchema -> {
@@ -231,7 +232,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
                             innerSchema -> referencedSchemaConsumer.alwaysAsReference(innerSchema, setter))));
         }
 
-        private class TypeResolverActions extends LinkedList<TypeResolverAction>
+        private class TypeResolverActions extends ArrayList<TypeResolverAction>
                 implements TypeResolver.SchemaBuilderFromType {
 
             @Override
@@ -359,7 +360,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
             }
             ComparedPair pair = new ComparedPair(schema, that.schema);
             Set<ComparedPair> comparedPairs = COMPARED_PAIRS.get();
-            if (schema == that.schema || !comparedPairs.add(pair)) {
+            if (!comparedPairs.add(pair)) {
                 return true;
             }
             try {
@@ -377,7 +378,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
             return Objects.hash(recursionKey, getUseFacets());
         }
 
-        public static Schema unwrap(Schema schema) {
+        static Schema unwrap(Schema schema) {
             if (schema instanceof RecursiveSchema recursiveSchema) {
                 return recursiveSchema.getSchema();
             }
@@ -397,6 +398,7 @@ public class DefaultSchemaResolver implements SchemaResolver {
 
     private record ComparedPair(Schema first, Schema second) {
         @Override
+        @SuppressWarnings("ReferenceEquality")
         public boolean equals(@Nullable Object other) {
             return other instanceof ComparedPair that && first == that.first && second == that.second;
         }

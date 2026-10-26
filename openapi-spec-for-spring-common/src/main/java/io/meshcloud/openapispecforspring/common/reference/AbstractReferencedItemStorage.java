@@ -96,6 +96,7 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         entries.add(Entry.of(item, referenceSetterWithIdentifier, options.getOwner()));
     }
 
+    @SuppressWarnings("ReferenceEquality")
     protected void removeEntriesOwnedBy(Object owner) {
         entries.removeIf(entry -> entry.getOwner() == owner);
     }
@@ -127,11 +128,11 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
 
     private class ReferenceActions extends ArrayList<ReferenceActions.ReferenceAction> {
 
-        public void add(String uniqueIdentifier, List<ReferenceSetter<T>> referenceSetters) {
+        void add(String uniqueIdentifier, List<ReferenceSetter<T>> referenceSetters) {
             add(new ReferenceAction(uniqueIdentifier, referenceSetters));
         }
 
-        public void run() {
+        void run() {
             forEach(ReferenceAction::run);
         }
 
@@ -140,7 +141,7 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
             private final String uniqueIdentifier;
             private final List<ReferenceSetter<T>> referenceSetters;
 
-            public void run() {
+            void run() {
                 T referenceItem =
                         itemConstructor.get().createReference(referenceType.getReferencePrefix() + uniqueIdentifier);
                 // make referenceItem immutable as some setters are chained with customizers,
@@ -262,7 +263,7 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
     @Getter
     private static class IdentifierSetterImpl implements ReferenceIdentifierBuilderForType.IdentifierSetter {
 
-        public static <T> IdentifierSetterImpl ofReferenceSetter(ReferenceSetterWithIdentifier<T> referenceSetter) {
+        static <T> IdentifierSetterImpl ofReferenceSetter(ReferenceSetterWithIdentifier<T> referenceSetter) {
             return new IdentifierSetterImpl(
                     Optional.ofNullable(referenceSetter.getSuggestedIdentifier()),
                     referenceSetter.getReferenceSetter().isReferenceRequired());
@@ -283,12 +284,12 @@ public abstract class AbstractReferencedItemStorage<T extends HasReference<T>> {
         private final T item;
         private final List<ReferenceSetterWithIdentifier<T>> referenceSetters = new ArrayList<>();
 
-        public GroupedEntry addReferenceSetter(ReferenceSetterWithIdentifier<T> referenceSetter) {
+        GroupedEntry addReferenceSetter(ReferenceSetterWithIdentifier<T> referenceSetter) {
             referenceSetters.add(referenceSetter);
             return this;
         }
 
-        public GroupedEntry merge(GroupedEntry other) {
+        GroupedEntry merge(GroupedEntry other) {
             mergeEqualItems(item, other.item);
             referenceSetters.addAll(other.referenceSetters);
             return this;
