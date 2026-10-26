@@ -29,6 +29,7 @@ import io.meshcloud.openapispecforspring.model.trait.HasExtensions;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -74,6 +75,6 @@ public class PathItem implements HasExtensions {
     }
 
     public void setOperation(RequestMethod requestMethod, Operation operation) {
-        operations.put(requestMethod.name().toLowerCase(), operation);
+        operations.put(requestMethod.name().toLowerCase(Locale.ROOT), operation);
     }
 }
