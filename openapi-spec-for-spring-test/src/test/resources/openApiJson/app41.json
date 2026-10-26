@@ -12,7 +12,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/App41Controller.SomeType1_1"
+                "$ref": "#/components/schemas/App41Controller.SomeType1"
               }
             }
           },
@@ -24,7 +24,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/App41Controller.SomeType1_0"
+                  "$ref": "#/components/schemas/App41Controller.SomeType1"
                 }
               }
             }
@@ -57,24 +57,21 @@
         "type": "integer",
         "format": "int32"
       },
-      "App41Controller.SomeType1_0": {
+      "App41Controller.SomeType1": {
         "type": "object",
         "properties": {
           "read_only_property": {
             "description": "description for read-only property",
+            "readOnly": true,
             "allOf": [
               {
                 "$ref": "#/components/schemas/integer_int32"
               }
             ]
-          }
-        }
-      },
-      "App41Controller.SomeType1_1": {
-        "type": "object",
-        "properties": {
+          },
           "write_only_property": {
             "description": "description for write-only property",
+            "writeOnly": true,
             "allOf": [
               {
                 "$ref": "#/components/schemas/integer_int32"
@@ -82,7 +79,12 @@
             ]
           },
           "write_only_property_field": {
-            "$ref": "#/components/schemas/integer_int32"
+            "writeOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/integer_int32"
+              }
+            ]
           }
         }
       },
@@ -91,6 +93,7 @@
         "properties": {
           "final_property": {
             "description": "description for final property",
+            "writeOnly": true,
             "allOf": [
               {
                 "$ref": "#/components/schemas/integer_int32"

@@ -88,6 +88,9 @@ public class TypeResolverForObject implements InitialSchemaBuilder, TypeResolver
                     buildPropertyCustomizers(schema, initialType, properties.keySet());
 
             properties.forEach((propertyName, property) -> {
+                if (property.isRequired()) {
+                    schema.addRequired(propertyName);
+                }
                 PropertyCustomizer propertyCustomizer = Objects.requireNonNull(propertyCustomizers.get(propertyName));
                 schemaBuilderFromType.buildSchemaFromType(
                         property.getType(),

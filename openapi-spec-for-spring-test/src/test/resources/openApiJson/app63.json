@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App63",
+    "version": "unknown"
+  },
+  "paths": {
+    "/kotlin/plant": {
+      "get": {
+        "operationId": "getPlant",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App63Plant_0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "plant",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App63Plant_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    },
+    "/required/pets": {
+      "post": {
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App63RequiredController.Pet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App63RequiredController.Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "MapOfObject": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "App63Plant_0": {
+        "required": [
+          "name",
+          "height",
+          "attributes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The botanical name"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "$ref": "#/components/schemas/integer_int32"
+          },
+          "measurement": {
+            "nullable": true
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "notes": {
+            "nullable": true
+          },
+          "gardener": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "App63Plant_1": {
+        "required": [
+          "name",
+          "attributes"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The botanical name"
+          },
+          "nickname": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "$ref": "#/components/schemas/integer_int32"
+          },
+          "measurement": {
+            "nullable": true
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "notes": {
+            "nullable": true
+          },
+          "gardener": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "App63RequiredController.Pet": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "nickname": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
