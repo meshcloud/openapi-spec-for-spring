@@ -22,7 +22,7 @@ class DefaultAnnotationsSupplierFactoryTest {
     private DefaultAnnotationsSupplierFactory sut;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         sut = new DefaultAnnotationsSupplierFactory();
     }
 
@@ -102,6 +102,7 @@ class DefaultAnnotationsSupplierFactoryTest {
     }
 
     @RepeatableTestAnnotations({@RepeatableTestAnnotation, @RepeatableTestAnnotation})
+    @SuppressWarnings("java:S1710") // the test covers the container annotation
     private static class TestClassWithRepeatableTestAnnotations {
         // just for testing
     }

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class OpenApiProxyUtilsTest {
 
     @Test
-    void immutableProxy() throws Exception {
+    void immutableProxy() {
         Schema schema = new Schema();
         schema.setRef("ref");
 
