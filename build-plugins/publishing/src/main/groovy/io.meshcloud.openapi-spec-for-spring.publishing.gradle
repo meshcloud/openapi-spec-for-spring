@@ -12,6 +12,7 @@ tasks.named('javadoc', Javadoc) {
   options.tags('implNote:a:Implementation note:')
   options.addBooleanOption('Xdoclint:all,-missing', true)
   options.quiet()
+  options.addBooleanOption('Werror', true)
 }
 
 // Publishes openapi-spec-for-spring-starter as openapi-spec-for-spring-boot3-starter.

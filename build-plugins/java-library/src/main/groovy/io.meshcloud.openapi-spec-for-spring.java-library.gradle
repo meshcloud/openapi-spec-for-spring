@@ -16,6 +16,12 @@ tasks.withType(JavaCompile).configureEach {
   options.encoding = 'UTF-8'
   // Spring and Jackson read parameter names from the bytecode.
   options.compilerArgs.add('-parameters')
+  // serial: nothing is Java-serialized, the classes only inherit Serializable from JDK types.
+  // processing: Lombok and the configuration processor claim only some of the annotations.
+  options.compilerArgs.addAll([
+    '-Xlint:all,-serial,-processing',
+    '-Werror',
+  ])
   options.errorprone {
     error('NullAway')
     option('NullAway:OnlyNullMarked', 'true')

@@ -33,6 +33,7 @@ dependencies {
 // Kotlin test classes must target the same JVM as the Java ones.
 kotlin {
   compilerOptions {
+    allWarningsAsErrors = true
     jvmTarget = tasks.named('compileTestJava', JavaCompile).flatMap {
       it.options.release
     }
