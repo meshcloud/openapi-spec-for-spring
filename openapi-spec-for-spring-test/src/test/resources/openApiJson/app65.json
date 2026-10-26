@@ -265,6 +265,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            },
+            "example": "BER-1"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/array_string"
             }
           }
         ],
@@ -282,8 +291,25 @@
           {
             "name": "parcelId",
             "in": "path",
-            "description": "In this version, the tracking code of the parcel.\n\nThe UUID of the parcel.",
+            "description": "The ID of the parcel.",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "carrier",
+            "in": "query",
+            "required": false,
+            "deprecated": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
             "schema": {
               "type": "string"
             }

@@ -34,7 +34,6 @@ import org.jspecify.annotations.Nullable;
 @RequiredArgsConstructor
 public class SpringWebHandlerMethodMerger implements HandlerMethod.Merger {
 
-    private final SpringWebHandlerMethodParameterMerger springWebHandlerMethodParameterMerger;
     private final SpringWebHandlerMethodIdentifierMerger springWebHandlerMethodIdentifierMerger;
 
     @Nullable
@@ -42,7 +41,9 @@ public class SpringWebHandlerMethodMerger implements HandlerMethod.Merger {
     public HandlerMethod merge(List<HandlerMethod> handlerMethods) {
         return findSpringWebHandlerMethods(handlerMethods)
                 .map(springWebHandlerMethods -> new MergedSpringWebHandlerMethod(
-                        springWebHandlerMethodParameterMerger.mergeParameters(springWebHandlerMethods),
+                        springWebHandlerMethods.stream()
+                                .flatMap(handlerMethod -> handlerMethod.getParameters().stream())
+                                .toList(),
                         springWebHandlerMethodIdentifierMerger.mergeIdentifiers(springWebHandlerMethods),
                         // until here, merging is independent of springWebHandlerMethods
                         // but eventually providing merged request bodies and merged responses

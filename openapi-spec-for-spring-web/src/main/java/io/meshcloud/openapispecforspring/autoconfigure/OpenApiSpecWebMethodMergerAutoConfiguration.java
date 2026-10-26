@@ -28,7 +28,6 @@ import io.meshcloud.openapispecforspring.common.paths.method.SpringWebHandlerMet
 import io.meshcloud.openapispecforspring.common.paths.method.merger.MergedSpringWebHandlerMethodMapper;
 import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodIdentifierMerger;
 import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodMerger;
-import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodParameterMerger;
 import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodRequestBodyMerger;
 import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodResponseMerger;
 import io.meshcloud.openapispecforspring.common.paths.method.merger.SpringWebHandlerMethodTypeMerger;
@@ -40,10 +39,8 @@ public class OpenApiSpecWebMethodMergerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SpringWebHandlerMethodMerger defaultSpringWebHandlerMethodMerger(
-            SpringWebHandlerMethodParameterMerger springWebHandlerMethodParameterMerger,
             SpringWebHandlerMethodIdentifierMerger springWebHandlerMethodIdentifierMerger) {
-        return new SpringWebHandlerMethodMerger(
-                springWebHandlerMethodParameterMerger, springWebHandlerMethodIdentifierMerger);
+        return new SpringWebHandlerMethodMerger(springWebHandlerMethodIdentifierMerger);
     }
 
     @Bean
@@ -77,15 +74,6 @@ public class OpenApiSpecWebMethodMergerAutoConfiguration {
     @ConditionalOnMissingBean
     public SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger() {
         return new SpringWebHandlerMethodTypeMerger();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public SpringWebHandlerMethodParameterMerger springWebHandlerMethodParameterMerger(
-            SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger,
-            SpringWebHandlerMethodRequestBodyParameterMapper springWebHandlerMethodRequestBodyParameterMapper) {
-        return new SpringWebHandlerMethodParameterMerger(
-                springWebHandlerMethodTypeMerger, springWebHandlerMethodRequestBodyParameterMapper);
     }
 
     @Bean
