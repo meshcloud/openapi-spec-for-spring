@@ -56,6 +56,11 @@ artifactId, for example `openapi-spec-for-spring-boot3-starter`.
 A release is a tag `<branch>-v<semver>` on that branch, for example `spring-boot-3.x-v1.0.0`. The artifact version is
 the semver part, here `1.0.0`.
 
+Each push to `spring-boot-3.x` also publishes the version `spring-boot-3.x-SNAPSHOT`, and each pull request from a
+branch of this repository publishes `spring-boot-3.x-PR-<number>-SNAPSHOT`, which is deleted when the pull request
+closes. To try a change before its release, depend on such a version, for example
+`io.meshcloud.openapispecforspring:openapi-spec-for-spring-boot3-starter:spring-boot-3.x-SNAPSHOT`.
+
 ## Configuration properties
 
 All properties have the prefix `openapi-spec-for-spring`:

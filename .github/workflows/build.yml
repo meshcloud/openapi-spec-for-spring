@@ -43,3 +43,36 @@ jobs:
         with:
           name: test-reports
           path: '**/build/reports/tests/'
+
+  publish-snapshot:
+    needs: build
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    concurrency: publish-snapshot-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
+        with:
+          github_access_token: ${{ github.token }}
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        with:
+          cache-provider: basic
+      - name: Derive the snapshot version from the branch
+        id: version
+        run: echo "version=${BRANCH}${PR:+-PR-$PR}-SNAPSHOT" >> "$GITHUB_OUTPUT"
+        env:
+          BRANCH: ${{ github.base_ref || github.ref_name }}
+          PR: ${{ github.event.pull_request.number }}
+      - run: nix develop --command ./gradlew publish -Pversion="$VERSION"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "Published \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
