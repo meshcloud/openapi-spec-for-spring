@@ -124,7 +124,7 @@
           }
         ]
       },
-      "App43Controller.ExtendableBody@c": {
+      "App43Controller.ExtendableBody_c": {
         "type": "string",
         "enum": [
           ".App43Controller$ExtendableBody",
@@ -135,7 +135,7 @@
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
+            "$ref": "#/components/schemas/App43Controller.ExtendableBody_c"
           },
           "property1": {
             "type": "string"
@@ -163,7 +163,7 @@
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/App43Controller.ExtendableBody@c"
+            "$ref": "#/components/schemas/App43Controller.ExtendableBody_c"
           },
           "property1": {
             "type": "string"
@@ -173,7 +173,7 @@
           }
         }
       },
-      "App43Controller.BodyInterface@class": {
+      "App43Controller.BodyInterface_class": {
         "type": "string",
         "enum": [
           "io.meshcloud.openapispecforspring.test.app43.App43Controller$AnotherBody",
@@ -185,7 +185,7 @@
         "type": "object",
         "properties": {
           "@class": {
-            "$ref": "#/components/schemas/App43Controller.BodyInterface@class"
+            "$ref": "#/components/schemas/App43Controller.BodyInterface_class"
           },
           "property3": {
             "type": "string"
@@ -198,7 +198,7 @@
         "type": "object",
         "properties": {
           "@class": {
-            "$ref": "#/components/schemas/App43Controller.BodyInterface@class"
+            "$ref": "#/components/schemas/App43Controller.BodyInterface_class"
           }
         }
       },
