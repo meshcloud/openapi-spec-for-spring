@@ -79,9 +79,7 @@
       },
       "MapOfObject": {
         "type": "object",
-        "additionalProperties": {
-          "type": "object"
-        }
+        "additionalProperties": {}
       }
     }
   }

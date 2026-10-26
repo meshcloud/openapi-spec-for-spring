@@ -1,0 +1,199 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App59",
+    "version": "unknown"
+  },
+  "paths": {
+    "/arrays/labels": {
+      "get": {
+        "operationId": "getLabels",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/array_string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/arrays/shelf": {
+      "get": {
+        "operationId": "getShelf",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59ArrayController.Shelf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jdk-values/stations": {
+      "get": {
+        "operationId": "station",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59JdkValueController.Station"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/time/schedule": {
+      "get": {
+        "operationId": "schedule",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59TimeController.Schedule"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "App59ArrayController.Book": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "App59ArrayController.Shelf": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "$ref": "#/components/schemas/array_string"
+          },
+          "heights": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "books": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/App59ArrayController.Book"
+            }
+          },
+          "photo": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "App59JdkValueController.Station": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "charset": {
+            "type": "string"
+          },
+          "codePattern": {
+            "type": "string"
+          }
+        }
+      },
+      "string_date-time": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "string_duration": {
+        "type": "string",
+        "format": "duration"
+      },
+      "App59TimeController.Schedule": {
+        "type": "object",
+        "properties": {
+          "instant": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "localDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "localDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "offsetDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "zonedDateTime": {
+            "$ref": "#/components/schemas/string_date-time"
+          },
+          "localTime": {
+            "type": "string"
+          },
+          "offsetTime": {
+            "type": "string"
+          },
+          "yearMonth": {
+            "type": "string"
+          },
+          "monthDay": {
+            "type": "string"
+          },
+          "year": {
+            "type": "string"
+          },
+          "duration": {
+            "$ref": "#/components/schemas/string_duration"
+          },
+          "period": {
+            "$ref": "#/components/schemas/string_duration"
+          },
+          "zoneId": {
+            "type": "string"
+          },
+          "zoneOffset": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

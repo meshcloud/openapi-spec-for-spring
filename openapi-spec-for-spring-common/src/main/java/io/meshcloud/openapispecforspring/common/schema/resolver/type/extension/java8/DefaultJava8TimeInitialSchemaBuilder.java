@@ -35,6 +35,19 @@ import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.Ini
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 
@@ -42,6 +55,21 @@ import org.jspecify.annotations.Nullable;
 public class DefaultJava8TimeInitialSchemaBuilder implements Java8TimeInitialSchemaBuilder {
 
     public static final int ORDER = DEFAULT_ORDER;
+
+    private static final String STRING = "string";
+    private static final String DATE_TIME = "date-time";
+
+    // In timestamp mode Jackson writes these as arrays or numbers, which needs its own schemas (issue #4).
+    private static final Map<Class<?>, Optional<String>> ISO_DATE_FORMATS = Map.of(
+            LocalDate.class, Optional.of("date"),
+            LocalDateTime.class, Optional.of(DATE_TIME),
+            OffsetDateTime.class, Optional.of(DATE_TIME),
+            ZonedDateTime.class, Optional.of(DATE_TIME),
+            LocalTime.class, Optional.empty(),
+            OffsetTime.class, Optional.empty(),
+            YearMonth.class, Optional.empty(),
+            MonthDay.class, Optional.empty(),
+            Year.class, Optional.empty());
 
     private final Java8TimeTypeResolverConfigurationProperties properties;
 
@@ -56,12 +84,24 @@ public class DefaultJava8TimeInitialSchemaBuilder implements Java8TimeInitialSch
             Format format = getFormat(WRITE_DATES_AS_TIMESTAMPS);
             Schema.SchemaBuilder schemaBuilder = createSchemaBuilderWithType(format);
             if (format == ISO8601) {
-                return schemaBuilder.format("date-time").build();
+                return schemaBuilder.format(DATE_TIME).build();
             }
             return schemaBuilder.build();
         } else if (rawClass.equals(Duration.class)) {
             Format format = getFormat(WRITE_DURATIONS_AS_TIMESTAMPS);
-            return createSchemaBuilderWithType(format).build();
+            Schema.SchemaBuilder schemaBuilder = createSchemaBuilderWithType(format);
+            if (format == ISO8601) {
+                return schemaBuilder.format("duration").build();
+            }
+            return schemaBuilder.build();
+        } else if (rawClass.equals(Period.class)) {
+            return Schema.builder().type(STRING).format("duration").build();
+        } else if (ZoneId.class.isAssignableFrom(rawClass)) {
+            return Schema.builder().type(STRING).build();
+        } else if (ISO_DATE_FORMATS.containsKey(rawClass) && getFormat(WRITE_DATES_AS_TIMESTAMPS) == ISO8601) {
+            Schema.SchemaBuilder schemaBuilder = Schema.builder().type(STRING);
+            ISO_DATE_FORMATS.get(rawClass).ifPresent(schemaBuilder::format);
+            return schemaBuilder.build();
         }
         return null;
     }
@@ -79,7 +119,7 @@ public class DefaultJava8TimeInitialSchemaBuilder implements Java8TimeInitialSch
 
     private static Schema.SchemaBuilder createSchemaBuilderWithType(Format format) {
         if (format == ISO8601) {
-            return Schema.builder().type("string");
+            return Schema.builder().type(STRING);
         } else if (format == UNIX_EPOCH_SECONDS) {
             return Schema.builder().type("number").format("int64");
         }

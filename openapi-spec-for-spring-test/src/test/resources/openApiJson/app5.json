@@ -70,9 +70,7 @@
             "description": "Default response",
             "content": {
               "*/*": {
-                "schema": {
-                  "type": "object"
-                }
+                "schema": {}
               }
             }
           }
