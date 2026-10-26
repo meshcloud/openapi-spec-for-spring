@@ -69,6 +69,23 @@
         }
       }
     },
+    "/examples/kennel": {
+      "get": {
+        "operationId": "getKennel",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60ExampleController.Kennel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/maps/zoo": {
       "get": {
         "operationId": "getZoo",
@@ -318,6 +335,29 @@
           },
           "owner": {
             "$ref": "#/components/schemas/App60DistinctDescriptionController.OwnerRef"
+          }
+        }
+      },
+      "App60ExampleController.Kennel": {
+        "type": "object",
+        "properties": {
+          "licenseNumber": {
+            "type": "string",
+            "example": "123456789012"
+          },
+          "rawLabel": {
+            "type": "string",
+            "example": "{\"size\": \"large\"}"
+          },
+          "dogNames": {
+            "type": "array",
+            "example": [
+              "rex",
+              "bello"
+            ],
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

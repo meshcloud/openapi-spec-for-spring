@@ -82,12 +82,12 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
         }
         setCollectionIfNotEmpty(Arrays.asList(annotation.requiredProperties()), schema::setRequired);
         setAccessMode(annotation.accessMode(), schema);
-        setStringIfNotBlank(annotation.example(), example -> schema.setExample(parsableValueMapper.parse(example)));
+        setStringIfNotBlank(annotation.type(), schema::setType);
+        setStringIfNotBlank(annotation.example(), example -> schema.setExample(parseExample(schema, example)));
         setIfNotEmpty(externalDocumentationAnnotationMapper.map(annotation.externalDocs()), schema::setExternalDocs);
         if (annotation.deprecated()) {
             schema.setDeprecated(true);
         }
-        setStringIfNotBlank(annotation.type(), schema::setType);
         setStringIfNotBlank(annotation.minimum(), minimum -> schema.setMinimum(new BigDecimal(minimum)));
         if (annotation.exclusiveMinimum()) {
             schema.setExclusiveMinimum(true);
@@ -112,6 +112,10 @@ public class SchemaCustomizerForSchemaAnnotation implements SchemaCustomizer {
                 schema::getExtensions,
                 schema::setExtensions,
                 extensionAnnotationMapper.mapArray(annotation.extensions()));
+    }
+
+    private Object parseExample(Schema schema, String example) {
+        return "string".equals(schema.getType()) ? example : parsableValueMapper.parse(example);
     }
 
     private void setDiscriminator(
