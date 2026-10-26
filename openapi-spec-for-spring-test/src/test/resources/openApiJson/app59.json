@@ -92,6 +92,54 @@
         }
       }
     },
+    "/api-responses/vets/{name}": {
+      "put": {
+        "operationId": "upsertVet",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App59ApiResponseController.Vet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59ApiResponseController.Vet"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "description": "One error per invalid field",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/components/schemas/App59ApiResponseController.FieldError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/arrays/labels": {
       "get": {
         "operationId": "getLabels",
@@ -258,6 +306,25 @@
         "type": "object",
         "properties": {
           "name": {
+            "type": "string"
+          }
+        }
+      },
+      "App59ApiResponseController.Vet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "App59ApiResponseController.FieldError": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
             "type": "string"
           }
         }

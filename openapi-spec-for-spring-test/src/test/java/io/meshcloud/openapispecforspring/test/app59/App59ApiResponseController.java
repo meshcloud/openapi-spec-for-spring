@@ -1,5 +1,6 @@
 package io.meshcloud.openapispecforspring.test.app59;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +30,28 @@ class App59ApiResponseController {
         return ResponseEntity.ok(owner);
     }
 
+    @PutMapping("/vets/{name}")
+    @ApiResponse(
+            responseCode = "422",
+            description = "Invalid fields",
+            content =
+                    @Content(
+                            mediaType = "application/json",
+                            array =
+                                    @ArraySchema(
+                                            schema = @Schema(implementation = FieldError.class),
+                                            minItems = 1,
+                                            uniqueItems = true,
+                                            arraySchema = @Schema(description = "One error per invalid field"))))
+    ResponseEntity<Vet> upsertVet(@PathVariable String name, @RequestBody Vet vet) {
+        return ResponseEntity.ok(vet);
+    }
+
     record Pet(String name) {}
 
     record Owner(String name) {}
+
+    record Vet(String name) {}
+
+    record FieldError(String field, String message) {}
 }

@@ -26,11 +26,14 @@ import static io.meshcloud.openapispecforspring.common.util.OpenApiObjectUtils.s
 
 import io.meshcloud.openapispecforspring.common.reference.component.example.ReferencedExamplesConsumer;
 import io.meshcloud.openapispecforspring.common.reference.component.schema.ReferencedSchemaConsumer;
+import io.meshcloud.openapispecforspring.common.schema.mapper.ArraySchemaAnnotationFields;
 import io.meshcloud.openapispecforspring.common.schema.mapper.SchemaAnnotationMapper;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.model.media.Content;
 import io.meshcloud.openapispecforspring.model.media.MediaType;
+import io.meshcloud.openapispecforspring.model.media.Schema;
 import io.meshcloud.openapispecforspring.model.trait.HasContent;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import java.util.Arrays;
 import java.util.Objects;
@@ -92,11 +95,44 @@ public class DefaultContentAnnotationMapper implements ContentAnnotationMapper {
         ReferencedSchemaConsumer referencedSchemaConsumer =
                 mapperContext.getReferencedItemConsumer(ReferencedSchemaConsumer.class);
         setIfNotEmpty(
-                schemaAnnotationMapper.buildFromAnnotation(
-                        caller, contentAnnotation.schema(), referencedSchemaConsumer),
+                buildSchema(caller, contentAnnotation, referencedSchemaConsumer),
                 schema -> referencedSchemaConsumer.maybeAsReference(schema, mediaType::setSchema));
         setMapIfNotEmpty(extensionAnnotationMapper.mapArray(contentAnnotation.extensions()), mediaType::setExtensions);
         return mediaType;
+    }
+
+    private Schema buildSchema(
+            SchemaResolver.Caller caller,
+            io.swagger.v3.oas.annotations.media.Content contentAnnotation,
+            ReferencedSchemaConsumer referencedSchemaConsumer) {
+        Schema schema = schemaAnnotationMapper.buildFromAnnotation(
+                caller, contentAnnotation.schema(), referencedSchemaConsumer);
+        Schema arraySchema = buildArraySchema(caller, contentAnnotation.array(), referencedSchemaConsumer);
+        if (arraySchema.isEmpty()) {
+            return schema;
+        }
+        if (!schema.isEmpty()) {
+            throw new IllegalStateException("The @Content annotation with mediaType \"" + contentAnnotation.mediaType()
+                    + "\" sets both schema and array, but only one of them is allowed");
+        }
+        return arraySchema;
+    }
+
+    private Schema buildArraySchema(
+            SchemaResolver.Caller caller,
+            ArraySchema arraySchemaAnnotation,
+            ReferencedSchemaConsumer referencedSchemaConsumer) {
+        Schema arraySchema = schemaAnnotationMapper.buildFromAnnotation(
+                caller, arraySchemaAnnotation.arraySchema(), referencedSchemaConsumer);
+        ArraySchemaAnnotationFields.apply(arraySchema, arraySchemaAnnotation, extensionAnnotationMapper);
+        Schema itemsSchema = schemaAnnotationMapper.buildFromAnnotation(
+                caller, arraySchemaAnnotation.schema(), referencedSchemaConsumer);
+        if (arraySchema.isEmpty() && itemsSchema.isEmpty()) {
+            return arraySchema;
+        }
+        arraySchema.setType("array");
+        setIfNotEmpty(itemsSchema, items -> referencedSchemaConsumer.maybeAsReference(items, arraySchema::setItems));
+        return arraySchema;
     }
 
     private void setExampleOrExamples(
