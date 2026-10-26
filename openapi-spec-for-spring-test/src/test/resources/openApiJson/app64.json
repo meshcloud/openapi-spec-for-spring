@@ -5,6 +5,58 @@
     "version": "unknown"
   },
   "paths": {
+    "/additional-properties/pet": {
+      "get": {
+        "operationId": "getPet",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/compositions/setting": {
+      "get": {
+        "operationId": "getSetting",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64SettingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveSetting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App64SettingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
     "/discriminators/garages/default": {
       "get": {
         "operationId": "garage",
@@ -18,6 +70,41 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/empty-objects/feeding": {
+      "get": {
+        "operationId": "getFeeding",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64FeedingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveFeeding",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App64FeedingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
           }
         }
       }
@@ -75,17 +162,255 @@
     }
   },
   "components": {
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    },
     "schemas": {
+      "MapOfObject": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "App64Tag": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "App64Pet": {
+        "required": [
+          "traits",
+          "notes",
+          "medicalRecord",
+          "tag"
+        ],
+        "type": "object",
+        "properties": {
+          "traits": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "notes": {
+            "$ref": "#/components/schemas/MapOfObject"
+          },
+          "medicalRecord": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "tag": {
+            "$ref": "#/components/schemas/App64Tag"
+          }
+        }
+      },
+      "integer_int64": {
+        "type": "integer",
+        "format": "int64"
+      },
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "App64SecretResponse": {
+        "required": [
+          "hash",
+          "plaintext"
+        ],
+        "type": "object",
+        "properties": {
+          "hash": {
+            "type": "string",
+            "readOnly": true
+          },
+          "plaintext": {
+            "type": "string",
+            "writeOnly": true
+          }
+        }
+      },
+      "App64SecretRequest": {
+        "required": [
+          "plaintext",
+          "hash"
+        ],
+        "type": "object",
+        "properties": {
+          "plaintext": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "hash": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "App64ShelfRef": {
+        "required": [
+          "shelfId"
+        ],
+        "type": "object",
+        "properties": {
+          "shelfId": {
+            "type": "string"
+          }
+        }
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App64RoomResponse": {
+        "required": [
+          "floor"
+        ],
+        "type": "object",
+        "properties": {
+          "floor": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64RoomRequest": {
+        "type": "object",
+        "properties": {
+          "floor": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64LocationResponse": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64RoomResponse"
+          },
+          {
+            "$ref": "#/components/schemas/App64ShelfRef"
+          }
+        ]
+      },
+      "App64LocationRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64RoomRequest"
+          },
+          {
+            "$ref": "#/components/schemas/App64ShelfRef"
+          }
+        ]
+      },
+      "App64SettingResponse": {
+        "required": [
+          "key",
+          "fallback",
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/integer_int64"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "$ref": "#/components/schemas/array_string"
+              },
+              {
+                "$ref": "#/components/schemas/App64SecretResponse"
+              },
+              {
+                "$ref": "#/components/schemas/App64ShelfRef"
+              }
+            ]
+          },
+          "fallback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/App64ShelfRef"
+              }
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/App64LocationResponse"
+          }
+        }
+      },
+      "App64SettingRequest": {
+        "required": [
+          "key",
+          "fallback",
+          "location"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/integer_int64"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "$ref": "#/components/schemas/array_string"
+              },
+              {
+                "$ref": "#/components/schemas/App64SecretRequest"
+              },
+              {
+                "$ref": "#/components/schemas/App64ShelfRef"
+              }
+            ]
+          },
+          "fallback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/App64ShelfRef"
+              }
+            ]
+          },
+          "location": {
+            "$ref": "#/components/schemas/App64LocationRequest"
+          }
+        }
+      },
       "App64DiscriminatorController.VehicleDiscriminator": {
         "type": "string",
         "enum": [
           "car",
           "bike"
         ]
-      },
-      "integer_int32": {
-        "type": "integer",
-        "format": "int32"
       },
       "App64DiscriminatorController.Car": {
         "required": [
@@ -147,6 +472,153 @@
           },
           "preferredType": {
             "$ref": "#/components/schemas/App64DiscriminatorController.VehicleType"
+          }
+        }
+      },
+      "App64Confirmation": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "App64Marker": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "App64Extras": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "App64ScheduleDiscriminator": {
+        "type": "string",
+        "enum": [
+          "none",
+          "daily"
+        ]
+      },
+      "App64NoSchedule": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App64ScheduleDiscriminator"
+          }
+        }
+      },
+      "App64DailyScheduleResponse": {
+        "required": [
+          "type",
+          "hour"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App64ScheduleDiscriminator"
+          },
+          "hour": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64DailyScheduleRequest": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App64ScheduleDiscriminator"
+          },
+          "hour": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64ScheduleResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "none": "#/components/schemas/App64NoSchedule",
+            "daily": "#/components/schemas/App64DailyScheduleResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64NoSchedule"
+          },
+          {
+            "$ref": "#/components/schemas/App64DailyScheduleResponse"
+          }
+        ]
+      },
+      "App64ScheduleRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "none": "#/components/schemas/App64NoSchedule",
+            "daily": "#/components/schemas/App64DailyScheduleRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64NoSchedule"
+          },
+          {
+            "$ref": "#/components/schemas/App64DailyScheduleRequest"
+          }
+        ]
+      },
+      "App64FeedingResponse": {
+        "required": [
+          "confirmation",
+          "marker",
+          "extras",
+          "food",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "$ref": "#/components/schemas/App64Confirmation"
+          },
+          "marker": {
+            "$ref": "#/components/schemas/App64Marker"
+          },
+          "extras": {
+            "$ref": "#/components/schemas/App64Extras"
+          },
+          "food": {
+            "type": "object"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/App64ScheduleResponse"
+          }
+        }
+      },
+      "App64FeedingRequest": {
+        "required": [
+          "confirmation",
+          "marker",
+          "extras",
+          "food",
+          "schedule"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmation": {
+            "$ref": "#/components/schemas/App64Confirmation"
+          },
+          "marker": {
+            "$ref": "#/components/schemas/App64Marker"
+          },
+          "extras": {
+            "$ref": "#/components/schemas/App64Extras"
+          },
+          "food": {
+            "type": "object"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/App64ScheduleRequest"
           }
         }
       },

@@ -98,6 +98,9 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
                         valueType,
                         valueAnnotations,
                         valueSchema -> keys.forEach(key -> schema.setProperty(key, valueSchema)));
+            } else if (schema.getAdditionalProperties() instanceof Boolean) {
+                // The name tells the value type, which the annotation has replaced.
+                schema.setName(null);
             } else {
                 schemaBuilderFromType.buildSchemaFromType(valueType, valueAnnotations, schema::setAdditionalProperties);
             }
