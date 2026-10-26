@@ -82,8 +82,10 @@ public class OpenApiSpecWebMethodMergerAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SpringWebHandlerMethodParameterMerger springWebHandlerMethodParameterMerger(
-            SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger) {
-        return new SpringWebHandlerMethodParameterMerger(springWebHandlerMethodTypeMerger);
+            SpringWebHandlerMethodTypeMerger springWebHandlerMethodTypeMerger,
+            SpringWebHandlerMethodRequestBodyParameterMapper springWebHandlerMethodRequestBodyParameterMapper) {
+        return new SpringWebHandlerMethodParameterMerger(
+                springWebHandlerMethodTypeMerger, springWebHandlerMethodRequestBodyParameterMapper);
     }
 
     @Bean

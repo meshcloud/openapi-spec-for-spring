@@ -38,7 +38,10 @@ import io.meshcloud.openapispecforspring.model.response.ApiResponses;
 import io.meshcloud.openapispecforspring.model.tag.Tag;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -89,8 +92,13 @@ public class DefaultOperationAnnotationMapper implements OperationAnnotationMapp
                 securityRequirementAnnotationMapper.mapArray(operationAnnotation.security()),
                 operation::setFirstSecurity);
         setCollectionIfNotEmpty(serverAnnotationMapper.mapArray(operationAnnotation.servers()), operation::setServers);
-        setMapIfNotEmpty(
-                extensionAnnotationMapper.mapArray(operationAnnotation.extensions()), operation::setExtensions);
+        // The handler methods of one operation may each carry an @Operation, so their extensions add up.
+        setMapIfNotEmpty(extensionAnnotationMapper.mapArray(operationAnnotation.extensions()), extensions -> {
+            Map<String, Object> merged =
+                    new LinkedHashMap<>(Objects.requireNonNullElseGet(operation.getExtensions(), Map::of));
+            merged.putAll(extensions);
+            operation.setExtensions(merged);
+        });
     }
 
     private void setParameters(

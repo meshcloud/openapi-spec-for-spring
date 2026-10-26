@@ -43,6 +43,11 @@ public class MergedSpringWebHandlerMethod extends AbstractSpringWebHandlerMethod
     }
 
     @Override
+    public List<io.meshcloud.openapispecforspring.common.paths.HandlerMethod> getMergedHandlerMethods() {
+        return List.copyOf(handlerMethods);
+    }
+
+    @Override
     public <A extends Annotation> ContextAwareAnnotations<A> findAnnotationsWithContext(Class<A> annotationType) {
         return new ContextAwareAnnotations<A>() {
             @Override

@@ -1,0 +1,403 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App65",
+    "version": "unknown"
+  },
+  "paths": {
+    "/deprecations/letters": {
+      "get": {
+        "operationId": "getLetterV_1_2",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.example.letter.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App65DeprecationController.App65Parcel"
+                }
+              },
+              "application/vnd.example.letter.v2+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App65DeprecationController.App65Parcel"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/deprecations/parcels": {
+      "get": {
+        "operationId": "getParcelV_1_2",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.example.parcel.v1+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App65DeprecationController.App65Parcel"
+                }
+              },
+              "application/vnd.example.parcel.v2+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App65DeprecationController.App65Parcel"
+                }
+              }
+            }
+          }
+        },
+        "x-sunset": "2030-01-01",
+        "x-owner": "shipping"
+      }
+    },
+    "/kotlin-optional-parameters/owners/{owner}/pets": {
+      "get": {
+        "operationId": "pets",
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "species",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeAdopted",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "color",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Shelter",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200_0"
+          }
+        }
+      }
+    },
+    "/optional-parameters/books": {
+      "get": {
+        "operationId": "books",
+        "parameters": [
+          {
+            "name": "shelf",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Library",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "author",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/integer_int32"
+            }
+          },
+          {
+            "name": "X-Reader",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200_0"
+          }
+        }
+      }
+    },
+    "/optional-parameters/shelves": {
+      "get": {
+        "operationId": "shelvesAs_Json_Text",
+        "parameters": [
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/array_string"
+                }
+              },
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parameter-types/readings": {
+      "get": {
+        "operationId": "readingsV_1_2",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/vnd.readings.v1+json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/vnd.readings.v2+json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/parameters/depots/{depotId}": {
+      "get": {
+        "operationId": "depotV_1_2",
+        "parameters": [
+          {
+            "name": "depotId",
+            "in": "path",
+            "description": "The code of the depot.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200_1"
+          }
+        }
+      }
+    },
+    "/parameters/parcels/{parcelId}": {
+      "get": {
+        "operationId": "parcelV_1_2",
+        "parameters": [
+          {
+            "name": "parcelId",
+            "in": "path",
+            "description": "In this version, the tracking code of the parcel.\n\nThe UUID of the parcel.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200_1"
+          }
+        }
+      }
+    },
+    "/request-bodies/orders": {
+      "post": {
+        "operationId": "createOrderV_1_2",
+        "parameters": [
+          {
+            "name": "dryRun",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/vnd.example.order.v1+json": {
+              "schema": {
+                "$ref": "#/components/schemas/App65RequestBodyController.OrderV1"
+              }
+            },
+            "application/vnd.example.order.v2+json": {
+              "schema": {
+                "$ref": "#/components/schemas/App65RequestBodyController.OrderV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Default response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "200_0": {
+        "description": "Default response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/array_string"
+            }
+          }
+        }
+      },
+      "200_1": {
+        "description": "Default response",
+        "content": {
+          "application/vnd.parcel.v1+json": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "application/vnd.parcel.v2+json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "App65DeprecationController.App65Parcel": {
+        "type": "object",
+        "properties": {
+          "trackingNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App65RequestBodyController.OrderV1": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          }
+        }
+      },
+      "App65RequestBodyController.OrderV2": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string"
+          },
+          "quantity": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      }
+    }
+  }
+}
