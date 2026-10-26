@@ -1,6 +1,11 @@
 locals {
   default_branch = "spring-boot-3.x"
 
+  admin_bypass_actors = [
+    { actor_id = 0, actor_type = "OrganizationAdmin" }, # GitHub stores 0 for the role-based org admin actor
+    { actor_id = 5, actor_type = "RepositoryRole" },    # admin role
+  ]
+
   # Dependabot fails on a target branch that does not exist yet.
   maintained_branches = {
     "spring-boot-3.x" = {
@@ -56,10 +61,13 @@ resource "github_repository_ruleset" "protect_branch" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 0 # GitHub stores 0 for the role-based org admin actor
-    actor_type  = "OrganizationAdmin"
-    bypass_mode = "always"
+  dynamic "bypass_actors" {
+    for_each = local.admin_bypass_actors
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = "always"
+    }
   }
 
   bypass_actors {
@@ -107,16 +115,46 @@ resource "github_repository_ruleset" "protect_branch" {
   }
 }
 
+resource "github_repository_ruleset" "restrict_branch_creation" {
+  repository  = github_repository.this.name
+  name        = "Restrict creating spring-boot branches"
+  target      = "branch"
+  enforcement = "active"
+
+  dynamic "bypass_actors" {
+    for_each = local.admin_bypass_actors
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = "always"
+    }
+  }
+
+  conditions {
+    ref_name {
+      include = ["refs/heads/spring-boot-*"]
+      exclude = []
+    }
+  }
+
+  rules {
+    creation = true
+  }
+}
+
 resource "github_repository_ruleset" "protect_release_tags" {
   repository  = github_repository.this.name
   name        = "Protect release tags"
   target      = "tag"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 0 # GitHub stores 0 for the role-based org admin actor
-    actor_type  = "OrganizationAdmin"
-    bypass_mode = "always"
+  dynamic "bypass_actors" {
+    for_each = local.admin_bypass_actors
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = "always"
+    }
   }
 
   conditions {
