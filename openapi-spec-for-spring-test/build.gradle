@@ -1,7 +1,7 @@
 plugins {
   id('io.meshcloud.openapi-spec-for-spring.java-library')
   id('jacoco-report-aggregation')
-  id('org.jetbrains.kotlin.jvm') version '2.2.21'
+  id('org.jetbrains.kotlin.jvm') version '2.4.21'
 }
 
 description = 'OpenAPI Spec for Spring :: Test'
