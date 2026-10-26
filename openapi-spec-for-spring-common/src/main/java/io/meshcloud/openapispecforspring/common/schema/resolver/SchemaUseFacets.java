@@ -21,6 +21,8 @@
 package io.meshcloud.openapispecforspring.common.schema.resolver;
 
 import io.meshcloud.openapispecforspring.model.media.Schema;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -46,9 +48,11 @@ final class SchemaUseFacets {
 
     private SchemaUseFacets() {}
 
-    static Schema moveDifferingFacets(Schema schema, Schema typeOnlySchema) {
+    static Schema moveDifferingFacets(Schema schema, TypeFacets typeFacets) {
         Schema useFacets = new Schema();
-        FACETS.forEach(facet -> facet.moveIfDiffering(schema, typeOnlySchema, useFacets));
+        for (int i = 0; i < FACETS.size(); i++) {
+            FACETS.get(i).moveIfDiffering(schema, typeFacets.values().get(i), useFacets);
+        }
         return useFacets;
     }
 
@@ -70,14 +74,22 @@ final class SchemaUseFacets {
         FACETS.forEach(facet -> facet.copyIfSet(useFacets, schema));
     }
 
+    record TypeFacets(List<@Nullable Object> values) {
+        static TypeFacets of(Schema typeOnlySchema) {
+            List<@Nullable Object> values = new ArrayList<>();
+            FACETS.forEach(facet -> values.add(facet.getter().apply(typeOnlySchema)));
+            return new TypeFacets(Collections.unmodifiableList(values));
+        }
+    }
+
     private record Facet<T>(Function<Schema, @Nullable T> getter, BiConsumer<Schema, @Nullable T> setter) {
 
-        void moveIfDiffering(Schema schema, Schema typeOnlySchema, Schema useFacets) {
+        @SuppressWarnings("unchecked")
+        void moveIfDiffering(Schema schema, @Nullable Object typeValue, Schema useFacets) {
             T value = getter.apply(schema);
-            T typeValue = getter.apply(typeOnlySchema);
             if (!Objects.equals(value, typeValue)) {
                 setter.accept(useFacets, value);
-                setter.accept(schema, typeValue);
+                setter.accept(schema, (T) typeValue);
             }
         }
 
