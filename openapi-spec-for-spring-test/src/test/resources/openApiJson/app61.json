@@ -1,0 +1,130 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App61",
+    "version": "unknown"
+  },
+  "paths": {
+    "/pets": {
+      "get": {
+        "operationId": "pets",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "One-based index of the page to return.",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Number of elements per page. A larger size is reduced to the maximum.",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/toys": {
+      "get": {
+        "operationId": "toys",
+        "parameters": [
+          {
+            "name": "color",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "One-based index of the page to return.",
+            "required": false,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 3
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Number of elements per page. A larger size is reduced to the maximum.",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "$ref": "#/components/parameters/sort"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "description": "Sort order as property,(asc|desc), ascending by default. Repeat it to sort by several properties.",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/array_string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Default response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/array_string"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "array_string": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

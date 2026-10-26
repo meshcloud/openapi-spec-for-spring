@@ -14,10 +14,12 @@ dependencies {
   implementation(project(':openapi-spec-for-spring-web'))
   implementation(project(':openapi-spec-for-spring-webmvc'))
   implementation(project(':openapi-spec-for-spring-hateoas'))
+  implementation(project(':openapi-spec-for-spring-data'))
 
   testImplementation('org.springframework.boot:spring-boot-starter-web')
   testImplementation('org.springframework.boot:spring-boot-starter-security')
   testImplementation('org.springframework.boot:spring-boot-starter-hateoas')
+  testImplementation('org.springframework.data:spring-data-commons')
   testImplementation('commons-io:commons-io')
   testImplementation('org.jetbrains.kotlin:kotlin-stdlib')
   testImplementation('com.google.code.findbugs:jsr305')
