@@ -1,0 +1,499 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App60",
+    "version": "unknown"
+  },
+  "paths": {
+    "/constraints/owners/{id}": {
+      "get": {
+        "operationId": "constrainedOwner",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/constraints/pets/{id}": {
+      "get": {
+        "operationId": "constrainedPet",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/descriptions/pets/default": {
+      "get": {
+        "operationId": "pet",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60DescriptionController.Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/distinct-descriptions/visits": {
+      "get": {
+        "operationId": "visit",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60DistinctDescriptionController.Visit"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maps/zoo": {
+      "get": {
+        "operationId": "getZoo",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60MapController.Zoo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/path-patterns/pets/{id}/toys/{name}": {
+      "get": {
+        "operationId": "toy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "[0-9a-f\\-]{36}",
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patterns/ponds": {
+      "get": {
+        "operationId": "getPond",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60PatternController.Pond"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ranges/aquarium": {
+      "get": {
+        "operationId": "getAquarium",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60RangeController.Aquarium"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/recursive-types/garden": {
+      "get": {
+        "operationId": "getGarden",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App60RecursiveTypeController.Garden"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "pattern": "[0-9a-f]{8}",
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Default response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/App60ConstraintController.Pet"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "App60ConstraintController.Pet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "pattern": "[a-z]+",
+            "type": "string"
+          },
+          "nickname": {
+            "pattern": "[a-z]+",
+            "type": "string"
+          },
+          "age": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "weight": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "App60DescriptionController.Color": {
+        "type": "string",
+        "enum": [
+          "BLACK",
+          "WHITE"
+        ]
+      },
+      "App60DescriptionController.Address": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string"
+          }
+        },
+        "description": "A postal address"
+      },
+      "App60DescriptionController.Pet": {
+        "type": "object",
+        "properties": {
+          "mainColor": {
+            "description": "The main color",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App60DescriptionController.Color"
+              }
+            ]
+          },
+          "accentColor": {
+            "description": "The accent color",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App60DescriptionController.Color"
+              }
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "A name of the pet"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "A name of the pet"
+          },
+          "home": {
+            "description": "Where the pet lives",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App60DescriptionController.Address"
+              }
+            ]
+          },
+          "vet": {
+            "$ref": "#/components/schemas/App60DescriptionController.Address"
+          }
+        }
+      },
+      "App60DistinctDescriptionController.PetRef": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the pet"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Always pet"
+          }
+        }
+      },
+      "App60DistinctDescriptionController.OwnerRef": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the owner"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Always owner"
+          }
+        }
+      },
+      "App60DistinctDescriptionController.Visit": {
+        "type": "object",
+        "properties": {
+          "pet": {
+            "$ref": "#/components/schemas/App60DistinctDescriptionController.PetRef"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/App60DistinctDescriptionController.OwnerRef"
+          }
+        }
+      },
+      "App60MapController.Animal": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "An animal of the zoo"
+      },
+      "MapOfApp60MapController.Animal": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/App60MapController.Animal"
+        }
+      },
+      "MapOfApp60MapController.AnimalByApp60MapController.Enclosure": {
+        "type": "object",
+        "properties": {
+          "SAVANNA": {
+            "$ref": "#/components/schemas/App60MapController.Animal"
+          },
+          "rain-forest": {
+            "$ref": "#/components/schemas/App60MapController.Animal"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MapOfList": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/App60MapController.Animal"
+          }
+        }
+      },
+      "App60MapController.Keeper": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "MapOfApp60MapController.Keeper": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/App60MapController.Keeper"
+        }
+      },
+      "App60MapController.Zoo": {
+        "type": "object",
+        "properties": {
+          "animalsByName": {
+            "description": "Animals by their name",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp60MapController.Animal"
+              }
+            ]
+          },
+          "animalsByEnclosure": {
+            "description": "Animals by their enclosure",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp60MapController.Animal"
+              }
+            ]
+          },
+          "animalsPerEnclosure": {
+            "$ref": "#/components/schemas/MapOfApp60MapController.AnimalByApp60MapController.Enclosure"
+          },
+          "animalsBySpecies": {
+            "$ref": "#/components/schemas/MapOfList"
+          },
+          "keepersByShift": {
+            "description": "Keepers by shift",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MapOfApp60MapController.Keeper"
+              }
+            ]
+          }
+        }
+      },
+      "App60PatternController.Pond": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^P-[0-9]{3}$",
+            "type": "string"
+          },
+          "neighbourId": {
+            "pattern": "^P-[0-9]{3}$",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "App60RangeController.Aquarium": {
+        "type": "object",
+        "properties": {
+          "fishCount": {
+            "maximum": 10,
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperatureCelsius": {
+            "maximum": 100,
+            "exclusiveMaximum": true,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "plantCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "App60RecursiveTypeController.Tree": {
+        "type": "object",
+        "properties": {
+          "species": {
+            "type": "string"
+          },
+          "saplings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/App60RecursiveTypeController.Tree"
+            }
+          }
+        }
+      },
+      "App60RecursiveTypeController.OakGrove": {
+        "type": "object",
+        "properties": {
+          "tree": {
+            "description": "The oldest oak",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App60RecursiveTypeController.Tree"
+              }
+            ]
+          }
+        }
+      },
+      "App60RecursiveTypeController.BirchGrove": {
+        "type": "object",
+        "properties": {
+          "tree": {
+            "description": "The tallest birch",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App60RecursiveTypeController.Tree"
+              }
+            ]
+          }
+        }
+      },
+      "App60RecursiveTypeController.Garden": {
+        "type": "object",
+        "properties": {
+          "oaks": {
+            "$ref": "#/components/schemas/App60RecursiveTypeController.OakGrove"
+          },
+          "birches": {
+            "$ref": "#/components/schemas/App60RecursiveTypeController.BirchGrove"
+          }
+        }
+      }
+    }
+  }
+}

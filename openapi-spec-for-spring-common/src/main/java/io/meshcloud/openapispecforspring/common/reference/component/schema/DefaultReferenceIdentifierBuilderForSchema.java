@@ -36,7 +36,6 @@ import org.jspecify.annotations.Nullable;
 public class DefaultReferenceIdentifierBuilderForSchema implements ReferenceIdentifierBuilderForSchema {
 
     private static final String NULLABLE_IDENTIFIER_PREFIX = "nullable";
-    private static final String DEPRECATED_IDENTIFIER_PREFIX = "deprecated";
     private static final Pattern CHARACTERS_OUTSIDE_COMPONENT_NAME = Pattern.compile("[^a-zA-Z0-9.\\-_]");
 
     private final AtomicInteger counter = new AtomicInteger();
@@ -46,9 +45,6 @@ public class DefaultReferenceIdentifierBuilderForSchema implements ReferenceIden
         List<Object> identifierComponents = new ArrayList<>();
         if (TRUE.equals(schema.getNullable())) {
             identifierComponents.add(NULLABLE_IDENTIFIER_PREFIX);
-        }
-        if (TRUE.equals(schema.getDeprecated())) {
-            identifierComponents.add(DEPRECATED_IDENTIFIER_PREFIX);
         }
         if (StringUtils.isNotBlank(suggestedIdentifier)) {
             identifierComponents.add(suggestedIdentifier);

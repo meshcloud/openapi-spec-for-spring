@@ -83,7 +83,12 @@
             "$ref": "#/components/schemas/App45Controller.Base1Type"
           },
           "nestedProperty": {
-            "$ref": "#/components/schemas/App45Controller.Base1"
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App45Controller.Base1"
+              }
+            ]
           }
         }
       },
@@ -94,7 +99,12 @@
             "$ref": "#/components/schemas/App45Controller.Base1Type"
           },
           "nestedProperty": {
-            "$ref": "#/components/schemas/App45Controller.Base1"
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App45Controller.Base1"
+              }
+            ]
           }
         }
       }

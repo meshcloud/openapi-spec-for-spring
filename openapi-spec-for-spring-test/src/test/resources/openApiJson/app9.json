@@ -41,7 +41,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/deprecated_App9Controller.SomeDeprecatedDto"
+              "$ref": "#/components/schemas/App9Controller.SomeDeprecatedDto"
             }
           }
         ],
@@ -90,7 +90,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/deprecated_App9Controller.SomeDeprecatedDto"
+                "$ref": "#/components/schemas/App9Controller.SomeDeprecatedDto"
               }
             }
           },
@@ -132,7 +132,7 @@
             "required": true,
             "deprecated": true,
             "schema": {
-              "$ref": "#/components/schemas/deprecated_App9Controller.SomeDeprecatedDto"
+              "$ref": "#/components/schemas/App9Controller.SomeDeprecatedDto"
             }
           }
         ],
@@ -171,7 +171,7 @@
         "content": {
           "text/plain": {
             "schema": {
-              "$ref": "#/components/schemas/deprecated_App9Controller.SomeDeprecatedDto"
+              "$ref": "#/components/schemas/App9Controller.SomeDeprecatedDto"
             }
           }
         },
@@ -182,7 +182,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/deprecated_App9Controller.SomeDeprecatedDto"
+              "$ref": "#/components/schemas/App9Controller.SomeDeprecatedDto"
             }
           }
         },
@@ -195,7 +195,7 @@
       }
     },
     "schemas": {
-      "deprecated_App9Controller.SomeDeprecatedDto": {
+      "App9Controller.SomeDeprecatedDto": {
         "type": "object",
         "properties": {
           "param1": {

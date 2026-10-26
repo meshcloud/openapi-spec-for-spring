@@ -61,7 +61,12 @@
         "type": "object",
         "properties": {
           "read_only_property": {
-            "$ref": "#/components/schemas/integer_int32"
+            "description": "description for read-only property",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/integer_int32"
+              }
+            ]
           }
         }
       },
@@ -69,7 +74,12 @@
         "type": "object",
         "properties": {
           "write_only_property": {
-            "$ref": "#/components/schemas/integer_int32"
+            "description": "description for write-only property",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/integer_int32"
+              }
+            ]
           },
           "write_only_property_field": {
             "$ref": "#/components/schemas/integer_int32"
@@ -80,7 +90,12 @@
         "type": "object",
         "properties": {
           "final_property": {
-            "$ref": "#/components/schemas/integer_int32"
+            "description": "description for final property",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/integer_int32"
+              }
+            ]
           }
         }
       }

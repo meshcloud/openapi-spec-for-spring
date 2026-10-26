@@ -21,14 +21,24 @@
 
 package io.meshcloud.openapispecforspring.common.schema.resolver.type;
 
+import static io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier.Purpose.SCHEMA_BUILDING;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
+import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaNameBuilder;
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialSchemaBuilder;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialType;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialTypeBuilder;
+import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.model.media.Schema;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
@@ -39,6 +49,8 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
     public static final int ORDER = DEFAULT_ORDER;
 
     private final SchemaNameBuilder schemaNameBuilder;
+    private final AnnotationsSupplierFactory annotationsSupplierFactory;
+    private final OpenApiObjectMapperSupplier objectMapperSupplier;
 
     @Nullable
     @Override
@@ -57,9 +69,12 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
     @Override
     public Schema buildFromType(SchemaResolver.Caller caller, InitialType initialType) {
         if (initialType instanceof MapLikeInitialType) {
-            return new MapLikeSchema("MapOf"
-                    + schemaNameBuilder.buildFromType(
-                            caller, initialType.getType().getContentType()));
+            JavaType mapType = initialType.getType();
+            String name = "MapOf" + schemaNameBuilder.buildFromType(caller, valueType(initialType));
+            if (mapType.getKeyType().isEnumImplType()) {
+                name += "By" + schemaNameBuilder.buildFromType(caller, mapType.getKeyType());
+            }
+            return new MapLikeSchema(name);
         }
         return null;
     }
@@ -72,11 +87,51 @@ public class TypeResolverForMapLikeType implements InitialTypeBuilder, InitialSc
             InitialType initialType,
             SchemaBuilderFromType schemaBuilderFromType) {
         if (initialType instanceof MapLikeInitialType) {
-            JavaType contentType = initialType.getType().getContentType();
-            schemaBuilderFromType.buildSchemaFromType(
-                    contentType, initialType.getAnnotationsSupplier(), schema::setAdditionalProperties);
+            JavaType mapType = initialType.getType();
+            JavaType valueType = valueType(initialType);
+            AnnotationsSupplier valueAnnotations =
+                    annotationsSupplierFactory.createFromAnnotatedElement(valueType.getRawClass());
+            if (mapType.getKeyType().isEnumImplType()) {
+                List<String> keys = jsonKeysOf(mapType.getKeyType().getRawClass());
+                schema.setAdditionalProperties(false);
+                schemaBuilderFromType.buildSchemaFromType(
+                        valueType,
+                        valueAnnotations,
+                        valueSchema -> keys.forEach(key -> schema.setProperty(key, valueSchema)));
+            } else {
+                schemaBuilderFromType.buildSchemaFromType(valueType, valueAnnotations, schema::setAdditionalProperties);
+            }
         }
         return null;
+    }
+
+    private JavaType valueType(InitialType mapInitialType) {
+        return findValueSchemaClass(mapInitialType.getAnnotationsSupplier())
+                .map(valueClass -> objectMapperSupplier.get(SCHEMA_BUILDING).constructType(valueClass))
+                .orElse(mapInitialType.getType().getContentType());
+    }
+
+    private static Optional<Class<?>> findValueSchemaClass(AnnotationsSupplier annotationsSupplier) {
+        return annotationsSupplier
+                .findAnnotations(io.swagger.v3.oas.annotations.media.Schema.class)
+                .map(io.swagger.v3.oas.annotations.media.Schema::additionalPropertiesSchema)
+                .filter(valueClass -> valueClass != Void.class)
+                .findFirst()
+                .map(valueClass -> (Class<?>) valueClass);
+    }
+
+    private List<String> jsonKeysOf(Class<?> enumClass) {
+        ObjectMapper objectMapper = objectMapperSupplier.get(SCHEMA_BUILDING);
+        return Stream.of(enumClass.getEnumConstants())
+                .map(constant -> {
+                    try {
+                        String json = objectMapper.writeValueAsString(Map.of(constant, 0));
+                        return objectMapper.readTree(json).fieldNames().next();
+                    } catch (JsonProcessingException e) {
+                        throw new IllegalStateException("Cannot write map key " + constant, e);
+                    }
+                })
+                .toList();
     }
 
     @Override

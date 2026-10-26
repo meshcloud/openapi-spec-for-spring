@@ -101,8 +101,12 @@ public class OpenApiSpecSchemaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TypeResolverForMapLikeType defaultTypeResolverForMapLikeType(SchemaNameBuilder schemaNameBuilder) {
-        return new TypeResolverForMapLikeType(schemaNameBuilder);
+    public TypeResolverForMapLikeType defaultTypeResolverForMapLikeType(
+            SchemaNameBuilder schemaNameBuilder,
+            AnnotationsSupplierFactory annotationsSupplierFactory,
+            OpenApiObjectMapperSupplier openApiObjectMapperSupplier) {
+        return new TypeResolverForMapLikeType(
+                schemaNameBuilder, annotationsSupplierFactory, openApiObjectMapperSupplier);
     }
 
     @Bean

@@ -23,9 +23,12 @@ package io.meshcloud.openapispecforspring.common.reference.component.schema;
 
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.AnyValueSchema;
 import io.meshcloud.openapispecforspring.model.media.Schema;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class DefaultReferenceDeciderForSchema implements ReferenceDeciderForSchema {
+
+    private static final Set<String> PRIMITIVE_TYPES = Set.of("string", "integer", "number", "boolean");
 
     @Override
     public boolean turnIntoReference(Schema schema, String referenceIdentifier, long numberOfUsages) {
@@ -35,12 +38,25 @@ public class DefaultReferenceDeciderForSchema implements ReferenceDeciderForSche
         if (StringUtils.isNotBlank(schema.getName())) {
             return true;
         }
+        if (isConstrainedPrimitive(schema)) {
+            return false;
+        }
         return numberOfUsages > 1;
+    }
+
+    // A shared component for a pattern or a bound only adds a numbered name such as string_0 to the spec.
+    private boolean isConstrainedPrimitive(Schema schema) {
+        boolean primitive = schema.getType() != null && PRIMITIVE_TYPES.contains(schema.getType());
+        Schema typeAndFormat = Schema.builder()
+                .type(schema.getType())
+                .format(schema.getFormat())
+                .build();
+        return primitive && schema.getEnumValues() == null && !typeAndFormat.equals(schema.withUseFacets(null));
     }
 
     private boolean onlyTypeIsSet(Schema schema) {
         // check if the schema becomes "empty" once the type is also null
         // this is a little trick to avoid checking all other properties!
-        return schema.withType(null).isEmpty();
+        return schema.withType(null).withUseFacets(null).isEmpty();
     }
 }
