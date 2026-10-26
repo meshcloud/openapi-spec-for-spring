@@ -22,6 +22,7 @@
 package io.meshcloud.openapispecforspring.common.schema.resolver.type.initial;
 
 import io.meshcloud.openapispecforspring.common.schema.resolver.SchemaResolver;
+import io.meshcloud.openapispecforspring.common.util.OpenApiVoidUtils;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import org.jspecify.annotations.Nullable;
 
@@ -30,7 +31,7 @@ public class InitialSchemaBuilderForVoid implements InitialSchemaBuilder {
     @Override
     public Schema buildFromType(SchemaResolver.Caller caller, InitialType initialType) {
         Class<?> rawClass = initialType.getType().getRawClass();
-        if (Void.TYPE.equals(rawClass) || Void.class.equals(rawClass)) {
+        if (OpenApiVoidUtils.isVoid(rawClass)) {
             return new Schema();
         }
         return null;

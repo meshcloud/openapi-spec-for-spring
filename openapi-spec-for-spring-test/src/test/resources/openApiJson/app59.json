@@ -5,6 +5,93 @@
     "version": "unknown"
   },
   "paths": {
+    "/api-responses/owners/{name}": {
+      "put": {
+        "operationId": "upsertOwner",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App59ApiResponseController.Owner"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted for review",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59ApiResponseController.Owner"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api-responses/pets/{name}": {
+      "put": {
+        "operationId": "upsertPet",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/name"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App59ApiResponseController.Pet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created the pet",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59ApiResponseController.Pet"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Nothing changed"
+          },
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App59ApiResponseController.Pet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/arrays/labels": {
       "get": {
         "operationId": "getLabels",
@@ -56,6 +143,36 @@
         }
       }
     },
+    "/raw-response-entity/raw": {
+      "get": {
+        "operationId": "getWithRawResponseEntity",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "*/*": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/raw-response-entity/raw-again": {
+      "get": {
+        "operationId": "getAgainWithRawResponseEntity",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "text/plain": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/time/schedule": {
       "get": {
         "operationId": "schedule",
@@ -72,10 +189,79 @@
           }
         }
       }
+    },
+    "/void/java-void/{id}": {
+      "delete": {
+        "operationId": "deleteReturningJavaVoid",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/void/kotlin-unit/{id}": {
+      "delete": {
+        "operationId": "deleteReturningKotlinUnit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
     }
   },
   "components": {
+    "parameters": {
+      "name": {
+        "name": "name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    },
     "schemas": {
+      "App59ApiResponseController.Owner": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "App59ApiResponseController.Pet": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "array_string": {
         "type": "array",
         "items": {
