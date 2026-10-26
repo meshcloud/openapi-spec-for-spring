@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.operation.Callback;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Callback} items.
  */
 public interface ReferenceIdentifierBuilderForCallback extends ReferenceIdentifierBuilderForType<Callback> {}

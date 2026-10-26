@@ -64,6 +64,8 @@ public interface SchemaCustomizer extends OpenApiOrderedUtils.DefaultOrdered {
      */
     interface RecursiveResolver {
         /**
+         * Resolves the class to a schema that is always referenced.
+         *
          * @param clazz  class type to be resolved
          * @param setter setter to apply the schema reference
          */

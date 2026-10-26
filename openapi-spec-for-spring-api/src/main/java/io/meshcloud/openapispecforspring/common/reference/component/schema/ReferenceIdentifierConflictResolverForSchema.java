@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.media.Schema;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link Schema} items.
  */
 public interface ReferenceIdentifierConflictResolverForSchema
         extends ReferenceIdentifierConflictResolverForType<Schema> {}

@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.example.Example;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Example} items.
  */
 public interface ReferenceIdentifierBuilderForExample extends ReferenceIdentifierBuilderForType<Example> {}

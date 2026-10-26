@@ -42,6 +42,8 @@ import org.jspecify.annotations.Nullable;
 @FunctionalInterface
 public interface ReferenceIdentifierBuilderForType<T> {
     /**
+     * Builds the identifier under which the item is referenced.
+     *
      * @param item                item to be referenced
      * @param suggestedIdentifier suggested identifier (might be null)
      * @param numberOfSetters     number of setters consuming this item

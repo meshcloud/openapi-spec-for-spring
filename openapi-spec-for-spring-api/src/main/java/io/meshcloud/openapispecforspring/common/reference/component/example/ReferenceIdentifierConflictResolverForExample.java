@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.example.Example;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link Example} items.
  */
 public interface ReferenceIdentifierConflictResolverForExample
         extends ReferenceIdentifierConflictResolverForType<Example> {}

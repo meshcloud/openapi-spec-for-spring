@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.operation.Callback;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link Callback} items.
  */
 public interface ReferenceIdentifierConflictResolverForCallback
         extends ReferenceIdentifierConflictResolverForType<Callback> {}

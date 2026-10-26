@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.response.ApiResponse;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link ApiResponse} items are referenced.
  */
 public interface ReferenceDeciderForApiResponse extends ReferenceDeciderForType<ApiResponse> {}

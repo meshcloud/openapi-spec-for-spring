@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.header.Header;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link Header} items.
  */
 public interface ReferenceIdentifierConflictResolverForHeader
         extends ReferenceIdentifierConflictResolverForType<Header> {}

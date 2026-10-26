@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.header.Header;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link Header} items are referenced.
  */
 public interface ReferenceDeciderForHeader extends ReferenceDeciderForType<Header> {}

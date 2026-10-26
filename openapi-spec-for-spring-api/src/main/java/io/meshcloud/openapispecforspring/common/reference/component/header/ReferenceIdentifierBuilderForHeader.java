@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.header.Header;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Header} items.
  */
 public interface ReferenceIdentifierBuilderForHeader extends ReferenceIdentifierBuilderForType<Header> {}

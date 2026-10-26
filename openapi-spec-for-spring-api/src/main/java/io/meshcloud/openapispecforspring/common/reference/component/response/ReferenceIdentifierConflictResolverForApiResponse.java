@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.response.ApiResponse;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link ApiResponse} items.
  */
 public interface ReferenceIdentifierConflictResolverForApiResponse
         extends ReferenceIdentifierConflictResolverForType<ApiResponse> {}

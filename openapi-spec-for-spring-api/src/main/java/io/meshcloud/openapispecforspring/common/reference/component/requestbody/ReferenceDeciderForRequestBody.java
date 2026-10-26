@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.requestbody.RequestBody;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link RequestBody} items are referenced.
  */
 public interface ReferenceDeciderForRequestBody extends ReferenceDeciderForType<RequestBody> {}

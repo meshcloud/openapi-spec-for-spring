@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.media.Schema;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Schema} items.
  */
 public interface ReferenceIdentifierBuilderForSchema extends ReferenceIdentifierBuilderForType<Schema> {}

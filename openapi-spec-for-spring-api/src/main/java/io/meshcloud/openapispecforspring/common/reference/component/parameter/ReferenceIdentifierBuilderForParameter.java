@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Parameter} items.
  */
 public interface ReferenceIdentifierBuilderForParameter extends ReferenceIdentifierBuilderForType<Parameter> {}

@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.operation.Callback;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link Callback} items are referenced.
  */
 public interface ReferenceDeciderForCallback extends ReferenceDeciderForType<Callback> {}

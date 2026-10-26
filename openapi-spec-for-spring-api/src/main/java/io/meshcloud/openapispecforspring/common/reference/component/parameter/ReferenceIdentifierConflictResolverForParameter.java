@@ -25,7 +25,7 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 
 /**
- * @see ReferenceIdentifierConflictResolverForType
+ * Resolves conflicting reference identifiers of {@link Parameter} items.
  */
 public interface ReferenceIdentifierConflictResolverForParameter
         extends ReferenceIdentifierConflictResolverForType<Parameter> {}

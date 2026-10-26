@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.link.Link;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link Link} items.
  */
 public interface ReferenceIdentifierBuilderForLink extends ReferenceIdentifierBuilderForType<Link> {}

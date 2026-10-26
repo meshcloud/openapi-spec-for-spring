@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.parameter.Parameter;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link Parameter} items are referenced.
  */
 public interface ReferenceDeciderForParameter extends ReferenceDeciderForType<Parameter> {}

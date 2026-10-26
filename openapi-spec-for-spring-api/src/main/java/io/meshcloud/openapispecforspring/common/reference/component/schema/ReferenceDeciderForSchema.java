@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.media.Schema;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link Schema} items are referenced.
  */
 public interface ReferenceDeciderForSchema extends ReferenceDeciderForType<Schema> {}

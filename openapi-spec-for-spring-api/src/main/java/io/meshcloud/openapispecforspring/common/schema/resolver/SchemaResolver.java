@@ -86,7 +86,7 @@ public interface SchemaResolver {
         public static final Caller HEADER = Caller.of(Mode.FOR_DESERIALIZATION);
 
         /**
-         * The {@link Mode} for the schema resolution, provided by the caller.
+         * The mode of the schema resolution, provided by the caller.
          */
         private final Mode mode;
     }

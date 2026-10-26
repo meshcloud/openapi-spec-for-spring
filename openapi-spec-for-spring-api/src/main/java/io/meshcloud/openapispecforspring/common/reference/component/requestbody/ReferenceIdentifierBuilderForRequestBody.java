@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceIdent
 import io.meshcloud.openapispecforspring.model.requestbody.RequestBody;
 
 /**
- * @see ReferenceIdentifierBuilderForType
+ * Builds the reference identifiers of {@link RequestBody} items.
  */
 public interface ReferenceIdentifierBuilderForRequestBody extends ReferenceIdentifierBuilderForType<RequestBody> {}

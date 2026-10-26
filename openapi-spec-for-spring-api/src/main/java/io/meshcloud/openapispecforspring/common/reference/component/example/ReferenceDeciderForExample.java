@@ -25,6 +25,6 @@ import io.meshcloud.openapispecforspring.common.reference.fortype.ReferenceDecid
 import io.meshcloud.openapispecforspring.model.example.Example;
 
 /**
- * @see ReferenceDeciderForType
+ * Decides which {@link Example} items are referenced.
  */
 public interface ReferenceDeciderForExample extends ReferenceDeciderForType<Example> {}
