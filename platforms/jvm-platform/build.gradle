@@ -22,6 +22,7 @@ dependencies {
     api('io.swagger.core.v3:swagger-annotations:2.2.55')
 
     api('commons-io:commons-io:2.22.0')
+    api('io.swagger.parser.v3:swagger-parser-v3:2.1.48')
 
     api('com.google.errorprone:error_prone_core:2.50.0')
     api('com.uber.nullaway:nullaway:0.14.2')

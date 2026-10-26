@@ -33,6 +33,19 @@ testing {
         implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-yaml')
       }
     }
+    // The parser brings YAML too, so it checks the expected files, which equal the served specs.
+    specValidityTest(JvmTestSuite) {
+      dependencies {
+        implementation('io.swagger.parser.v3:swagger-parser-v3')
+      }
+      targets.all {
+        testTask.configure {
+          def expectedSpecDirs = files('src/test/resources/openApiJson', 'src/yamlTest/resources/openApiYaml')
+          inputs.files(expectedSpecDirs).withPathSensitivity(PathSensitivity.RELATIVE)
+          systemProperty('expectedSpecDirs', expectedSpecDirs.files.join(File.pathSeparator))
+        }
+      }
+    }
   }
 }
 
@@ -63,5 +76,5 @@ sonar {
 }
 
 tasks.named('check') {
-  dependsOn(tasks.named('yamlTest'), tasks.named('testCodeCoverageReport'), tasks.named('yamlTestCodeCoverageReport'))
+  dependsOn(tasks.named('yamlTest'), tasks.named('specValidityTest'), tasks.named('testCodeCoverageReport'), tasks.named('yamlTestCodeCoverageReport'))
 }
