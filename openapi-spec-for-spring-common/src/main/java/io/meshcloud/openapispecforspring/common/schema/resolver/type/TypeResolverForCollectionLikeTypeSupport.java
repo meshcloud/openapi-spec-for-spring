@@ -22,7 +22,6 @@
 package io.meshcloud.openapispecforspring.common.schema.resolver.type;
 
 import static io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier.Purpose.SCHEMA_BUILDING;
-import static io.meshcloud.openapispecforspring.common.util.OpenApiMapUtils.mergeWithExistingMap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -30,6 +29,7 @@ import com.fasterxml.jackson.databind.type.ResolvedRecursiveType;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplier;
 import io.meshcloud.openapispecforspring.common.annotation.AnnotationsSupplierFactory;
 import io.meshcloud.openapispecforspring.common.mapper.ExtensionAnnotationMapper;
+import io.meshcloud.openapispecforspring.common.schema.mapper.ArraySchemaAnnotationFields;
 import io.meshcloud.openapispecforspring.common.schema.resolver.type.initial.InitialType;
 import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupplier;
 import io.meshcloud.openapispecforspring.model.media.Schema;
@@ -120,24 +120,9 @@ public class TypeResolverForCollectionLikeTypeSupport {
         val arraySchema = new CollectionLikeSchema();
         arraySchemaAnnotations
                 .descendingIterator()
-                .forEachRemaining(arraySchemaAnnotation -> applyFromAnnotation(arraySchema, arraySchemaAnnotation));
+                .forEachRemaining(arraySchemaAnnotation -> ArraySchemaAnnotationFields.apply(
+                        arraySchema, arraySchemaAnnotation, extensionAnnotationMapper));
         return arraySchema;
-    }
-
-    private void applyFromAnnotation(Schema schema, ArraySchema annotation) {
-        if (annotation.uniqueItems()) {
-            schema.setUniqueItems(true);
-        }
-        if (annotation.minItems() != Integer.MAX_VALUE) {
-            schema.setMinItems(annotation.minItems());
-        }
-        if (annotation.maxItems() != Integer.MIN_VALUE) {
-            schema.setMaxItems(annotation.maxItems());
-        }
-        mergeWithExistingMap(
-                schema::getExtensions,
-                schema::setExtensions,
-                extensionAnnotationMapper.mapArray(annotation.extensions()));
     }
 
     private static JavaType unpackJacksonResolvedRecursiveType(JavaType javaType) {
