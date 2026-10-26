@@ -41,13 +41,15 @@ import io.meshcloud.openapispecforspring.common.supplier.OpenApiObjectMapperSupp
 import io.meshcloud.openapispecforspring.common.util.OpenApiLoggingUtils;
 import io.meshcloud.openapispecforspring.model.media.Schema;
 import java.lang.reflect.Type;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -206,6 +208,10 @@ public class DefaultSchemaResolver implements SchemaResolver {
             for (InitialSchemaBuilder initialSchemaBuilder : initialSchemaBuilders) {
                 Schema initialSchema = initialSchemaBuilder.buildFromType(caller, initialType);
                 if (initialSchema != null) {
+                    initialSchema.setDirection(
+                            caller.getMode() == SchemaResolver.Mode.FOR_DESERIALIZATION
+                                    ? Schema.Direction.REQUEST
+                                    : Schema.Direction.RESPONSE);
                     return initialSchema;
                 }
             }
@@ -325,18 +331,46 @@ public class DefaultSchemaResolver implements SchemaResolver {
         }
     }
 
+    // The reference storage compares schemas with the schemas nested in them, so two uses of a type that differ only
+    // further down, such as its request and response views, must stay apart. A pair that is already being compared
+    // counts as equal, which ends the comparison on recursive types.
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-    @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
     private static class RecursiveSchema extends Schema implements OpenApiLoggingUtils.HasToPrettyString {
+        private static final ThreadLocal<Set<ComparedPair>> COMPARED_PAIRS = ThreadLocal.withInitial(HashSet::new);
+
         @Getter
         private final Schema schema;
 
-        @EqualsAndHashCode.Include
         private final TypeResolver.RecursionKey recursionKey;
 
-        @EqualsAndHashCode.Include
-        private @Nullable Schema includedUseFacets() {
-            return getUseFacets();
+        @Override
+        public boolean equals(@Nullable Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof RecursiveSchema that)
+                    || !recursionKey.equals(that.recursionKey)
+                    || !Objects.equals(getUseFacets(), that.getUseFacets())) {
+                return false;
+            }
+            ComparedPair pair = new ComparedPair(schema, that.schema);
+            Set<ComparedPair> comparedPairs = COMPARED_PAIRS.get();
+            if (schema == that.schema || !comparedPairs.add(pair)) {
+                return true;
+            }
+            try {
+                return schema.equals(that.schema);
+            } finally {
+                comparedPairs.remove(pair);
+                if (comparedPairs.isEmpty()) {
+                    COMPARED_PAIRS.remove();
+                }
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(recursionKey, getUseFacets());
         }
 
         public static Schema unwrap(Schema schema) {
@@ -354,6 +388,18 @@ public class DefaultSchemaResolver implements SchemaResolver {
         @Override
         public String toPrettyString() {
             return "->" + prettyPrintSchema(schema) + "$" + recursionKey.hashCode();
+        }
+    }
+
+    private record ComparedPair(Schema first, Schema second) {
+        @Override
+        public boolean equals(@Nullable Object other) {
+            return other instanceof ComparedPair that && first == that.first && second == that.second;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * System.identityHashCode(first) + System.identityHashCode(second);
         }
     }
 }

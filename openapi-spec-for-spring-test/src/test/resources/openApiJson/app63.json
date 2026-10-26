@@ -14,7 +14,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/App63Plant_0"
+                  "$ref": "#/components/schemas/App63PlantResponse"
                 }
               }
             }
@@ -27,7 +27,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/App63Plant_1"
+                "$ref": "#/components/schemas/App63PlantRequest"
               }
             }
           },
@@ -35,7 +35,42 @@
         },
         "responses": {
           "200": {
-            "description": "Default response"
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/nested-views/drawing": {
+      "get": {
+        "operationId": "getDrawing",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App63DrawingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "saveDrawing",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App63DrawingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
           }
         }
       }
@@ -66,9 +101,69 @@
           }
         }
       }
+    },
+    "/view-names/seed": {
+      "get": {
+        "operationId": "getSeed",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App63Seed_0"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "sow",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App63Seed_1"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
+    },
+    "/view-names/seeds": {
+      "post": {
+        "operationId": "order",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/App63SeedRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          }
+        }
+      }
     }
   },
   "components": {
+    "responses": {
+      "200": {
+        "description": "Default response"
+      }
+    },
     "schemas": {
       "integer_int32": {
         "type": "integer",
@@ -78,7 +173,7 @@
         "type": "object",
         "additionalProperties": {}
       },
-      "App63Plant_0": {
+      "App63PlantResponse": {
         "required": [
           "name",
           "height",
@@ -112,7 +207,7 @@
           }
         }
       },
-      "App63Plant_1": {
+      "App63PlantRequest": {
         "required": [
           "name",
           "attributes"
@@ -145,6 +240,119 @@
           }
         }
       },
+      "App63ShapeType": {
+        "type": "string",
+        "enum": [
+          "circle",
+          "square"
+        ]
+      },
+      "App63CircleResponse": {
+        "required": [
+          "radius"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App63ShapeType"
+          },
+          "radius": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63CircleRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App63ShapeType"
+          },
+          "radius": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63SquareResponse": {
+        "required": [
+          "side"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App63ShapeType"
+          },
+          "side": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63SquareRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/App63ShapeType"
+          },
+          "side": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63ShapeResponse": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App63CircleResponse",
+            "square": "#/components/schemas/App63SquareResponse"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App63CircleResponse"
+          },
+          {
+            "$ref": "#/components/schemas/App63SquareResponse"
+          }
+        ]
+      },
+      "App63ShapeRequest": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App63CircleRequest",
+            "square": "#/components/schemas/App63SquareRequest"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App63CircleRequest"
+          },
+          {
+            "$ref": "#/components/schemas/App63SquareRequest"
+          }
+        ]
+      },
+      "App63DrawingResponse": {
+        "required": [
+          "shape"
+        ],
+        "type": "object",
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/App63ShapeResponse"
+          }
+        }
+      },
+      "App63DrawingRequest": {
+        "required": [
+          "shape"
+        ],
+        "type": "object",
+        "properties": {
+          "shape": {
+            "$ref": "#/components/schemas/App63ShapeRequest"
+          }
+        }
+      },
       "App63RequiredController.Pet": {
         "required": [
           "name"
@@ -156,6 +364,49 @@
           },
           "nickname": {
             "type": "string"
+          }
+        }
+      },
+      "App63Seed_0": {
+        "required": [
+          "variety",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "variety": {
+            "type": "string"
+          },
+          "count": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63Seed_1": {
+        "required": [
+          "variety"
+        ],
+        "type": "object",
+        "properties": {
+          "variety": {
+            "type": "string"
+          },
+          "count": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App63SeedRequest": {
+        "required": [
+          "varieties"
+        ],
+        "type": "object",
+        "properties": {
+          "varieties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }
