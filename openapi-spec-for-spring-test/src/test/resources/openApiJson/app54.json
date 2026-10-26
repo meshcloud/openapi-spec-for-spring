@@ -25,7 +25,7 @@
   },
   "components": {
     "schemas": {
-      "App54Controller.AnimalType": {
+      "App54Controller.AnimalDiscriminator": {
         "type": "string",
         "enum": [
           "DOG",
@@ -33,18 +33,24 @@
         ]
       },
       "App54Controller.Dog": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App54Controller.AnimalType"
+            "$ref": "#/components/schemas/App54Controller.AnimalDiscriminator"
           }
         }
       },
       "App54Controller.Cat": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App54Controller.AnimalType"
+            "$ref": "#/components/schemas/App54Controller.AnimalDiscriminator"
           }
         }
       },

@@ -240,7 +240,7 @@
           }
         }
       },
-      "App63ShapeType": {
+      "App63ShapeDiscriminator": {
         "type": "string",
         "enum": [
           "circle",
@@ -249,12 +249,13 @@
       },
       "App63CircleResponse": {
         "required": [
+          "type",
           "radius"
         ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App63ShapeType"
+            "$ref": "#/components/schemas/App63ShapeDiscriminator"
           },
           "radius": {
             "$ref": "#/components/schemas/integer_int32"
@@ -262,10 +263,13 @@
         }
       },
       "App63CircleRequest": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App63ShapeType"
+            "$ref": "#/components/schemas/App63ShapeDiscriminator"
           },
           "radius": {
             "$ref": "#/components/schemas/integer_int32"
@@ -274,12 +278,13 @@
       },
       "App63SquareResponse": {
         "required": [
+          "type",
           "side"
         ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App63ShapeType"
+            "$ref": "#/components/schemas/App63ShapeDiscriminator"
           },
           "side": {
             "$ref": "#/components/schemas/integer_int32"
@@ -287,10 +292,13 @@
         }
       },
       "App63SquareRequest": {
+        "required": [
+          "type"
+        ],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/App63ShapeType"
+            "$ref": "#/components/schemas/App63ShapeDiscriminator"
           },
           "side": {
             "$ref": "#/components/schemas/integer_int32"

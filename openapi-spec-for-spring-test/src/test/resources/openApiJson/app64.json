@@ -1,0 +1,272 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API for App64",
+    "version": "unknown"
+  },
+  "paths": {
+    "/discriminators/garages/default": {
+      "get": {
+        "operationId": "garage",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64DiscriminatorController.Garage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sealed/animals/default": {
+      "get": {
+        "operationId": "animal",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64SealedController.Animal"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sealed/vehicles/default": {
+      "get": {
+        "operationId": "vehicle",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64SealedController.Vehicle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/type-properties/shapes/default": {
+      "get": {
+        "operationId": "shape",
+        "responses": {
+          "200": {
+            "description": "Default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/App64TypePropertyController.Shape"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "App64DiscriminatorController.VehicleDiscriminator": {
+        "type": "string",
+        "enum": [
+          "car",
+          "bike"
+        ]
+      },
+      "integer_int32": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "App64DiscriminatorController.Car": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App64DiscriminatorController.VehicleDiscriminator"
+          },
+          "doors": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64DiscriminatorController.Bike": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App64DiscriminatorController.VehicleDiscriminator"
+          },
+          "electric": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App64DiscriminatorController.Vehicle": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "car": "#/components/schemas/App64DiscriminatorController.Car",
+            "bike": "#/components/schemas/App64DiscriminatorController.Bike"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64DiscriminatorController.Car"
+          },
+          {
+            "$ref": "#/components/schemas/App64DiscriminatorController.Bike"
+          }
+        ]
+      },
+      "App64DiscriminatorController.VehicleType": {
+        "type": "string",
+        "enum": [
+          "CAR",
+          "BIKE"
+        ]
+      },
+      "App64DiscriminatorController.Garage": {
+        "type": "object",
+        "properties": {
+          "vehicle": {
+            "$ref": "#/components/schemas/App64DiscriminatorController.Vehicle"
+          },
+          "preferredType": {
+            "$ref": "#/components/schemas/App64DiscriminatorController.VehicleType"
+          }
+        }
+      },
+      "App64SealedController.AnimalDiscriminator": {
+        "type": "string",
+        "enum": [
+          "cat",
+          "App64SealedController$Dog"
+        ]
+      },
+      "App64SealedController.Cat": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App64SealedController.AnimalDiscriminator"
+          },
+          "indoor": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App64SealedController.Dog": {
+        "required": [
+          "kind"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/App64SealedController.AnimalDiscriminator"
+          },
+          "breed": {
+            "type": "string"
+          }
+        }
+      },
+      "App64SealedController.Animal": {
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "cat": "#/components/schemas/App64SealedController.Cat",
+            "App64SealedController$Dog": "#/components/schemas/App64SealedController.Dog"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64SealedController.Cat"
+          },
+          {
+            "$ref": "#/components/schemas/App64SealedController.Dog"
+          }
+        ]
+      },
+      "App64SealedController.Car": {
+        "type": "object",
+        "properties": {
+          "doors": {
+            "$ref": "#/components/schemas/integer_int32"
+          }
+        }
+      },
+      "App64SealedController.Bike": {
+        "type": "object",
+        "properties": {
+          "electric": {
+            "type": "boolean"
+          }
+        }
+      },
+      "App64SealedController.Vehicle": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/App64SealedController.Car"
+          },
+          {
+            "$ref": "#/components/schemas/App64SealedController.Bike"
+          }
+        ]
+      },
+      "App64TypePropertyController.ShapeDiscriminator": {
+        "type": "string",
+        "enum": [
+          "circle"
+        ]
+      },
+      "App64TypePropertyController.Circle": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "radius": {
+            "type": "number",
+            "format": "double"
+          },
+          "type": {
+            "readOnly": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/App64TypePropertyController.ShapeDiscriminator"
+              }
+            ]
+          }
+        }
+      },
+      "App64TypePropertyController.Shape": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "circle": "#/components/schemas/App64TypePropertyController.Circle"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/App64TypePropertyController.Circle"
+          }
+        ]
+      }
+    }
+  }
+}

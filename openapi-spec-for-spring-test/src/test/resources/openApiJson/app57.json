@@ -226,7 +226,7 @@
           }
         }
       },
-      "App57Controller.EditionType": {
+      "App57Controller.EditionDiscriminator": {
         "type": "string",
         "enum": [
           "paperback",
@@ -238,10 +238,13 @@
         "format": "int32"
       },
       "App57Controller.Paperback": {
+        "required": [
+          "format"
+        ],
         "type": "object",
         "properties": {
           "format": {
-            "$ref": "#/components/schemas/App57Controller.EditionType"
+            "$ref": "#/components/schemas/App57Controller.EditionDiscriminator"
           },
           "pages": {
             "$ref": "#/components/schemas/integer_int32"
@@ -249,10 +252,13 @@
         }
       },
       "App57Controller.Ebook": {
+        "required": [
+          "format"
+        ],
         "type": "object",
         "properties": {
           "format": {
-            "$ref": "#/components/schemas/App57Controller.EditionType"
+            "$ref": "#/components/schemas/App57Controller.EditionDiscriminator"
           },
           "fileFormat": {
             "type": "string"

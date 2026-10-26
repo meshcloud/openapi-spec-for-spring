@@ -78,6 +78,9 @@
         "format": "int32"
       },
       "App43Controller.Rectangle": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
@@ -93,6 +96,9 @@
         "description": "Not quite a square"
       },
       "App43Controller.Circle": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
@@ -132,6 +138,9 @@
         ]
       },
       "App43Controller.ExtendableBody_0": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
@@ -161,6 +170,9 @@
         ]
       },
       "App43Controller.ExtendedBody": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
@@ -184,6 +196,9 @@
         ]
       },
       "App43Controller.AnotherBody": {
+        "required": [
+          "@class"
+        ],
         "title": "The Title!",
         "type": "object",
         "properties": {
@@ -201,6 +216,9 @@
         "description": "Another body with property3"
       },
       "App43Controller.ConcreteBody": {
+        "required": [
+          "@class"
+        ],
         "title": "The Title!",
         "type": "object",
         "properties": {

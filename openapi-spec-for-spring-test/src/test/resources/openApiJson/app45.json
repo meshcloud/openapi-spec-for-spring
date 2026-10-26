@@ -35,7 +35,7 @@
   },
   "components": {
     "schemas": {
-      "App45Controller.Base1Type": {
+      "App45Controller.Base1Discriminator": {
         "type": "string",
         "enum": [
           "nested",
@@ -77,10 +77,13 @@
         ]
       },
       "App45Controller.NestedBodyClass_1": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
-            "$ref": "#/components/schemas/App45Controller.Base1Type"
+            "$ref": "#/components/schemas/App45Controller.Base1Discriminator"
           },
           "nestedProperty": {
             "nullable": true,
@@ -93,10 +96,13 @@
         }
       },
       "App45Controller.NestedClass": {
+        "required": [
+          "_type"
+        ],
         "type": "object",
         "properties": {
           "_type": {
-            "$ref": "#/components/schemas/App45Controller.Base1Type"
+            "$ref": "#/components/schemas/App45Controller.Base1Discriminator"
           },
           "nestedProperty": {
             "nullable": true,

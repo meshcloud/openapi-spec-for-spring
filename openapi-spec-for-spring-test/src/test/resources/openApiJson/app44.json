@@ -28,7 +28,7 @@
   },
   "components": {
     "schemas": {
-      "Base1Type": {
+      "Base1Discriminator": {
         "type": "string",
         "enum": [
           ".SomeClass1",
@@ -43,10 +43,13 @@
         ]
       },
       "SomeClass1_0": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property1": {
             "type": "string"
@@ -54,10 +57,13 @@
         }
       },
       "SomeClass1_1": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property2": {
             "type": "string"
@@ -65,10 +71,13 @@
         }
       },
       "SomeClass2_0": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property7": {
             "type": "string"
@@ -76,10 +85,13 @@
         }
       },
       "SomeClass2_1": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property6": {
             "type": "string"
@@ -87,10 +99,13 @@
         }
       },
       "SomeClassInSubPackage1": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property4": {
             "type": "string"
@@ -98,10 +113,13 @@
         }
       },
       "SomeClassInSubPackage2": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property5": {
             "type": "string"
@@ -109,10 +127,13 @@
         }
       },
       "SomeClassInUpperPackage1": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property3": {
             "type": "string"
@@ -120,10 +141,13 @@
         }
       },
       "SomeClassInUpperPackage2": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property8": {
             "type": "string"
@@ -131,10 +155,13 @@
         }
       },
       "App44Controller.InnerClass1": {
+        "required": [
+          "@c"
+        ],
         "type": "object",
         "properties": {
           "@c": {
-            "$ref": "#/components/schemas/Base1Type"
+            "$ref": "#/components/schemas/Base1Discriminator"
           },
           "property9": {
             "type": "string"
