@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 class App47Controller {
 
     @GetMapping("/mapping1")
+    @SuppressWarnings("NonApiType")
     public HashSet<String> mapping1() {
         return null;
     }

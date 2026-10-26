@@ -47,8 +47,7 @@ class App32Configuration {
             public void customize(Operation operation, OperationBuilderContext operationBuilderContext) {
                 HandlerMethod handlerMethod =
                         operationBuilderContext.getOperationInfo().getHandlerMethod();
-                if (handlerMethod instanceof SpringWebHandlerMethod) {
-                    SpringWebHandlerMethod springWebHandlerMethod = (SpringWebHandlerMethod) handlerMethod;
+                if (handlerMethod instanceof SpringWebHandlerMethod springWebHandlerMethod) {
                     Stream.of(springWebHandlerMethod.getMethod().getMethod().getExceptionTypes())
                             .map(this::uncheckedCast)
                             .forEach(exceptionType -> findExceptionHandlerMethod(
@@ -81,7 +80,7 @@ class App32Configuration {
                 }
             }
 
-            public String findResponseStatusCode(AnnotationsSupplier annotationsSupplier) {
+            private String findResponseStatusCode(AnnotationsSupplier annotationsSupplier) {
                 return annotationsSupplier
                         .findAnnotations(ResponseStatus.class)
                         .findFirst()

@@ -1,7 +1,6 @@
 package io.meshcloud.openapispecforspring.test.app44.package1;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.meshcloud.openapispecforspring.test.app44.App44Controller;
 import io.meshcloud.openapispecforspring.test.app44.SomeClassInUpperPackage1;
@@ -11,14 +10,14 @@ import io.meshcloud.openapispecforspring.test.app44.package1.sub.SomeClassInSubP
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS)
 @JsonSubTypes({
-    @Type(value = SomeClass1.class, name = "isIgnoredForMinimalClass"),
-    @Type(SomeClass2.class),
-    @Type(SomeClassInSubPackage1.class),
-    @Type(SomeClassInSubPackage2.class),
-    @Type(SomeClassInUpperPackage1.class),
-    @Type(SomeClassInUpperPackage2.class),
-    @Type(io.meshcloud.openapispecforspring.test.app44.package2.SomeClass1.class),
-    @Type(io.meshcloud.openapispecforspring.test.app44.package2.SomeClass2.class),
-    @Type(App44Controller.InnerClass1.class),
+    @JsonSubTypes.Type(value = SomeClass1.class, name = "isIgnoredForMinimalClass"),
+    @JsonSubTypes.Type(SomeClass2.class),
+    @JsonSubTypes.Type(SomeClassInSubPackage1.class),
+    @JsonSubTypes.Type(SomeClassInSubPackage2.class),
+    @JsonSubTypes.Type(SomeClassInUpperPackage1.class),
+    @JsonSubTypes.Type(SomeClassInUpperPackage2.class),
+    @JsonSubTypes.Type(io.meshcloud.openapispecforspring.test.app44.package2.SomeClass1.class),
+    @JsonSubTypes.Type(io.meshcloud.openapispecforspring.test.app44.package2.SomeClass2.class),
+    @JsonSubTypes.Type(App44Controller.InnerClass1.class),
 })
 public interface Base1 {}

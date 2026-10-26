@@ -38,7 +38,7 @@ public class App50Configuration {
                     RecursiveBuilder recursiveBuilder) {
                 if (javaType.isPrimitive()
                         || javaType.isTypeOrSubTypeOf(String.class)
-                        || caller != SchemaResolver.Caller.PARAMETER) {
+                        || !SchemaResolver.Caller.PARAMETER.equals(caller)) {
                     return null;
                 }
                 TypeDescriptor parameterTypeDescriptor =

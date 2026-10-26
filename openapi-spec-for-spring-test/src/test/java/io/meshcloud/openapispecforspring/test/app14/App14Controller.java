@@ -80,6 +80,7 @@ class App14Controller {
     @Value
     @Schema(description = "subscription information")
     private static class SubscriptionDto {
+        @SuppressWarnings("deprecation")
         @Schema(
                 description = "this unique identifier allows management of the subscription",
                 example = "2531329f-fb09-4ef7-887e-84e648214436",

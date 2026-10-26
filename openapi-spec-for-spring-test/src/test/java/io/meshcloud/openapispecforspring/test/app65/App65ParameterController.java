@@ -24,6 +24,7 @@ class App65ParameterController {
     }
 
     @GetMapping(path = "/parcels/{parcelId}", produces = PARCEL_V2)
+    @SuppressWarnings({"deprecation", "DeprecatedVariable"})
     String parcelV2(
             @Parameter(description = "The ID of the parcel.") @PathVariable UUID parcelId,
             @Deprecated @RequestParam(required = false) String carrier,

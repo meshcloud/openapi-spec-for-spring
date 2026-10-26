@@ -69,7 +69,7 @@ class App5Controller {
     private interface BaseForEverything {}
 
     @Schema(description = "Dto in optional")
-    private interface DtoInOptional {
+    interface DtoInOptional {
         String getProperty1();
     }
 
@@ -87,6 +87,7 @@ class App5Controller {
         @Schema(description = "description1")
         ComplexDto other1;
 
+        @SuppressWarnings("deprecation")
         @Schema(title = "title override", description = "description2", required = true)
         ComplexDto other2;
 

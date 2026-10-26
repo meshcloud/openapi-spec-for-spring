@@ -18,6 +18,7 @@ class App59ArrayController {
         throw new UnsupportedOperationException();
     }
 
+    @SuppressWarnings("ArrayRecordComponent")
     record Shelf(String[] labels, int[] heights, Book[] books, byte[] photo) {}
 
     record Book(String title) {}

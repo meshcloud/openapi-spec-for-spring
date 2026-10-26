@@ -75,7 +75,7 @@ class DefaultAnnotationsSupplierFactoryTest {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(value = {CONSTRUCTOR, FIELD, LOCAL_VARIABLE, METHOD, PACKAGE, PARAMETER, TYPE})
-    private @interface RepeatableTestAnnotations {
+    @interface RepeatableTestAnnotations {
         // just for testing
         RepeatableTestAnnotation[] value() default {};
 

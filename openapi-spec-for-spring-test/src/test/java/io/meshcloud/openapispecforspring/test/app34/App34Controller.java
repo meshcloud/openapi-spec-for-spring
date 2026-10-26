@@ -23,6 +23,7 @@ class App34Controller {
     @Value
     @Schema(description = "Description of SomeListDto")
     static class SomeListDto {
+        @SuppressWarnings("deprecation")
         @Schema(description = "List of entries", required = true)
         @ArraySchema(schema = @Schema(deprecated = true))
         List<SomeDto> entries;

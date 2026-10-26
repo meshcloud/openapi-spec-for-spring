@@ -33,7 +33,7 @@ class DefaultSchemaPropertiesResolverTest {
     }
 
     @SuppressWarnings("unused")
-    private static class Gauge {
+    static class Gauge {
         public String unit = "bar";
 
         public int getZeta() {
@@ -51,7 +51,7 @@ class DefaultSchemaPropertiesResolverTest {
 
     @JsonPropertyOrder({"zeta", "alpha"})
     @SuppressWarnings("unused")
-    private static class OrderedGauge {
+    static class OrderedGauge {
         public int getAlpha() {
             return 1;
         }

@@ -53,11 +53,13 @@ class App43Controller {
     @JsonSubTypes({@JsonSubTypes.Type(value = ExtendableBody.class), @JsonSubTypes.Type(value = ExtendedBody.class)})
     @Setter
     private static class ExtendableBody {
+        @SuppressWarnings("unused")
         String property1;
     }
 
     @Setter
     private static class ExtendedBody extends ExtendableBody {
+        @SuppressWarnings("unused")
         String property2;
     }
 

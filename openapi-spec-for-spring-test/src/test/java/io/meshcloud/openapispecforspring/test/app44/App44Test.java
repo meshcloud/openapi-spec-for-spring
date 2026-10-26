@@ -39,7 +39,8 @@ class App44Test extends AbstractOpenApiSpecWebMvcIntTest {
         List<Map<String, Object>> serializedJson =
                 objectMapper.readValue(json, new TypeReference<List<Map<String, Object>>>() {});
 
-        assertThat(typeEnumObject).isInstanceOfSatisfying(List.class, typeEnumValues -> {
+        assertThat(typeEnumObject).isInstanceOfSatisfying(List.class, typeEnumList -> {
+            List<?> typeEnumValues = typeEnumList;
             assertThat(typeEnumValues).isNotEmpty();
             assertThat(serializedJson.stream().map(m -> m.get("@c")))
                     .containsExactlyInAnyOrderElementsOf(typeEnumValues);

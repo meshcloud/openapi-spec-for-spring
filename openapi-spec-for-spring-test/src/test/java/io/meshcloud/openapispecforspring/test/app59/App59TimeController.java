@@ -28,7 +28,7 @@ class App59TimeController {
                 LocalDate.EPOCH,
                 LocalDateTime.MIN,
                 OffsetDateTime.MIN,
-                ZonedDateTime.now(),
+                ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC),
                 LocalTime.MIDNIGHT,
                 OffsetTime.MIN,
                 YearMonth.of(2026, 10),

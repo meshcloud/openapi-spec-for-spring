@@ -21,6 +21,7 @@ class App55Controller {
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     record RecordDto(
             String nonNull,
             @Nullable String nullable,

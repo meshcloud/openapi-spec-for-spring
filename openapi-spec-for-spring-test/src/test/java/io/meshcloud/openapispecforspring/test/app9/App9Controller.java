@@ -48,6 +48,7 @@ class App9Controller {
     public void mapping5(@RequestBody String requestBody) {}
 
     @GetMapping(value = "mapping-6")
+    @SuppressWarnings({"deprecation", "DeprecatedVariable"})
     public void mapping6(
             @RequestParam String param1,
             @RequestParam String param2,

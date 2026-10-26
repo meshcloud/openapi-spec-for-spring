@@ -12,6 +12,7 @@ class App2ControllerWithDeprecatedMethods {
 
     @GetMapping("get-mapping")
     @Deprecated
+    @SuppressWarnings("InlineMeSuggester")
     public String deprecatedGetMapping() {
         return null;
     }

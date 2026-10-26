@@ -32,7 +32,7 @@ class OpenApiLoggingUtilsTest {
     }
 
     private static class TestSchema extends Schema {
-        public TestSchema() {
+        TestSchema() {
             setName("testName");
             setType("testType");
             setProperty("prop1", Schema.builder().build());

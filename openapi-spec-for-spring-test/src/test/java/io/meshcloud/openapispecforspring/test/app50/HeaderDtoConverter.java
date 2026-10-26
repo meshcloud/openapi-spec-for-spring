@@ -8,7 +8,7 @@ class HeaderDtoConverter implements Converter<String, App50Controller.HeaderDto>
 
     @Override
     public App50Controller.HeaderDto convert(String source) {
-        String[] split = source.split(";");
+        String[] split = source.split(";", -1);
         if (split.length != 2) {
             return App50Controller.HeaderDto.fromParams("unknown", "unknown");
         }

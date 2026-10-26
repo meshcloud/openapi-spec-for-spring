@@ -22,8 +22,8 @@ class App41Controller {
     @PutMapping
     public void mapping2(@RequestBody SomeType2 someType2) {}
 
-    private static class SomeType2 {
-        @SuppressWarnings("FieldCanBeLocal")
+    static class SomeType2 {
+        @SuppressWarnings({"FieldCanBeLocal", "unused"})
         private final String finalProperty;
 
         SomeType2(
@@ -35,12 +35,13 @@ class App41Controller {
     }
 
     @JsonIgnoreProperties({"ignored_property"})
-    private static class SomeType1 {
-        @SuppressWarnings("FieldCanBeLocal")
+    static class SomeType1 {
+        @SuppressWarnings({"FieldCanBeLocal", "unused"})
         @JsonProperty(value = "write_only_property", access = JsonProperty.Access.WRITE_ONLY)
         @Schema(implementation = Integer.class)
         private String writeOnlyProperty;
 
+        @SuppressWarnings("unused")
         @JsonProperty(value = "write_only_property_field", access = JsonProperty.Access.WRITE_ONLY)
         @Schema(implementation = Integer.class)
         private String writeOnlyPropertyField;
